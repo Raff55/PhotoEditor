@@ -1,0 +1,38 @@
+﻿<Window x:Class="ImageEditor.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Image Editor" Height="600" Width="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10">
+            <Button x:Name="openButton" Content="Open" Click="openButton_Click" Margin="5" Background="White"/>
+            <Button x:Name="saveButton" Content="Save" Click="saveButton_Click" Margin="5" Background="White"/>
+            <Button x:Name="cropButton" Content="Crop" Click="cropButton_Click" Margin="5" Background="White"/>
+            <Button x:Name="rotateButton" Content="Rotate" Click="rotateButton_Click" Margin="5" Background="White"/>
+            <Button x:Name="filterButton" Content="Filter" Click="filterButton_Click" Margin="5" Background="White"/>
+            <Button x:Name="undoButton" Content="Undo" Click="undoButton_Click" Margin="5" Background="White"/>
+        </StackPanel>
+
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <Viewbox>
+                <ScrollViewer x:Name="imageScrollViewer" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                    <Image x:Name="editedImage" Stretch="None" MouseWheel="editedImage_MouseWheel"/>
+                </ScrollViewer>
+            </Viewbox>
+
+            <StackPanel Grid.Column="1" Orientation="Vertical" Margin="10">
+                <Slider x:Name="zoomSlider" Minimum="1" Maximum="5" Value="1" TickFrequency="0.1" TickPlacement="BottomRight" Width="150" Margin="0,10" ValueChanged="zoomSlider_ValueChanged"/>
+                <Slider x:Name="brightnessSlider" Minimum="-100" Maximum="100" ValueChanged="brightnessSlider_ValueChanged" />
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Window>
