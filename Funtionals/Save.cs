@@ -9,9 +9,9 @@ using System.Windows.Media.Imaging;
 
 namespace ImageEditor.Funtionals
 {
-    public static partial class Functions
+    public static class Save
     {
-        public static void Save(WriteableBitmap editedBitmap) 
+        public static void SaveImage(WriteableBitmap editedBitmap) 
         {
             if (editedBitmap != null)
             {

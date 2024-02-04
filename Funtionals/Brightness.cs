@@ -8,7 +8,7 @@ using System.Windows;
 
 namespace ImageEditor.Funtionals
 {
-    public static partial class Functions
+    public static class Brightness
     {
         public static BitmapSource AdjustBrightness(BitmapSource source, double brightness)
         {

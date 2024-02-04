@@ -8,9 +8,9 @@ using System.Windows.Media.Imaging;
 
 namespace ImageEditor.Funtionals
 {
-    public static partial class Functions
+    public static class Rotate
     {
-        public static WriteableBitmap Rotate(WriteableBitmap editedBitmap) 
+        public static WriteableBitmap RotateImage(WriteableBitmap editedBitmap) 
         {
             if (editedBitmap != null)
             {

@@ -8,7 +8,7 @@ using System.Windows.Media.Imaging;
 
 namespace ImageEditor.Funtionals
 {
-    public static partial class Functions
+    public static class Filter
     {
         private static Dictionary<string, PixelFormat> pixelFormats = new Dictionary<string, PixelFormat>()
         {

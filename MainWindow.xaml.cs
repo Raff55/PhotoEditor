@@ -22,14 +22,14 @@ namespace ImageEditor
         private List<WriteableBitmap> previousVersions = new List<WriteableBitmap>();
         private BitmapImage originalImage;
         private WriteableBitmap editedBitmap;
+        private Rectangle rectCropArea = new Rectangle();
 
         private double zoomLevel = 1.0;
         private double brightnessValue = 0;
-        int xDown = 0;
-        int yDown = 0;
-        int xUp = 0;
-        int yUp = 0;
-        Rectangle rectCropArea = new Rectangle();
+        private int xDown = 0;
+        private int yDown = 0;
+        private int xUp = 0;
+        private int yUp = 0;
 
         public MainWindow()
         {
@@ -39,7 +39,7 @@ namespace ImageEditor
         #region Open
         private void openButton_Click(object sender, RoutedEventArgs e)
         {
-            originalImage = Functions.OpenImage();
+            originalImage = Open.OpenImage();
             editedBitmap = new WriteableBitmap(originalImage);
             UpdateImageDisplay();
         }
@@ -48,14 +48,14 @@ namespace ImageEditor
         #region Save
         private void saveButton_Click(object sender, RoutedEventArgs e)
         {
-            Functions.Save(editedBitmap);
+            Save.SaveImage(editedBitmap);
         }
         #endregion
 
         #region Rotate
         private void rotateButton_Click(object sender, RoutedEventArgs e)
         {
-            var rotatedImage = Functions.Rotate(editedBitmap);
+            var rotatedImage = Rotate.RotateImage(editedBitmap);
             editedImage.Source = rotatedImage;
             editedBitmap = new WriteableBitmap(rotatedImage);
         }
@@ -64,55 +64,9 @@ namespace ImageEditor
         #region Filter
         private void filterButton_Click(object sender, RoutedEventArgs e)
         {
-            var filteredImage = Functions.SetFilter(PixelFormats.Gray8, editedBitmap);
+            var filteredImage = Filter.SetFilter(PixelFormats.Gray8, editedBitmap);
             editedImage.Source = filteredImage;
             editedBitmap = new WriteableBitmap(filteredImage);
-        }
-        #endregion
-
-        #region Brightness
-        private void brightnessSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            brightnessValue = Math.Min(Math.Max(brightnessSlider.Value, -100), 100); // Limit the brightness value within the range of -100 to 100
-            BitmapSource adjustedBitmap = Functions.AdjustBrightness(originalImage, brightnessValue);
-            editedBitmap = new WriteableBitmap(adjustedBitmap);
-            UpdateImageDisplay();
-        }
-        #endregion
-
-        #region UpdateImage
-        private void UpdateImageDisplay()
-        {
-            if (originalImage != null)
-            {
-                
-                if (editedBitmap != null)
-                {
-                    previousVersions.Add(new WriteableBitmap(editedBitmap));
-                    editedImage.Source = editedBitmap;
-                }
-                else
-                {
-                    editedImage.Source = originalImage;
-                }
-                //TransformedBitmap transformedBitmap = new TransformedBitmap(originalImage, new ScaleTransform(zoomLevel, zoomLevel));
-                //BitmapSource adjustedBitmap = Brightness.AdjustBrightness(transformedBitmap, brightnessValue);
-                //editedBitmap = new WriteableBitmap(adjustedBitmap);
-                //editedImage.Width = originalImage.PixelWidth * zoomLevel;
-                //editedImage.Height = originalImage.PixelHeight * zoomLevel;
-            }
-        }
-        #endregion
-
-        #region Undo
-        private void undoButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (previousVersions.Count > 0)
-            {
-                WriteableBitmap previousVersion = previousVersions[previousVersions.Count - 1];
-                previousVersions.Remove(previousVersion);
-                editedImage.Source = previousVersion;
-            }
         }
         #endregion
 
@@ -144,7 +98,7 @@ namespace ImageEditor
                 int width = Math.Abs(xUp - xDown);
                 int height = Math.Abs(yUp - yDown);
 
-                rectCropArea = new Rectangle(Math.Min(xDown, xUp), Math.Min(yDown, yUp), width, height); 
+                rectCropArea = new Rectangle(Math.Min(xDown, xUp), Math.Min(yDown, yUp), width, height);
 
                 editedImage.InvalidateVisual();
             }
@@ -152,8 +106,8 @@ namespace ImageEditor
 
         private void EditedImage_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            CroppedBitmap croppedImage = Funtions.Crop(originalImage, rectCropArea);
-            editedBitmap = Funtions.ConvertCroppedBitmapToWriteableBitmap(croppedImage);
+            CroppedBitmap croppedImage = Crop.CropImage(originalImage, rectCropArea);
+            editedBitmap = Crop.ConvertCroppedBitmapToWriteableBitmap(croppedImage);
             editedImage.MouseDown -= EditedImage_MouseDown;
             editedImage.MouseMove -= EditedImage_MouseMove;
             editedImage.MouseUp -= EditedImage_MouseUp;
@@ -163,44 +117,90 @@ namespace ImageEditor
         }
         #endregion
 
+        #region Zoom
         private void zoomSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            // Get the current zoom value from the slider
-            double zoomValue = zoomSlider.Value;
-
-            // Update the zoom level and apply the zoom
-            zoomLevel = zoomValue;
-            //ApplyZoom();
+            if (originalImage != null)
+            {
+                double zoomValue = zoomSlider.Value;
+                ApplyZoom(zoomValue);
+                zoomLevel = zoomValue;
+            }
         }
 
-        private void MainWindow_PreviewKeyDown(object sender, KeyEventArgs e)
+        private void ApplyZoom(double zoomValue)
         {
-            if (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))
+            double newHeight;
+            double newWidth;
+
+            if (zoomValue < 7 && zoomValue > -5)
             {
-                if (e.Key == Key.OemPlus || e.Key == Key.Add)
+                if (zoomValue > 0)
                 {
-                    // Zoom in
-                    zoomLevel += 0.1;
-                    //ApplyZoom();
+                    newHeight = originalImage.PixelHeight / (1 + zoomValue);
+                    newWidth = originalImage.PixelWidth / (1 + zoomValue);
                 }
-                else if (e.Key == Key.OemMinus || e.Key == Key.Subtract)
+                else
                 {
-                    // Zoom out
-                    if (zoomLevel > 0.1)
-                    {
-                        zoomLevel -= 0.1;
-                        //ApplyZoom();
-                    }
+                    newHeight = originalImage.PixelHeight * (1 - zoomValue);
+                    newWidth = originalImage.PixelWidth * (1 - zoomValue);
                 }
+
+                editedImage.Height = newHeight;
+                editedImage.Width = newWidth;
+                UpdateImageDisplay();
             }
         }
 
         private void editedImage_MouseWheel(object sender, MouseWheelEventArgs e)
         {
-            // Handle zoom logic here
-            double zoomDelta = e.Delta > 0 ? 0.1 : -0.1; // Adjust the zoom increment as desired
-            zoomLevel += zoomDelta;
-            //ApplyZoom();
+            double zoomDelta = e.Delta > 0 ? 0.1 : -0.1;
+            double newZoomLevel = zoomLevel + zoomDelta;
+            ApplyZoom(newZoomLevel);
+            zoomLevel = newZoomLevel;
+            zoomSlider.Value = zoomLevel;
         }
+        #endregion
+
+        #region Brightness
+        private void brightnessSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            brightnessValue = Math.Min(Math.Max(brightnessSlider.Value, -100), 100);
+            BitmapSource adjustedBitmap = Brightness.AdjustBrightness(originalImage, brightnessValue);
+            editedBitmap = new WriteableBitmap(adjustedBitmap);
+            UpdateImageDisplay();
+        }
+        #endregion
+
+        #region UpdateImage
+        private void UpdateImageDisplay()
+        {
+            if (originalImage != null)
+            {
+                
+                if (editedBitmap != null)
+                {
+                    previousVersions.Add(new WriteableBitmap(editedBitmap));
+                    editedImage.Source = editedBitmap;
+                }
+                else
+                {
+                    editedImage.Source = originalImage;
+                }
+            }
+        }
+        #endregion
+
+        #region Undo
+        private void undoButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (previousVersions.Count > 0)
+            {
+                WriteableBitmap previousVersion = previousVersions[previousVersions.Count - 1];
+                previousVersions.Remove(previousVersion);
+                editedImage.Source = previousVersion;
+            }
+        }
+        #endregion
     }
 }

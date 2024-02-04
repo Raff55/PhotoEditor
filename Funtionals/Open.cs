@@ -9,7 +9,7 @@ using System.Windows.Media.Imaging;
 
 namespace ImageEditor.Funtionals
 {
-    public static partial class Functions
+    public static class Open
     {
         private static BitmapImage originalImage;
         public static BitmapImage OpenImage()

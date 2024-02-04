@@ -9,9 +9,9 @@ using System.Drawing;
 
 namespace ImageEditor.Funtionals
 {
-    public static partial class Funtions
+    public static class Crop
     {
-        public static CroppedBitmap Crop(BitmapImage bmpImage, Rectangle cropArea)
+        public static CroppedBitmap CropImage(BitmapImage bmpImage, Rectangle cropArea)
         {
             int stride = bmpImage.PixelWidth * (bmpImage.Format.BitsPerPixel / 8);
             byte[] pixelData = new byte[bmpImage.PixelHeight * stride];

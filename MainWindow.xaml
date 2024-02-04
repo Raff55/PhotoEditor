@@ -30,7 +30,7 @@
             </Viewbox>
 
             <StackPanel Grid.Column="1" Orientation="Vertical" Margin="10">
-                <Slider x:Name="zoomSlider" Minimum="1" Maximum="5" Value="1" TickFrequency="0.1" TickPlacement="BottomRight" Width="150" Margin="0,10" ValueChanged="zoomSlider_ValueChanged"/>
+                <Slider x:Name="zoomSlider" Minimum="-5" Maximum="7" Value="1" TickFrequency="0.5" TickPlacement="BottomRight" Width="150" Margin="0,10" ValueChanged="zoomSlider_ValueChanged"/>
                 <Slider x:Name="brightnessSlider" Minimum="-100" Maximum="100" ValueChanged="brightnessSlider_ValueChanged" />
             </StackPanel>
         </Grid>
