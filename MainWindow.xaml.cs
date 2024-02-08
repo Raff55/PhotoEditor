@@ -34,6 +34,15 @@ namespace ImageEditor
         public MainWindow()
         {
             InitializeComponent();
+            var pixelFormats = typeof(PixelFormats).GetProperties()
+                .Where(p => p.PropertyType == typeof(System.Windows.Media.PixelFormat));
+
+            var formatNames = pixelFormats.Select(p => p.Name);
+
+            foreach (var formatName in formatNames)
+            {
+                filters.Items.Add(formatName);
+            }
         }
 
         #region Open
@@ -64,10 +73,30 @@ namespace ImageEditor
         #region Filter
         private void filterButton_Click(object sender, RoutedEventArgs e)
         {
-            var filteredImage = Filter.SetFilter(PixelFormats.Gray8, editedBitmap);
-            editedImage.Source = filteredImage;
-            editedBitmap = new WriteableBitmap(filteredImage);
+            if (editedBitmap != null)
+            {
+                var filteredImage = Filter.SetFilter(PixelFormats.Gray8, editedBitmap);
+                editedImage.Source = filteredImage;
+                editedBitmap = new WriteableBitmap(filteredImage);
+            }
         }
+        private void filters_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            // Get the selected format name
+            var selectedFormatName = e.AddedItems[0].ToString();
+
+            // Find the corresponding PixelFormat property using reflection
+            var selectedPixelFormatProperty = typeof(PixelFormats).GetProperty(selectedFormatName);
+
+            if (selectedPixelFormatProperty != null)
+            {
+                var selectedPixelFormat = (System.Windows.Media.PixelFormat)selectedPixelFormatProperty.GetValue(null);
+                var filteredImage = Filter.SetFilter(selectedPixelFormat, editedBitmap);
+                editedImage.Source = filteredImage;
+                editedBitmap = new WriteableBitmap(filteredImage);
+            }
+        }
+
         #endregion
 
         #region Crop
