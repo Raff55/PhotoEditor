@@ -23,9 +23,11 @@
         <StackPanel Grid.Column="0" Orientation="Vertical" HorizontalAlignment="Left" Margin="10,10,0,10" MaxWidth="140">
             <Button x:Name="cropButton" Content="Crop" Click="cropButton_Click" Height="40" Width="120" Margin="5,30, 5, 5" Background="White"/>
             <Button x:Name="rotateButton" Content="Rotate" Click="rotateButton_Click" Height="40" Width="120" Margin="5" Background="White"/>
+            <ComboBox x:Name="filters" Width="120" Margin="5" SelectionChanged="filters_SelectionChanged"/>
             <Button x:Name="filterButton" Content="Filter" Click="filterButton_Click" Height="40" Width="120" Margin="5" Background="White"/>
             <Slider x:Name="brightnessSlider" Minimum="-100" Maximum="100" Width="120" ValueChanged="brightnessSlider_ValueChanged" />
-            <ComboBox x:Name ="filters" Width="120" Margin="5" SelectionChanged="filters_SelectionChanged"/>
+            <Slider x:Name="contrastSlider" Minimum="0" Maximum="100" Width="120" ValueChanged="contrastSlider_ValueChanged" />
+            <Slider x:Name="highlightSlider" Minimum="-50" Maximum="50" ValueChanged="HighlightSlider_ValueChanged" Margin="5"/>
         </StackPanel>
         <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="10">
             <Slider x:Name="zoomSlider" Minimum="-5" Maximum="7" TickFrequency="0.5" TickPlacement="BottomRight" Width="150" ValueChanged="zoomSlider_ValueChanged"/>

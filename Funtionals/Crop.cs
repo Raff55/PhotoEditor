@@ -13,6 +13,11 @@ namespace ImageEditor.Funtionals
     {
         public static CroppedBitmap CropImage(BitmapImage bmpImage, Rectangle cropArea)
         {
+            if (cropArea.X < 0 || cropArea.Y < 0 || (cropArea.X + cropArea.Width) > bmpImage.PixelWidth || (cropArea.Y + cropArea.Height) > bmpImage.PixelHeight)
+            {
+                throw new ArgumentException("Invalid crop area. The crop area falls outside the bounds of the original image.");
+            }
+
             int stride = bmpImage.PixelWidth * (bmpImage.Format.BitsPerPixel / 8);
             byte[] pixelData = new byte[bmpImage.PixelHeight * stride];
             bmpImage.CopyPixels(pixelData, stride, 0);
@@ -20,6 +25,7 @@ namespace ImageEditor.Funtionals
             CroppedBitmap croppedBitmap = new CroppedBitmap(bmpImage, new Int32Rect(cropArea.X, cropArea.Y, cropArea.Width, cropArea.Height));
             return croppedBitmap;
         }
+
         public static WriteableBitmap ConvertCroppedBitmapToWriteableBitmap(CroppedBitmap croppedBitmap)
         {
             int stride = croppedBitmap.PixelWidth * ((croppedBitmap.Format.BitsPerPixel + 7) / 8);

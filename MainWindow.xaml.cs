@@ -14,6 +14,7 @@ using System.Drawing;
 using Rectangle = System.Drawing.Rectangle;
 using Pen = System.Windows.Media.Pen;
 using Brushes = System.Windows.Media.Brushes;
+using Color = System.Drawing.Color;
 
 namespace ImageEditor
 {
@@ -45,6 +46,8 @@ namespace ImageEditor
             }
         }
 
+        #region File
+
         #region Open
         private void openButton_Click(object sender, RoutedEventArgs e)
         {
@@ -57,43 +60,105 @@ namespace ImageEditor
         #region Save
         private void saveButton_Click(object sender, RoutedEventArgs e)
         {
-            Save.SaveImage(editedBitmap);
+            if (editedBitmap != null)
+            {
+                Save.SaveImage(editedBitmap);
+            }
         }
+        #endregion
+
+        #endregion
+
+        #region Exposure
+
+        #region Brightness
+        private void brightnessSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            if (editedBitmap != null)
+            {
+                brightnessValue = Math.Min(Math.Max(brightnessSlider.Value, -100), 100);
+                BitmapSource adjustedBitmap = Brightness.AdjustBrightness(originalImage, brightnessValue);
+                editedBitmap = new WriteableBitmap(adjustedBitmap);
+                UpdateImageDisplay();
+            }
+            else
+            {
+                brightnessSlider.Value = 0;
+            }
+        }
+        #endregion
+
+        #region Contrast
+        private void contrastSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            if (editedBitmap != null)
+            {
+                double contrastValue = contrastSlider.Value;
+                editedImage.Source = Contrast.ApplyContrastFilter(editedBitmap, contrastValue);
+            }
+            else 
+            { 
+                contrastSlider.Value = 0;
+            }
+        }
+        #endregion
+
+        #region Highlight
+        private void HighlightSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            if (editedBitmap != null)
+            {
+                double highlightValue = highlightSlider.Value;
+                editedImage.Source = Highlight.ApplyHighlightFilter(editedBitmap, highlightValue);
+            }
+            else
+            {
+                highlightSlider.Value = 0;
+            }
+        }
+        #endregion
+
         #endregion
 
         #region Rotate
         private void rotateButton_Click(object sender, RoutedEventArgs e)
         {
-            var rotatedImage = Rotate.RotateImage(editedBitmap);
-            editedImage.Source = rotatedImage;
-            editedBitmap = new WriteableBitmap(rotatedImage);
+            if (editedBitmap != null)
+            {
+                var rotatedImage = Rotate.RotateImage(editedBitmap);
+                editedImage.Source = rotatedImage;
+                editedBitmap = new WriteableBitmap(rotatedImage);
+            }
         }
         #endregion
 
         #region Filter
         private void filterButton_Click(object sender, RoutedEventArgs e)
         {
-            if (editedBitmap != null)
-            {
-                var filteredImage = Filter.SetFilter(PixelFormats.Gray8, editedBitmap);
-                editedImage.Source = filteredImage;
-                editedBitmap = new WriteableBitmap(filteredImage);
-            }
+            //    if (editedBitmap != null)
+            //    {
+            //        var filteredImage = Filter.SetFilter(PixelFormats.Gray8, editedBitmap);
+            //        editedImage.Source = filteredImage;
+            //        editedBitmap = new WriteableBitmap(filteredImage);
+            //    }
         }
         private void filters_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             // Get the selected format name
-            var selectedFormatName = e.AddedItems[0].ToString();
-
-            // Find the corresponding PixelFormat property using reflection
-            var selectedPixelFormatProperty = typeof(PixelFormats).GetProperty(selectedFormatName);
-
-            if (selectedPixelFormatProperty != null)
+            if (editedBitmap != null)
             {
-                var selectedPixelFormat = (System.Windows.Media.PixelFormat)selectedPixelFormatProperty.GetValue(null);
-                var filteredImage = Filter.SetFilter(selectedPixelFormat, editedBitmap);
-                editedImage.Source = filteredImage;
-                editedBitmap = new WriteableBitmap(filteredImage);
+                var selectedFormatName = e.AddedItems[0].ToString();
+
+                // Find the corresponding PixelFormat property using reflection
+                var selectedPixelFormatProperty = typeof(PixelFormats).GetProperty(selectedFormatName);
+
+                if (selectedPixelFormatProperty != null)
+                {
+                    var selectedPixelFormat = (System.Windows.Media.PixelFormat)selectedPixelFormatProperty.GetValue(null);
+                    var filteredImage = Filter.SetFilter(selectedPixelFormat, editedBitmap);
+                    editedImage.Source = filteredImage;
+                    editedBitmap = new WriteableBitmap(filteredImage);
+                }
             }
         }
 
@@ -188,16 +253,6 @@ namespace ImageEditor
             ApplyZoom(newZoomLevel);
             zoomLevel = newZoomLevel;
             zoomSlider.Value = zoomLevel;
-        }
-        #endregion
-
-        #region Brightness
-        private void brightnessSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            brightnessValue = Math.Min(Math.Max(brightnessSlider.Value, -100), 100);
-            BitmapSource adjustedBitmap = Brightness.AdjustBrightness(originalImage, brightnessValue);
-            editedBitmap = new WriteableBitmap(adjustedBitmap);
-            UpdateImageDisplay();
         }
         #endregion
 
