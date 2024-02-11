@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using System.Windows;
 
-namespace ImageEditor.Funtionals
+namespace ImageEditor.Exposure
 {
     public static class Brightness
     {
@@ -19,7 +19,7 @@ namespace ImageEditor.Funtionals
             source.CopyPixels(sourceRect, pixelData, source.PixelWidth * (source.Format.BitsPerPixel / 8), 0);
 
             double brightnessFactor = (brightness + 100) / 100.0;
-            for (int i = 0; i < pixelData.Length; i += (source.Format.BitsPerPixel / 8))
+            for (int i = 0; i < pixelData.Length; i += source.Format.BitsPerPixel / 8)
             {
                 byte blue = pixelData[i];
                 byte green = pixelData[i + 1];

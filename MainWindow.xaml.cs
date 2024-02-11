@@ -15,6 +15,9 @@ using Rectangle = System.Drawing.Rectangle;
 using Pen = System.Windows.Media.Pen;
 using Brushes = System.Windows.Media.Brushes;
 using Color = System.Drawing.Color;
+using System.Windows.Media.Effects;
+using ImageEditor.Exposure;
+using ImageEditor.Color;
 
 namespace ImageEditor
 {
@@ -104,7 +107,7 @@ namespace ImageEditor
         #endregion
 
         #region Highlight
-        private void HighlightSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        private void highlightSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             if (editedBitmap != null)
             {
@@ -117,6 +120,131 @@ namespace ImageEditor
             }
         }
         #endregion
+
+        #region Shadow
+        private void shadowsSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            if (editedBitmap != null)
+            {
+                double shadowsValue = shadowsSlider.Value;
+                BitmapSource adjustedBitmap = Shadow.AdjustShadows(originalImage, shadowsValue);
+                editedBitmap = new WriteableBitmap(adjustedBitmap);
+                UpdateImageDisplay();
+            }
+            else
+            {
+                shadowsSlider.Value = 0;
+            }
+        }
+        #endregion
+
+        private void exposureToggle_Click(object sender, RoutedEventArgs e)
+        {
+            if (exposureToggle.IsChecked == true)
+            {
+                exposurePanel.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                exposurePanel.Visibility = Visibility.Collapsed;
+            }
+        }
+
+        #endregion
+
+        #region Color
+
+        #region Hue
+        private void hueSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            if (editedBitmap != null)
+            {
+                double hueValue = hueSlider.Value;
+                BitmapSource adjustedBitmap = Hue.AdjustHue(originalImage, hueValue);
+                editedBitmap = new WriteableBitmap(adjustedBitmap);
+                UpdateImageDisplay();
+            }
+            else
+            {
+                hueSlider.Value = 0;
+            }
+        }
+        #endregion
+
+        #region Saturation
+        private void saturationSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            if (editedBitmap != null)
+            {
+                double saturationValue = saturationSlider.Value;
+                BitmapSource adjustedBitmap = Saturation.AdjustSaturation(originalImage, saturationValue);
+                editedBitmap = new WriteableBitmap(adjustedBitmap);
+                UpdateImageDisplay();
+            }
+            else
+            {
+                saturationSlider.Value = 0;
+            }
+        }
+        #endregion
+
+        #region Temperature
+        private void temperatureSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            if (editedBitmap != null)
+            {
+                double temperatureValue = temperatureSlider.Value;
+                BitmapSource adjustedBitmap = Temperature.AdjustTemperature(originalImage, temperatureValue);
+                editedBitmap = new WriteableBitmap(adjustedBitmap);
+                UpdateImageDisplay();
+            }
+            else
+            {
+                temperatureSlider.Value = 0;
+            }
+        }
+        #endregion
+
+        private void colorToggle_Click(object sender, RoutedEventArgs e)
+        {
+            if (colorToggle.IsChecked == true)
+            {
+                colorPanel.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                colorPanel.Visibility = Visibility.Collapsed;
+            }
+        }
+
+        #endregion
+
+        #region Sharpen
+        private void sharpenSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            if (editedBitmap != null)
+            {
+                double sharpenValue = sharpenSlider.Value;
+                BitmapSource adjustedBitmap = Sharpen.AdjustSharpen(originalImage, sharpenValue);
+                editedBitmap = new WriteableBitmap(adjustedBitmap);
+                UpdateImageDisplay();
+            }
+            else
+            {
+                sharpenSlider.Value = 0;
+            }
+        }
+        private void sharpenToggle_Click(object sender, RoutedEventArgs e)
+        {
+            if (sharpenToggle.IsChecked == true)
+            {
+                sharpenPanel.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                sharpenPanel.Visibility = Visibility.Collapsed;
+            }
+        }
 
         #endregion
 

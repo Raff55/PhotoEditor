@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 
-namespace ImageEditor.Funtionals
+namespace ImageEditor.Exposure
 {
     public static class Highlight
     {
@@ -21,7 +21,7 @@ namespace ImageEditor.Funtionals
             bitmap.Lock();
 
             // Get the address of the first pixel
-            IntPtr backBuffer = bitmap.BackBuffer;
+            nint backBuffer = bitmap.BackBuffer;
 
             // Get the stride (width of a single row of pixels in bytes)
             int stride = bitmap.BackBufferStride;
@@ -32,7 +32,7 @@ namespace ImageEditor.Funtionals
                 for (int x = 0; x < width; x++)
                 {
                     // Compute the address of the current pixel
-                    IntPtr pixelAddress = backBuffer + y * stride + x * 4;
+                    nint pixelAddress = backBuffer + y * stride + x * 4;
 
                     // Read the color values of the pixel
                     byte blue = System.Runtime.InteropServices.Marshal.ReadByte(pixelAddress);
@@ -62,7 +62,7 @@ namespace ImageEditor.Funtionals
         private static byte AdjustHighlight(byte originalValue, double highlightValue)
         {
             // Adjust the brightness/highlight value based on the highlightValue parameter
-            double adjustedValue = originalValue + (highlightValue * 2.55);
+            double adjustedValue = originalValue + highlightValue * 2.55;
 
             // Ensure the adjusted value is within the valid byte range (0-255)
             adjustedValue = Math.Max(0, Math.Min(255, adjustedValue));

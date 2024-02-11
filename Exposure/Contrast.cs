@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using System.Windows;
 
-namespace ImageEditor.Funtionals
+namespace ImageEditor.Exposure
 {
     public static class Contrast
     {

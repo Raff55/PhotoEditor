@@ -25,9 +25,52 @@
             <Button x:Name="rotateButton" Content="Rotate" Click="rotateButton_Click" Height="40" Width="120" Margin="5" Background="White"/>
             <ComboBox x:Name="filters" Width="120" Margin="5" SelectionChanged="filters_SelectionChanged"/>
             <Button x:Name="filterButton" Content="Filter" Click="filterButton_Click" Height="40" Width="120" Margin="5" Background="White"/>
-            <Slider x:Name="brightnessSlider" Minimum="-100" Maximum="100" Width="120" ValueChanged="brightnessSlider_ValueChanged" />
-            <Slider x:Name="contrastSlider" Minimum="0" Maximum="100" Width="120" ValueChanged="contrastSlider_ValueChanged" />
-            <Slider x:Name="highlightSlider" Minimum="-50" Maximum="50" ValueChanged="HighlightSlider_ValueChanged" Margin="5"/>
+
+
+            <!--#region Exposure-->
+            <ToggleButton x:Name="exposureToggle" Width="120" ClickMode="Press" Click="exposureToggle_Click" IsChecked="False" Background="#353536">
+                <TextBlock Margin="0,0,0,5" Foreground="White" FontSize="9">Exposure</TextBlock>
+            </ToggleButton>
+            <StackPanel x:Name="exposurePanel" Visibility="Collapsed">
+                <TextBlock Margin="5" Foreground="White">Exposure</TextBlock>
+                <TextBlock Margin="10,0,0,5" Foreground="White" FontSize="9">Brightness</TextBlock>
+                <Slider x:Name="brightnessSlider" Margin="5,0,0,5" Minimum="-100" Maximum="100" Width="120" ValueChanged="brightnessSlider_ValueChanged" />
+                <TextBlock Margin="10,0,0,5" Foreground="White" FontSize="9">Contrast</TextBlock>
+                <Slider x:Name="contrastSlider" Margin="5,0,0,5" Minimum="0" Maximum="100" Width="120" ValueChanged="contrastSlider_ValueChanged" />
+                <TextBlock Margin="10,0,0,5" Foreground="White" FontSize="9">Highlights</TextBlock>
+                <Slider x:Name="highlightSlider" Margin="5,0,0,5" Minimum="-50" Maximum="50" ValueChanged="highlightSlider_ValueChanged"/>
+                <TextBlock Margin="10,0,0,5" Foreground="White" FontSize="9">Shadows</TextBlock>
+                <Slider x:Name="shadowsSlider" Margin="5,0,0,5" Minimum="-75" Maximum="75" Value="0"  ValueChanged="shadowsSlider_ValueChanged"  />
+            </StackPanel>
+            <!--#endregion-->
+            
+            <!--#region Color-->
+            <ToggleButton x:Name="colorToggle" Width="120" ClickMode="Press" Click="colorToggle_Click" IsChecked="False" Margin="0,5,0,0" Background="#353536">
+                <TextBlock Margin="0,0,0,5" Foreground="White" FontSize="9">Color</TextBlock>
+            </ToggleButton>
+            <StackPanel x:Name="colorPanel" Visibility="Collapsed">
+                <TextBlock Margin="10,0,0,5" Foreground="White" FontSize="9">Hue</TextBlock>
+                <Slider x:Name="hueSlider" Minimum="-180" Maximum="180" Value="0" TickFrequency="1" TickPlacement="BottomRight" Width="120" Margin="10" 
+                        VerticalAlignment="Center" HorizontalAlignment="Left" ValueChanged="hueSlider_ValueChanged"/>
+                <TextBlock Margin="10,0,0,5" Foreground="White" FontSize="9">Saturation</TextBlock>
+                <Slider x:Name="saturationSlider" Minimum="-100" Maximum="100" Value="0" TickFrequency="1" TickPlacement="BottomRight" Width="120" Margin="10" 
+                        VerticalAlignment="Center" HorizontalAlignment="Left" ValueChanged="saturationSlider_ValueChanged"/>
+                <TextBlock Margin="10,0,0,5" Foreground="White" FontSize="9">Temperature</TextBlock>
+                <Slider x:Name="temperatureSlider" Minimum="-10" Maximum="10" Value="0" TickFrequency="1" TickPlacement="BottomRight" Width="120" Margin="10" 
+                        VerticalAlignment="Center" HorizontalAlignment="Left" ValueChanged="temperatureSlider_ValueChanged"/>
+            </StackPanel>
+            <!--#endregion-->
+
+            <!--#region Sharpen-->
+            <ToggleButton x:Name="sharpenToggle" Margin="0,5,0,0" Width="120" ClickMode="Press" Click="sharpenToggle_Click" IsChecked="False" Background="#353536">
+                <TextBlock Margin="0,0,0,5" Foreground="White" FontSize="9">Sharpen</TextBlock>
+            </ToggleButton>
+            <StackPanel x:Name="sharpenPanel" Visibility="Collapsed">
+                <TextBlock Margin="10,0,0,5" Foreground="White" FontSize="9">Sharpen</TextBlock>
+                <Slider x:Name="sharpenSlider" Minimum="0" Maximum="10" Value="0" TickFrequency="1" TickPlacement="BottomRight" Width="120" Margin="10,0" ValueChanged="sharpenSlider_ValueChanged" />
+            </StackPanel>
+            <!--#endregion-->
+            
         </StackPanel>
         <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="10">
             <Slider x:Name="zoomSlider" Minimum="-5" Maximum="7" TickFrequency="0.5" TickPlacement="BottomRight" Width="150" ValueChanged="zoomSlider_ValueChanged"/>
