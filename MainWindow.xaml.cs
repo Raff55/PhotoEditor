@@ -15,9 +15,15 @@ using Rectangle = System.Drawing.Rectangle;
 using Pen = System.Windows.Media.Pen;
 using Brushes = System.Windows.Media.Brushes;
 using Color = System.Drawing.Color;
-using System.Windows.Media.Effects;
 using ImageEditor.Exposure;
 using ImageEditor.Color;
+using ImageEditor.Transformation;
+using System.Windows.Media.Effects;
+using SixLabors.ImageSharp.PixelFormats;
+using SixLabors.ImageSharp.Processing;
+using SixLabors.ImageSharp;
+using ImageEditor.Color_Adjustments;
+
 
 namespace ImageEditor
 {
@@ -70,7 +76,171 @@ namespace ImageEditor
         }
         #endregion
 
+        #region Undo
+        private void undoButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (previousVersions.Count > 0)
+            {
+                WriteableBitmap previousVersion = previousVersions[previousVersions.Count - 1];
+                previousVersions.Remove(previousVersion);
+                editedImage.Source = previousVersion;
+            }
+            else
+            {
+                editedImage.Source = originalImage;
+                editedBitmap = new WriteableBitmap(originalImage);
+            }
+        }
         #endregion
+
+        #region UpdateImage
+        private void UpdateImageDisplay()
+        {
+            if (originalImage != null)
+            {
+
+                if (editedBitmap != null)
+                {
+                    previousVersions.Add(editedBitmap);
+                    editedImage.Source = editedBitmap;
+                }
+                else
+                {
+                    editedImage.Source = originalImage;
+                }
+            }
+        }
+        #endregion
+
+        #endregion
+
+        #region Basic Editing
+
+        #region Rotate
+        private void rotateButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (editedBitmap != null)
+            {
+                var rotatedImage = Rotate.RotateImage(editedBitmap);
+                editedImage.Source = rotatedImage;
+                editedBitmap = new WriteableBitmap(rotatedImage);
+            }
+        }
+        #endregion
+
+        #region Resize
+        private void resizeButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (editedBitmap != null && !string.IsNullOrEmpty(widthTextBox.Text) && !string.IsNullOrEmpty(heightTextBox.Text))
+            {
+                double newWidth = double.Parse(widthTextBox.Text);
+                double newHeight = double.Parse(heightTextBox.Text);
+
+                BitmapSource resizedImage = Resize.ResizeImage(editedBitmap, newWidth, newHeight);
+                editedBitmap = new WriteableBitmap(resizedImage);
+                UpdateImageDisplay();
+            }
+        }
+        private void resizeToggle_Click(object sender, RoutedEventArgs e)
+        {
+            if (resizeToggle.IsChecked == true)
+            {
+                resizePanel.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                resizePanel.Visibility = Visibility.Collapsed;
+            }
+        }
+
+        #endregion
+
+        #region Mirror
+        private void mirrorButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (editedBitmap != null)
+            {
+                WriteableBitmap mirroredBitmap = Mirror.MirrorImageHorizontal(editedBitmap);
+                editedBitmap = new WriteableBitmap(mirroredBitmap);
+                UpdateImageDisplay();
+            }
+        }
+        #endregion
+
+        #region Flip
+        private void flipButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (editedBitmap != null)
+            {
+                WriteableBitmap flippedBitmap = Flip.FlipImageVertical(editedBitmap);
+                editedBitmap = new WriteableBitmap(flippedBitmap);
+                UpdateImageDisplay();
+            }
+        }
+        #endregion
+
+        #region Crop
+        private void cropButton_Click(object sender, RoutedEventArgs e)
+        {
+            xDown = 0;
+            yDown = 0;
+
+            editedImage.MouseDown += EditedImage_MouseDown;
+            editedImage.MouseMove += EditedImage_MouseMove;
+            editedImage.MouseUp += EditedImage_MouseUp;
+            editedImage.Cursor = Cursors.Cross;
+        }
+
+        private void EditedImage_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            xDown = (int)e.GetPosition(editedImage).X;
+            yDown = (int)e.GetPosition(editedImage).Y;
+        }
+
+        private void EditedImage_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (e.LeftButton == MouseButtonState.Pressed)
+            {
+                xUp = (int)e.GetPosition(editedImage).X;
+                yUp = (int)e.GetPosition(editedImage).Y;
+
+                int width = Math.Abs(xUp - xDown);
+                int height = Math.Abs(yUp - yDown);
+
+                rectCropArea = new Rectangle(Math.Min(xDown, xUp), Math.Min(yDown, yUp), width, height);
+
+                editedImage.InvalidateVisual();
+            }
+        }
+
+        private void EditedImage_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            CroppedBitmap croppedImage = Crop.CropImage(originalImage, rectCropArea);
+            editedBitmap = Crop.ConvertCroppedBitmapToWriteableBitmap(croppedImage);
+            editedImage.MouseDown -= EditedImage_MouseDown;
+            editedImage.MouseMove -= EditedImage_MouseMove;
+            editedImage.MouseUp -= EditedImage_MouseUp;
+            editedImage.Cursor = Cursors.Arrow;
+
+            UpdateImageDisplay();
+        }
+        #endregion
+
+        private void transformationToggle_Click(object sender, RoutedEventArgs e)
+        {
+            if (transformationToggle.IsChecked == true)
+            {
+                transformationPanel.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                transformationPanel.Visibility = Visibility.Collapsed;
+            }
+        }
+
+        #endregion
+
+        #region Color Adjustments
 
         #region Exposure
 
@@ -248,28 +418,7 @@ namespace ImageEditor
 
         #endregion
 
-        #region Rotate
-        private void rotateButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (editedBitmap != null)
-            {
-                var rotatedImage = Rotate.RotateImage(editedBitmap);
-                editedImage.Source = rotatedImage;
-                editedBitmap = new WriteableBitmap(rotatedImage);
-            }
-        }
-        #endregion
-
         #region Filter
-        private void filterButton_Click(object sender, RoutedEventArgs e)
-        {
-            //    if (editedBitmap != null)
-            //    {
-            //        var filteredImage = Filter.SetFilter(PixelFormats.Gray8, editedBitmap);
-            //        editedImage.Source = filteredImage;
-            //        editedBitmap = new WriteableBitmap(filteredImage);
-            //    }
-        }
         private void filters_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             // Get the selected format name
@@ -292,51 +441,44 @@ namespace ImageEditor
 
         #endregion
 
-        #region Crop
-        private void cropButton_Click(object sender, RoutedEventArgs e)
+        #region Blur
+        private void blurSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            xDown = 0;
-            yDown = 0;
-
-            editedImage.MouseDown += EditedImage_MouseDown;
-            editedImage.MouseMove += EditedImage_MouseMove;
-            editedImage.MouseUp += EditedImage_MouseUp;
-            editedImage.Cursor = Cursors.Cross;
-        }
-
-        private void EditedImage_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            xDown = (int)e.GetPosition(editedImage).X;
-            yDown = (int)e.GetPosition(editedImage).Y;
-        }
-
-        private void EditedImage_MouseMove(object sender, MouseEventArgs e)
-        {
-            if (e.LeftButton == MouseButtonState.Pressed)
+            if (editedBitmap != null)
             {
-                xUp = (int)e.GetPosition(editedImage).X;
-                yUp = (int)e.GetPosition(editedImage).Y;
-
-                int width = Math.Abs(xUp - xDown);
-                int height = Math.Abs(yUp - yDown);
-
-                rectCropArea = new Rectangle(Math.Min(xDown, xUp), Math.Min(yDown, yUp), width, height);
-
-                editedImage.InvalidateVisual();
+                double blurRadius = blurSlider.Value;
+                BitmapSource blurredImage;
+                if (blurRadius > 0)
+                {
+                    blurredImage = Blur.ApplyBlur(editedBitmap, blurRadius);
+                }
+                else
+                {
+                    blurredImage = originalImage;
+                }
+                editedBitmap = new WriteableBitmap(blurredImage);
+                UpdateImageDisplay();
             }
         }
+        #endregion
 
-        private void EditedImage_MouseUp(object sender, MouseButtonEventArgs e)
+        #region Vibrance
+        private void vibranceSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            CroppedBitmap croppedImage = Crop.CropImage(originalImage, rectCropArea);
-            editedBitmap = Crop.ConvertCroppedBitmapToWriteableBitmap(croppedImage);
-            editedImage.MouseDown -= EditedImage_MouseDown;
-            editedImage.MouseMove -= EditedImage_MouseMove;
-            editedImage.MouseUp -= EditedImage_MouseUp;
-            editedImage.Cursor = Cursors.Arrow;
-
-            UpdateImageDisplay();
+            if (editedBitmap != null)
+            {
+                double vibranceValue = vibranceSlider.Value;
+                BitmapSource adjustedBitmap = Vibrance.AdjustVibrance(originalImage, vibranceValue);
+                editedBitmap = new WriteableBitmap(adjustedBitmap);
+                UpdateImageDisplay();
+            }
+            else
+            {
+                vibranceSlider.Value = 0;
+            }
         }
+        #endregion
+
         #endregion
 
         #region Zoom
@@ -381,37 +523,6 @@ namespace ImageEditor
             ApplyZoom(newZoomLevel);
             zoomLevel = newZoomLevel;
             zoomSlider.Value = zoomLevel;
-        }
-        #endregion
-
-        #region UpdateImage
-        private void UpdateImageDisplay()
-        {
-            if (originalImage != null)
-            {
-                
-                if (editedBitmap != null)
-                {
-                    previousVersions.Add(new WriteableBitmap(editedBitmap));
-                    editedImage.Source = editedBitmap;
-                }
-                else
-                {
-                    editedImage.Source = originalImage;
-                }
-            }
-        }
-        #endregion
-
-        #region Undo
-        private void undoButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (previousVersions.Count > 0)
-            {
-                WriteableBitmap previousVersion = previousVersions[previousVersions.Count - 1];
-                previousVersions.Remove(previousVersion);
-                editedImage.Source = previousVersion;
-            }
         }
         #endregion
     }

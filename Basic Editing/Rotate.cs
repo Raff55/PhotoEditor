@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
-namespace ImageEditor.Funtionals
+namespace ImageEditor.Transformation
 {
     public static class Rotate
     {
-        public static WriteableBitmap RotateImage(WriteableBitmap editedBitmap) 
+        public static WriteableBitmap RotateImage(WriteableBitmap editedBitmap)
         {
             if (editedBitmap != null)
             {
