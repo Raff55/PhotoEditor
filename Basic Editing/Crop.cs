@@ -11,7 +11,7 @@ namespace ImageEditor.Funtionals
 {
     public static class Crop
     {
-        public static CroppedBitmap CropImage(BitmapImage bmpImage, Rectangle cropArea)
+        public static CroppedBitmap CropImage(WriteableBitmap bmpImage, Rectangle cropArea)
         {
             if (cropArea.X < 0 || cropArea.Y < 0 || (cropArea.X + cropArea.Width) > bmpImage.PixelWidth || (cropArea.Y + cropArea.Height) > bmpImage.PixelHeight)
             {

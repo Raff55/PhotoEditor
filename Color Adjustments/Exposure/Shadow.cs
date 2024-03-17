@@ -12,7 +12,7 @@ namespace ImageEditor.Exposure
 {
     public static class Shadow
     {
-        public static BitmapSource AdjustShadows(BitmapImage originalImage, double shadowsValue)
+        public static BitmapSource AdjustShadows(WriteableBitmap originalImage, double shadowsValue)
         {
             Bitmap bitmap = ConvertToBitmap(originalImage);
 
@@ -46,7 +46,7 @@ namespace ImageEditor.Exposure
             return ConvertToBitmapSource(adjustedBitmap);
         }
 
-        private static Bitmap ConvertToBitmap(BitmapImage bitmapImage)
+        private static Bitmap ConvertToBitmap(WriteableBitmap bitmapImage)
         {
             Bitmap bitmap;
             using (MemoryStream stream = new MemoryStream())

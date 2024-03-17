@@ -13,15 +13,16 @@
             <Button x:Name="openButton" Content="Open" Height="20" Width="120" Click="openButton_Click" Margin="5" Background="White"/>
             <Button x:Name="saveButton" Content="Save" Height="20" Width="120" Click="saveButton_Click" Margin="5" Background="White"/>
             <Button x:Name="undoButton" Content="Undo" Height="20" Width="120" Click="undoButton_Click" Margin="5" Background="White"/>
+            <Button x:Name="resetButton" Content="Reset Editing" Height="20" Width="120" Click="reserButton_Click" Margin="5" Background="White"/>
         </StackPanel>
 
         <Viewbox Grid.Column="1" Margin="0,0,0,40">
             <ScrollViewer x:Name="imageScrollViewer" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-                <Image x:Name="editedImage" Stretch="None" MouseWheel="editedImage_MouseWheel"/>
+                <Image x:Name="editedImage" Stretch="None" MouseWheel="editedImage_MouseWheel" />
             </ScrollViewer>
         </Viewbox>
         <StackPanel Grid.Column="0" Orientation="Vertical" HorizontalAlignment="Left" Margin="10,10,0,10" MaxWidth="140">
-            <ComboBox x:Name="filters" Width="120"  Margin="5,90, 5, 0" SelectionChanged="filters_SelectionChanged"/>
+            <ComboBox x:Name="filters" Width="120"  Margin="5,120, 5, 0" SelectionChanged="filters_SelectionChanged"/>
             <!--#region Transformation-->
             <ToggleButton x:Name="transformationToggle" Width="120" Margin="5" ClickMode="Press" Click="transformationToggle_Click" IsChecked="False" Background="#353536">
                 <TextBlock Margin="0,0,0,5" Foreground="White" FontSize="9">Transformation</TextBlock>
@@ -29,11 +30,12 @@
             <StackPanel x:Name="transformationPanel" Visibility="Collapsed"  >
                 <Button x:Name="mirrorButton" Content="Mirror" Click="mirrorButton_Click" Width="120"/>
                 <Button x:Name="flipButton" Content="Flip" Click="flipButton_Click" Width="120"/>
-                <ToggleButton x:Name="resizeToggle" Margin="0,5,0,0" Width="120" ClickMode="Press" Click="resizeToggle_Click" IsChecked="False" Background="#353536">
-                    <TextBlock Margin="0,0,0,5" Foreground="White" FontSize="9">Resize</TextBlock>
-                </ToggleButton>
+                
                 <Button x:Name="rotateButton" Content="Rotate"  Click="rotateButton_Click" Width="120" Background="White"/>
                 <Button x:Name="cropButton" Content="Crop" Click="cropButton_Click" Width="120"  Background="White"/>
+                <ToggleButton x:Name="resizeToggle" Margin="0,5,0,0" Width="115" ClickMode="Press" Click="resizeToggle_Click" IsChecked="False" Background="#353536">
+                    <TextBlock Margin="0,0,0,5" Foreground="White" FontSize="9">Resize</TextBlock>
+                </ToggleButton>
                 <StackPanel x:Name="resizePanel" Visibility="Collapsed" >
                     <TextBox x:Name="widthTextBox" Width="50" Margin="5"/>
                     <TextBox x:Name="heightTextBox" Width="50" Margin="5"/>
@@ -76,7 +78,7 @@
                 <Slider x:Name="saturationSlider" Minimum="-100" Maximum="100" Value="0" TickFrequency="1" TickPlacement="BottomRight" Width="120" Margin="10" 
                         VerticalAlignment="Center" HorizontalAlignment="Left" ValueChanged="saturationSlider_ValueChanged"/>
                 <TextBlock Margin="10,0,0,5" Foreground="White" FontSize="9">Temperature</TextBlock>
-                <Slider x:Name="temperatureSlider" Minimum="-10" Maximum="10" Value="0" TickFrequency="1" TickPlacement="BottomRight" Width="120" Margin="10" 
+                <Slider x:Name="temperatureSlider" Minimum="-5" Maximum="5" Value="0" TickFrequency="1" TickPlacement="BottomRight" Width="120" Margin="10" 
                         VerticalAlignment="Center" HorizontalAlignment="Left" ValueChanged="temperatureSlider_ValueChanged"/>
             </StackPanel>
             <!--#endregion-->
@@ -90,6 +92,30 @@
                 <Slider x:Name="sharpenSlider" Minimum="0" Maximum="10" Value="0" TickFrequency="1" TickPlacement="BottomRight" Width="120" Margin="10,0" ValueChanged="sharpenSlider_ValueChanged" />
             </StackPanel>
             <!--#endregion-->
+            
+            <!--#region Brush-->
+            <ToggleButton x:Name="brushToggle" Margin="0,5,0,0" Width="120" ClickMode="Press" Click="brushToggle_Click" IsChecked="False" Background="#353536">
+                <TextBlock Margin="0,0,0,5" Foreground="White" FontSize="9">Brush</TextBlock>
+            </ToggleButton>
+            <StackPanel x:Name="brushPanel" Visibility="Collapsed">
+                <Button x:Name="brushButton" Content="Brush" Click="brushButton_Click" Width="120"/>
+                <TextBlock Margin="10,0,0,5" Foreground="White" FontSize="9">Red</TextBlock>
+                <Slider x:Name="redSlider" Minimum="0" Maximum="255" ValueChanged="Slider_ValueChanged"/>
+                <TextBlock Margin="10,0,0,5" Foreground="White" FontSize="9">Green</TextBlock>
+                <Slider x:Name="greenSlider" Minimum="0" Maximum="255" ValueChanged="Slider_ValueChanged"/>
+                <TextBlock Margin="10,0,0,5" Foreground="White" FontSize="9">Blue</TextBlock>
+                <Slider x:Name="blueSlider" Minimum="0" Maximum="255" ValueChanged="Slider_ValueChanged"/>
+                <TextBlock Margin="10,0,0,5" Foreground="White" FontSize="9">Brush Size</TextBlock>
+                <Slider x:Name="brushSize" Minimum="1" Maximum="20"/>
+                <Rectangle Width="100" Height="50" Margin="5">
+                    <Rectangle.Fill>
+                        <SolidColorBrush Color="{Binding SelectedColor.Color}"  />
+                    </Rectangle.Fill>
+                </Rectangle>
+            </StackPanel>
+            <!--#endregion-->
+
+
 
         </StackPanel>
         <!--#region Zoom-->

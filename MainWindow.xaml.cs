@@ -1,33 +1,22 @@
-﻿using System;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using Microsoft.Win32;
 using System.Windows.Media.Imaging;
 using System.Windows.Media;
-using System.Windows.Shapes;
-using System.IO;
-using System.Text;
 using System.Windows.Input;
 using ImageEditor.Funtionals;
-using System.Drawing.Imaging;
-using System.Drawing;
 using Rectangle = System.Drawing.Rectangle;
-using Pen = System.Windows.Media.Pen;
 using Brushes = System.Windows.Media.Brushes;
-using Color = System.Drawing.Color;
 using ImageEditor.Exposure;
 using ImageEditor.Color;
 using ImageEditor.Transformation;
-using System.Windows.Media.Effects;
-using SixLabors.ImageSharp.PixelFormats;
-using SixLabors.ImageSharp.Processing;
 using SixLabors.ImageSharp;
 using ImageEditor.Color_Adjustments;
+using System.ComponentModel;
 
 
 namespace ImageEditor
 {
-    public partial class MainWindow : Window
+    public partial class MainWindow : Window, INotifyPropertyChanged
     {
         private List<WriteableBitmap> previousVersions = new List<WriteableBitmap>();
         private BitmapImage originalImage;
@@ -41,9 +30,12 @@ namespace ImageEditor
         private int xUp = 0;
         private int yUp = 0;
 
+
+
         public MainWindow()
         {
             InitializeComponent();
+            DataContext = this;
             var pixelFormats = typeof(PixelFormats).GetProperties()
                 .Where(p => p.PropertyType == typeof(System.Windows.Media.PixelFormat));
 
@@ -61,8 +53,11 @@ namespace ImageEditor
         private void openButton_Click(object sender, RoutedEventArgs e)
         {
             originalImage = Open.OpenImage();
-            editedBitmap = new WriteableBitmap(originalImage);
-            UpdateImageDisplay();
+            if (originalImage != null)
+            {
+                editedBitmap = new WriteableBitmap(originalImage);
+                UpdateImageDisplay();
+            }
         }
         #endregion
 
@@ -85,11 +80,15 @@ namespace ImageEditor
                 previousVersions.Remove(previousVersion);
                 editedImage.Source = previousVersion;
             }
-            else
-            {
-                editedImage.Source = originalImage;
-                editedBitmap = new WriteableBitmap(originalImage);
-            }
+        }
+        #endregion
+
+        #region Reset
+        private void reserButton_Click(object sender, RoutedEventArgs e)
+        {
+            previousVersions.Clear();
+            editedBitmap = new WriteableBitmap(originalImage);
+            editedImage.Source = originalImage;
         }
         #endregion
 
@@ -215,7 +214,7 @@ namespace ImageEditor
 
         private void EditedImage_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            CroppedBitmap croppedImage = Crop.CropImage(originalImage, rectCropArea);
+            CroppedBitmap croppedImage = Crop.CropImage(editedBitmap, rectCropArea);
             editedBitmap = Crop.ConvertCroppedBitmapToWriteableBitmap(croppedImage);
             editedImage.MouseDown -= EditedImage_MouseDown;
             editedImage.MouseMove -= EditedImage_MouseMove;
@@ -250,7 +249,7 @@ namespace ImageEditor
             if (editedBitmap != null)
             {
                 brightnessValue = Math.Min(Math.Max(brightnessSlider.Value, -100), 100);
-                BitmapSource adjustedBitmap = Brightness.AdjustBrightness(originalImage, brightnessValue);
+                BitmapSource adjustedBitmap = Brightness.AdjustBrightness(editedBitmap, brightnessValue);
                 editedBitmap = new WriteableBitmap(adjustedBitmap);
                 UpdateImageDisplay();
             }
@@ -297,7 +296,7 @@ namespace ImageEditor
             if (editedBitmap != null)
             {
                 double shadowsValue = shadowsSlider.Value;
-                BitmapSource adjustedBitmap = Shadow.AdjustShadows(originalImage, shadowsValue);
+                BitmapSource adjustedBitmap = Shadow.AdjustShadows(editedBitmap, shadowsValue);
                 editedBitmap = new WriteableBitmap(adjustedBitmap);
                 UpdateImageDisplay();
             }
@@ -330,7 +329,7 @@ namespace ImageEditor
             if (editedBitmap != null)
             {
                 double hueValue = hueSlider.Value;
-                BitmapSource adjustedBitmap = Hue.AdjustHue(originalImage, hueValue);
+                BitmapSource adjustedBitmap = Hue.AdjustHue(editedBitmap, hueValue);
                 editedBitmap = new WriteableBitmap(adjustedBitmap);
                 UpdateImageDisplay();
             }
@@ -347,7 +346,7 @@ namespace ImageEditor
             if (editedBitmap != null)
             {
                 double saturationValue = saturationSlider.Value;
-                BitmapSource adjustedBitmap = Saturation.AdjustSaturation(originalImage, saturationValue);
+                BitmapSource adjustedBitmap = Saturation.AdjustSaturation(editedBitmap, saturationValue);
                 editedBitmap = new WriteableBitmap(adjustedBitmap);
                 UpdateImageDisplay();
             }
@@ -364,7 +363,7 @@ namespace ImageEditor
             if (editedBitmap != null)
             {
                 double temperatureValue = temperatureSlider.Value;
-                BitmapSource adjustedBitmap = Temperature.AdjustTemperature(originalImage, temperatureValue);
+                BitmapSource adjustedBitmap = Temperature.AdjustTemperature(editedBitmap, temperatureValue);
                 editedBitmap = new WriteableBitmap(adjustedBitmap);
                 UpdateImageDisplay();
             }
@@ -395,7 +394,7 @@ namespace ImageEditor
             if (editedBitmap != null)
             {
                 double sharpenValue = sharpenSlider.Value;
-                BitmapSource adjustedBitmap = Sharpen.AdjustSharpen(originalImage, sharpenValue);
+                BitmapSource adjustedBitmap = Sharpen.AdjustSharpen(editedBitmap, sharpenValue);
                 editedBitmap = new WriteableBitmap(adjustedBitmap);
                 UpdateImageDisplay();
             }
@@ -468,7 +467,7 @@ namespace ImageEditor
             if (editedBitmap != null)
             {
                 double vibranceValue = vibranceSlider.Value;
-                BitmapSource adjustedBitmap = Vibrance.AdjustVibrance(originalImage, vibranceValue);
+                BitmapSource adjustedBitmap = Vibrance.AdjustVibrance(editedBitmap, vibranceValue);
                 editedBitmap = new WriteableBitmap(adjustedBitmap);
                 UpdateImageDisplay();
             }
@@ -524,6 +523,91 @@ namespace ImageEditor
             zoomLevel = newZoomLevel;
             zoomSlider.Value = zoomLevel;
         }
+        #endregion
+
+        #region Brush
+        private SolidColorBrush selectedColor = Brushes.Black;
+        private Brush currentBrush = Brushes.Black;
+        private bool isBrushDrawingActive = false;
+        private bool isDrawing = false;
+        double brushSizeValue;
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public SolidColorBrush SelectedColor
+        {
+            get { return selectedColor; }
+            set
+            {
+                selectedColor = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SelectedColor"));
+            }
+        }
+
+        private void brushEditedImage_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (editedBitmap != null)
+            {
+                isDrawing = true;
+                var drawedBitmap = Tools.Brush.Draw(editedBitmap, e.GetPosition(editedImage), brushSizeValue, currentBrush, editedImage.ActualWidth, editedImage.ActualHeight);
+                editedImage.Source = drawedBitmap;
+            }
+        }
+
+        private void brushEditedImage_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (isDrawing && editedBitmap != null)
+            {
+                brushSizeValue = brushSize.Value;
+                var drawedBitmap = Tools.Brush.Draw(editedBitmap, e.GetPosition(editedImage), brushSizeValue, currentBrush, editedImage.ActualWidth, editedImage.ActualHeight);
+                editedImage.Source = drawedBitmap;
+            }
+        }
+
+        private void brushEditedImage_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            isDrawing = false;
+        }
+
+        private void Slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            byte red = (byte)redSlider.Value;
+            byte green = (byte)greenSlider.Value;
+            byte blue = (byte)blueSlider.Value;
+            currentBrush = new SolidColorBrush(System.Windows.Media.Color.FromRgb(red, green, blue));
+            SelectedColor = (SolidColorBrush)currentBrush;
+        }
+
+        private void brushButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (isBrushDrawingActive)
+            {
+                editedImage.MouseDown -= brushEditedImage_MouseDown;
+                editedImage.MouseMove -= brushEditedImage_MouseMove;
+                editedImage.MouseUp -= brushEditedImage_MouseUp;
+                isBrushDrawingActive = false;
+            }
+            else
+            {
+                editedImage.MouseDown += brushEditedImage_MouseDown;
+                editedImage.MouseMove += brushEditedImage_MouseMove;
+                editedImage.MouseUp += brushEditedImage_MouseUp;
+                isBrushDrawingActive = true;
+            }
+        }
+
+        private void brushToggle_Click(object sender, RoutedEventArgs e)
+        {
+            if (brushToggle.IsChecked == true)
+            {
+                brushPanel.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                brushPanel.Visibility = Visibility.Collapsed;
+            }
+        }
+
         #endregion
     }
 }
