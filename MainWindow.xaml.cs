@@ -12,6 +12,7 @@ using ImageEditor.Transformation;
 using SixLabors.ImageSharp;
 using ImageEditor.Color_Adjustments;
 using System.ComponentModel;
+using System.Windows.Documents;
 
 
 namespace ImageEditor
@@ -23,7 +24,7 @@ namespace ImageEditor
         private WriteableBitmap editedBitmap;
         private Rectangle rectCropArea = new Rectangle();
 
-        private double zoomLevel = 1.0;
+        private double zoomLevel = 0;
         private double brightnessValue = 0;
         private int xDown = 0;
         private int yDown = 0;
@@ -45,6 +46,20 @@ namespace ImageEditor
             {
                 filters.Items.Add(formatName);
             }
+            foreach (FontFamily fontFamily in Fonts.SystemFontFamilies)
+            {
+                fontComboBox.Items.Add(fontFamily.Source);
+            }
+            colorComboBox.Items.Add("White");
+            colorComboBox.Items.Add("Black");
+            colorComboBox.Items.Add("Red");
+            colorComboBox.Items.Add("Green");
+            colorComboBox.Items.Add("Blue");
+            colorComboBox.Items.Add("Yellow");
+            colorComboBox.Items.Add("Orange");
+            colorComboBox.Items.Add("Purple");
+            colorComboBox.Items.Add("Gray");
+
         }
 
         #region File
@@ -121,8 +136,8 @@ namespace ImageEditor
             if (editedBitmap != null)
             {
                 var rotatedImage = Rotate.RotateImage(editedBitmap);
-                editedImage.Source = rotatedImage;
                 editedBitmap = new WriteableBitmap(rotatedImage);
+                UpdateImageDisplay();
             }
         }
         #endregion
@@ -266,7 +281,8 @@ namespace ImageEditor
             if (editedBitmap != null)
             {
                 double contrastValue = contrastSlider.Value;
-                editedImage.Source = Contrast.ApplyContrastFilter(editedBitmap, contrastValue);
+                editedBitmap = Contrast.ApplyContrastFilter(editedBitmap, contrastValue);
+                UpdateImageDisplay();
             }
             else 
             { 
@@ -281,7 +297,8 @@ namespace ImageEditor
             if (editedBitmap != null)
             {
                 double highlightValue = highlightSlider.Value;
-                editedImage.Source = Highlight.ApplyHighlightFilter(editedBitmap, highlightValue);
+                editedBitmap = Highlight.ApplyHighlightFilter(editedBitmap, highlightValue);
+                UpdateImageDisplay();
             }
             else
             {
@@ -432,8 +449,8 @@ namespace ImageEditor
                 {
                     var selectedPixelFormat = (System.Windows.Media.PixelFormat)selectedPixelFormatProperty.GetValue(null);
                     var filteredImage = Filter.SetFilter(selectedPixelFormat, editedBitmap);
-                    editedImage.Source = filteredImage;
                     editedBitmap = new WriteableBitmap(filteredImage);
+                    UpdateImageDisplay();
                 }
             }
         }
@@ -519,9 +536,12 @@ namespace ImageEditor
         {
             double zoomDelta = e.Delta > 0 ? 0.1 : -0.1;
             double newZoomLevel = zoomLevel + zoomDelta;
-            ApplyZoom(newZoomLevel);
-            zoomLevel = newZoomLevel;
-            zoomSlider.Value = zoomLevel;
+            if(newZoomLevel < 7 && newZoomLevel > -0.1)
+            {
+                ApplyZoom(newZoomLevel);
+                zoomLevel = newZoomLevel;
+                zoomSlider.Value = zoomLevel;
+            }
         }
         #endregion
 
@@ -550,7 +570,8 @@ namespace ImageEditor
             {
                 isDrawing = true;
                 var drawedBitmap = Tools.Brush.Draw(editedBitmap, e.GetPosition(editedImage), brushSizeValue, currentBrush, editedImage.ActualWidth, editedImage.ActualHeight);
-                editedImage.Source = drawedBitmap;
+                editedBitmap = drawedBitmap;
+                UpdateImageDisplay();
             }
         }
 
@@ -560,7 +581,8 @@ namespace ImageEditor
             {
                 brushSizeValue = brushSize.Value;
                 var drawedBitmap = Tools.Brush.Draw(editedBitmap, e.GetPosition(editedImage), brushSizeValue, currentBrush, editedImage.ActualWidth, editedImage.ActualHeight);
-                editedImage.Source = drawedBitmap;
+                editedBitmap = drawedBitmap;
+                UpdateImageDisplay();
             }
         }
 
@@ -605,6 +627,230 @@ namespace ImageEditor
             else
             {
                 brushPanel.Visibility = Visibility.Collapsed;
+            }
+        }
+
+        #endregion
+
+        #region Text
+        bool isBold = false;
+        bool isItalic = false;
+        bool isUnderline = false;
+        private bool isTextMoving = false;
+        private TextBlock selectedTextBlock;
+        private System.Windows.Point mouseOffset;
+
+        private void TextButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (editedBitmap != null && !String.IsNullOrEmpty(textInput.Text) && fontSizeSlider != null && fontComboBox.SelectedIndex != -1 && colorComboBox.SelectedIndex != -1)
+            {
+                if (textButton.Content.ToString() == "Edit Text")
+                {
+                    Brush? selectedBrush = (Brush)new BrushConverter().ConvertFromString(colorComboBox.SelectedItem.ToString());
+                    string newText = textInput.Text;
+                    int fontSize = (int)fontSizeSlider.Value;
+                    string fontFamilyName = fontComboBox.SelectedValue?.ToString();
+
+                    if (!string.IsNullOrWhiteSpace(newText) && fontFamilyName != null)
+                    {
+                        selectedTextBlock.Text = newText;
+                        selectedTextBlock.FontSize = fontSize;
+                        selectedTextBlock.FontFamily = new FontFamily(fontFamilyName);
+                        selectedTextBlock.Foreground = selectedBrush;
+                        selectedTextBlock.FontWeight = isBold ? FontWeights.Bold : FontWeights.Normal;
+                        selectedTextBlock.FontStyle = isItalic ? FontStyles.Italic : FontStyles.Normal;
+                        selectedTextBlock.TextDecorations = isUnderline ? TextDecorations.Underline : null;
+                    }
+                    textButton.Content = "Add Text";
+                }
+                else if (textButton.Content.ToString() == "Cancel")
+                {
+                    editedImage.Cursor = Cursors.Arrow;
+                    editedImage.MouseLeftButtonDown -= AddText_MouseDown;
+                    textButton.Content = "Add Text";
+                }
+                else
+                {
+                    editedImage.MouseLeftButtonDown += AddText_MouseDown;
+                    editedImage.Cursor = Cursors.IBeam;
+                    textButton.Content = "Cancel";
+                }
+            }
+        }
+
+        #region Add
+        private void AddText_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            System.Windows.Point position = e.GetPosition(editedImage);
+
+            string text = textInput.Text;//Microsoft.VisualBasic.Interaction.InputBox("Enter text:", "Add Text", "");
+
+            if (!string.IsNullOrWhiteSpace(text))
+            {
+                AddTextToImage(text, position);
+                boldButton.Background = Brushes.White;
+            }
+
+            editedImage.Cursor = Cursors.Arrow;
+            editedImage.MouseLeftButtonDown -= AddText_MouseDown;
+        }
+        
+        private void AddTextToImage(string text, System.Windows.Point position)
+        {
+            Brush selectedBrush = Brushes.White; // Default brush if nothing is selected
+            if (colorComboBox.SelectedItem != null)
+            {
+                var converter = new System.Windows.Media.BrushConverter();
+                try
+                {
+                    selectedBrush = (Brush)converter.ConvertFromString(colorComboBox.SelectedItem.ToString()) ?? Brushes.White;
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception(ex.Message);
+                }
+            }
+
+
+            // Create a new TextBlock
+            TextBlock textBlock = new TextBlock
+            {
+                Text = text,
+                FontSize = fontSizeSlider.Value,
+                FontWeight = isBold ? FontWeights.Bold : FontWeights.Normal,
+                FontStyle = isItalic? FontStyles.Italic: FontStyles.Normal,
+                TextDecorations = isUnderline? TextDecorations.Underline: null,
+                TextAlignment = TextAlignment.Center,
+                FontFamily = fontComboBox.FontFamily,
+                Foreground = selectedBrush,
+            };
+
+            // Set the position of the TextBlock within the Canvas
+            Canvas.SetLeft(textBlock, position.X);
+            Canvas.SetTop(textBlock, position.Y);
+
+            textBlock.MouseLeftButtonDown += TextBlock_MouseLeftButtonDown;
+            textBlock.MouseMove += TextBlock_MouseMove;
+            textBlock.MouseLeftButtonUp += TextBlock_MouseLeftButtonUp;
+            textBlock.MouseRightButtonDown += TextBlock_MouseRightButtonDown;
+
+            // Add the TextBlock to the textCanvas
+            textCanvas.Children.Add(textBlock);
+            imageScrollViewer.Cursor = Cursors.Arrow;
+            italicButton.Background = Brushes.White;
+            underlineButton.Background = Brushes.White;
+            textInput.Text = "";
+        }
+        #endregion
+
+        #region Move
+        private void TextBlock_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            selectedTextBlock = sender as TextBlock;
+            if (selectedTextBlock != null)
+            {
+                isTextMoving = true;
+                mouseOffset = e.GetPosition(selectedTextBlock);
+                selectedTextBlock.CaptureMouse();
+            }
+        }
+
+        private void TextBlock_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (isTextMoving && selectedTextBlock != null)
+            {
+                System.Windows.Point mousePos = e.GetPosition(textCanvas);
+                double newX = mousePos.X - mouseOffset.X;
+                double newY = mousePos.Y - mouseOffset.Y;
+                Canvas.SetLeft(selectedTextBlock, newX);
+                Canvas.SetTop(selectedTextBlock, newY);
+            }
+        }
+
+        private void TextBlock_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            if (selectedTextBlock != null)
+            {
+                isTextMoving = false;
+                selectedTextBlock.ReleaseMouseCapture();
+                textButton.Content = "Add Text";
+            }
+        }
+        #endregion
+
+        #region Edit
+        private void TextBlock_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            textButton.Content = "Edit Text";
+            textPanel.Visibility = Visibility.Visible;
+            selectedTextBlock = sender as TextBlock;
+            textInput.Text = selectedTextBlock.Text;
+            fontSizeSlider.Value = selectedTextBlock.FontSize;
+            fontComboBox.SelectedItem = selectedTextBlock.FontFamily;
+            colorComboBox.SelectedItem = selectedTextBlock.Foreground;
+            isBold = selectedTextBlock.FontWeight == FontWeights.Bold ? true : false;
+            boldButton.Background = isBold ? Brushes.Gray: Brushes.White;
+            isItalic = selectedTextBlock.FontStyle == FontStyles.Italic ? true : false;
+            italicButton.Background = isItalic ? Brushes.Gray: Brushes.White;
+            isUnderline = selectedTextBlock.TextDecorations == TextDecorations.Underline? true : false;
+            underlineButton.Background = isUnderline? Brushes.Gray: Brushes.White;
+
+        }
+        #endregion
+
+        #region Style Buttons
+        private void boldButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (isBold == true)
+            {
+                isBold = false;
+                boldButton.Background = Brushes.White;
+            }
+            else
+            {
+                isBold = true;
+                boldButton.Background = Brushes.Gray;
+            }
+        }
+
+        private void italicButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (isItalic == true)
+            {
+                isItalic = false;
+                italicButton.Background = Brushes.White;
+            }
+            else
+            {
+                isItalic = true;
+                italicButton.Background = Brushes.Gray;
+            }
+        }
+
+        private void underlineButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (isUnderline == true)
+            {
+                isUnderline = false;
+                underlineButton.Background = Brushes.White;
+            }
+            else
+            {
+                isUnderline = true;
+                underlineButton.Background = Brushes.Gray;
+            }
+        }
+        #endregion
+
+        private void textToggle_Click(object sender, RoutedEventArgs e)
+        {
+            if (textToggle.IsChecked == true)
+            {
+                textPanel.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                textPanel.Visibility = Visibility.Collapsed;
             }
         }
 
