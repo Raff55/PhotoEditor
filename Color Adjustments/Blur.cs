@@ -7,12 +7,11 @@ using System.Windows.Media.Effects;
 using System.Windows.Media.Imaging;
 using System.Windows.Media;
 using System.Windows;
-
 namespace ImageEditor.Color_Adjustments
 {
     public static class Blur
     {
-        public static BitmapSource ApplyBlur(BitmapSource source, double blurRadius)
+        public static async Task<WriteableBitmap> ApplyBlur(WriteableBitmap source, double blurRadius)
         {
             if (source == null || blurRadius <= 0)
                 return source;
@@ -27,18 +26,20 @@ namespace ImageEditor.Color_Adjustments
             DrawingVisual drawingVisual = new DrawingVisual();
             using (DrawingContext drawingContext = drawingVisual.RenderOpen())
             {
-                drawingContext.DrawImage(source, new Rect(0, 0, source.Width, source.Height));
+                drawingContext.DrawImage(source, new Rect(0, 0, source.PixelWidth, source.PixelHeight));
             }
             drawingVisual.Effect = blurEffect;
 
-            // Render the DrawingVisual to a RenderTargetBitmap
-            RenderTargetBitmap blurredBitmap = new RenderTargetBitmap(
-                (int)source.PixelWidth, (int)source.PixelHeight,
-                source.DpiX, source.DpiY, PixelFormats.Pbgra32);
+            // Render the DrawingVisual to a WriteableBitmap
+            RenderTargetBitmap rtb = new RenderTargetBitmap(
+                source.PixelWidth, source.PixelHeight, source.DpiX, source.DpiY, PixelFormats.Pbgra32);
+            rtb.Render(drawingVisual);
 
-            blurredBitmap.Render(drawingVisual);
+            // Convert RenderTargetBitmap to WriteableBitmap
+            WriteableBitmap blurredBitmap = new WriteableBitmap(rtb);
 
             return blurredBitmap;
         }
+
     }
 }

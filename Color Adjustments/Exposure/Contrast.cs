@@ -10,7 +10,7 @@ namespace ImageEditor.Exposure
 {
     public static class Contrast
     {
-        public static WriteableBitmap ApplyContrastFilter(BitmapSource source, double contrastValue)
+        public static async Task<WriteableBitmap> ApplyContrastFilter(BitmapSource source, double contrastValue)
         {
             // Create a new WriteableBitmap with the same parameters as the source image
             WriteableBitmap result = new WriteableBitmap(source.PixelWidth, source.PixelHeight, source.DpiX, source.DpiY, source.Format, source.Palette);

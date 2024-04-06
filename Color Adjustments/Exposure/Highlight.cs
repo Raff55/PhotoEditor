@@ -9,7 +9,7 @@ namespace ImageEditor.Exposure
 {
     public static class Highlight
     {
-        public static WriteableBitmap ApplyHighlightFilter(BitmapSource image, double highlightValue)
+        public static async Task<WriteableBitmap> ApplyHighlightFilter(BitmapSource image, double highlightValue)
         {
             int width = image.PixelWidth;
             int height = image.PixelHeight;

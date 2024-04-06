@@ -1,18 +1,17 @@
-﻿using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Media.Imaging;
-using System.Windows.Media;
-using System.Windows.Input;
-using ImageEditor.Funtionals;
-using Rectangle = System.Drawing.Rectangle;
-using Brushes = System.Windows.Media.Brushes;
+﻿using ImageEditor.Color;
+using ImageEditor.Color_Adjustments;
 using ImageEditor.Exposure;
-using ImageEditor.Color;
+using ImageEditor.Funtionals;
 using ImageEditor.Transformation;
 using SixLabors.ImageSharp;
-using ImageEditor.Color_Adjustments;
 using System.ComponentModel;
-using System.Windows.Documents;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using Brushes = System.Windows.Media.Brushes;
+using Rectangle = System.Drawing.Rectangle;
 
 
 namespace ImageEditor
@@ -25,7 +24,6 @@ namespace ImageEditor
         private Rectangle rectCropArea = new Rectangle();
 
         private double zoomLevel = 0;
-        private double brightnessValue = 0;
         private int xDown = 0;
         private int yDown = 0;
         private int xUp = 0;
@@ -37,6 +35,11 @@ namespace ImageEditor
         {
             InitializeComponent();
             DataContext = this;
+            InitializeComboBoxes();
+        }
+
+        private void InitializeComboBoxes()
+        {
             var pixelFormats = typeof(PixelFormats).GetProperties()
                 .Where(p => p.PropertyType == typeof(System.Windows.Media.PixelFormat));
 
@@ -59,7 +62,6 @@ namespace ImageEditor
             colorComboBox.Items.Add("Orange");
             colorComboBox.Items.Add("Purple");
             colorComboBox.Items.Add("Gray");
-
         }
 
         #region File
@@ -107,12 +109,11 @@ namespace ImageEditor
         }
         #endregion
 
-        #region UpdateImage
+        #region Update Methods
         private void UpdateImageDisplay()
         {
             if (originalImage != null)
             {
-
                 if (editedBitmap != null)
                 {
                     previousVersions.Add(editedBitmap);
@@ -122,6 +123,53 @@ namespace ImageEditor
                 {
                     editedImage.Source = originalImage;
                 }
+            }
+        }
+
+        private async void UpdateImageDisplayWithFilters()
+        {
+            if (originalImage != null)
+            {
+                var exampleBitmap = new WriteableBitmap(originalImage);
+                if (!String.IsNullOrEmpty(brightnessTextBox.Text))
+                {
+                    exampleBitmap = await Brightness.AdjustBrightnessAsync(exampleBitmap, Image.Brightness);
+                }
+                if (!String.IsNullOrEmpty(contrastTextBox.Text))
+                {
+                    exampleBitmap = await Contrast.ApplyContrastFilter(exampleBitmap, Image.Contrast);
+                }
+                if (!String.IsNullOrEmpty(highlightTextBox.Text))
+                {
+                    exampleBitmap = await Highlight.ApplyHighlightFilter(exampleBitmap, Image.Highlight);
+                }
+                if (!String.IsNullOrEmpty(shadowsTextBox.Text))
+                {
+                    exampleBitmap = await Shadow.AdjustShadows(exampleBitmap, Image.Shadows);
+                }
+                if (!String.IsNullOrEmpty(blurTextBox.Text))
+                {
+                    exampleBitmap = await Blur.ApplyBlur(exampleBitmap, Image.Blur);
+                }
+                if (!String.IsNullOrEmpty(hueTextBox.Text))
+                {
+                    exampleBitmap = await Hue.AdjustHue(exampleBitmap, Image.Hue);
+                }
+                if (!String.IsNullOrEmpty(saturationTextBox.Text))
+                {
+                    exampleBitmap = await Saturation.AdjustSaturation(exampleBitmap, Image.Saturation);
+                }
+                if (!String.IsNullOrEmpty(temperatureTextBox.Text))
+                {
+                    exampleBitmap = await Temperature.AdjustTemperature(exampleBitmap, Image.Temperature);
+                }
+                if (!String.IsNullOrEmpty(sharpenTextBox.Text))
+                {
+                    exampleBitmap = await Sharpen.AdjustSharpen(exampleBitmap, Image.Sharpen);
+                }
+                editedBitmap = exampleBitmap;
+                previousVersions.Add(editedBitmap);
+                UpdateImageDisplay();
             }
         }
         #endregion
@@ -263,14 +311,24 @@ namespace ImageEditor
         {
             if (editedBitmap != null)
             {
-                brightnessValue = Math.Min(Math.Max(brightnessSlider.Value, -100), 100);
-                BitmapSource adjustedBitmap = Brightness.AdjustBrightness(editedBitmap, brightnessValue);
-                editedBitmap = new WriteableBitmap(adjustedBitmap);
-                UpdateImageDisplay();
+                brightnessTextBox.Text = brightnessSlider.Value.ToString();
+                Image.Brightness = brightnessSlider.Value;
+                UpdateImageDisplayWithFilters();
             }
             else
             {
                 brightnessSlider.Value = 0;
+            }
+        }
+
+        private void brightnessTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (int.TryParse(brightnessTextBox.Text, out int value))
+            {
+                if (value >= -100 && value <= 100)
+                {
+                    brightnessSlider.Value = value;
+                }
             }
         }
         #endregion
@@ -280,13 +338,24 @@ namespace ImageEditor
         {
             if (editedBitmap != null)
             {
-                double contrastValue = contrastSlider.Value;
-                editedBitmap = Contrast.ApplyContrastFilter(editedBitmap, contrastValue);
-                UpdateImageDisplay();
+                contrastTextBox.Text = contrastSlider.Value.ToString();
+                Image.Contrast = contrastSlider.Value;
+                UpdateImageDisplayWithFilters();
             }
-            else 
-            { 
+            else
+            {
                 contrastSlider.Value = 0;
+            }
+        }
+
+        private void contrastTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (int.TryParse(contrastTextBox.Text, out int value))
+            {
+                if (value >= 0 && value <= 100)
+                {
+                    contrastSlider.Value = value;
+                }
             }
         }
         #endregion
@@ -296,13 +365,24 @@ namespace ImageEditor
         {
             if (editedBitmap != null)
             {
-                double highlightValue = highlightSlider.Value;
-                editedBitmap = Highlight.ApplyHighlightFilter(editedBitmap, highlightValue);
-                UpdateImageDisplay();
+                highlightTextBox.Text = highlightSlider.Value.ToString();
+                Image.Highlight = highlightSlider.Value;
+                UpdateImageDisplayWithFilters();
             }
             else
             {
                 highlightSlider.Value = 0;
+            }
+        }
+
+        private void highlightTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (int.TryParse(highlightTextBox.Text, out int value))
+            {
+                if (value >= -50 && value <= 50)
+                {
+                    highlightSlider.Value = value;
+                }
             }
         }
         #endregion
@@ -312,14 +392,24 @@ namespace ImageEditor
         {
             if (editedBitmap != null)
             {
-                double shadowsValue = shadowsSlider.Value;
-                BitmapSource adjustedBitmap = Shadow.AdjustShadows(editedBitmap, shadowsValue);
-                editedBitmap = new WriteableBitmap(adjustedBitmap);
-                UpdateImageDisplay();
+                shadowsTextBox.Text = shadowsSlider.Value.ToString();
+                Image.Shadows = shadowsSlider.Value;
+                UpdateImageDisplayWithFilters();
             }
             else
             {
                 shadowsSlider.Value = 0;
+            }
+        }
+
+        private void shadowsTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (int.TryParse(shadowsTextBox.Text, out int value))
+            {
+                if (value >= -50 && value <= 50)
+                {
+                    shadowsSlider.Value = value;
+                }
             }
         }
         #endregion
@@ -341,18 +431,27 @@ namespace ImageEditor
         #region Color
 
         #region Hue
-        private void hueSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        private async void hueSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             if (editedBitmap != null)
             {
-                double hueValue = hueSlider.Value;
-                BitmapSource adjustedBitmap = Hue.AdjustHue(editedBitmap, hueValue);
-                editedBitmap = new WriteableBitmap(adjustedBitmap);
-                UpdateImageDisplay();
+                hueTextBox.Text = hueSlider.Value.ToString();
+                Image.Hue = hueSlider.Value;
+                UpdateImageDisplayWithFilters();
             }
             else
             {
                 hueSlider.Value = 0;
+            }
+        }
+        private void hueTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (int.TryParse(hueTextBox.Text, out int value))
+            {
+                if (value >= 0 && value <= 10)
+                {
+                    hueSlider.Value = value;
+                }
             }
         }
         #endregion
@@ -362,14 +461,24 @@ namespace ImageEditor
         {
             if (editedBitmap != null)
             {
-                double saturationValue = saturationSlider.Value;
-                BitmapSource adjustedBitmap = Saturation.AdjustSaturation(editedBitmap, saturationValue);
-                editedBitmap = new WriteableBitmap(adjustedBitmap);
-                UpdateImageDisplay();
+                saturationTextBox.Text = saturationSlider.Value.ToString();
+                Image.Saturation = saturationSlider.Value;
+                UpdateImageDisplayWithFilters();
             }
             else
             {
                 saturationSlider.Value = 0;
+            }
+        }
+
+        private void saturationTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (int.TryParse(saturationTextBox.Text, out int value))
+            {
+                if (value >= -100 && value <= 100)
+                {
+                    saturationSlider.Value = value;
+                }
             }
         }
         #endregion
@@ -379,14 +488,23 @@ namespace ImageEditor
         {
             if (editedBitmap != null)
             {
-                double temperatureValue = temperatureSlider.Value;
-                BitmapSource adjustedBitmap = Temperature.AdjustTemperature(editedBitmap, temperatureValue);
-                editedBitmap = new WriteableBitmap(adjustedBitmap);
-                UpdateImageDisplay();
+                temperatureTextBox.Text = temperatureSlider.Value.ToString();
+                Image.Temperature = temperatureSlider.Value;
+                UpdateImageDisplayWithFilters();
             }
             else
             {
                 temperatureSlider.Value = 0;
+            }
+        }
+        private void temperatureTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (int.TryParse(temperatureTextBox.Text, out int value))
+            {
+                if (value >= -5 && value <= 5)
+                {
+                    temperatureSlider.Value = value;
+                }
             }
         }
         #endregion
@@ -410,16 +528,27 @@ namespace ImageEditor
         {
             if (editedBitmap != null)
             {
-                double sharpenValue = sharpenSlider.Value;
-                BitmapSource adjustedBitmap = Sharpen.AdjustSharpen(editedBitmap, sharpenValue);
-                editedBitmap = new WriteableBitmap(adjustedBitmap);
-                UpdateImageDisplay();
+                sharpenTextBox.Text = sharpenSlider.Value.ToString();
+                Image.Sharpen = sharpenSlider.Value;
+                UpdateImageDisplayWithFilters();
             }
             else
             {
                 sharpenSlider.Value = 0;
             }
         }
+
+        private void sharpenTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (int.TryParse(sharpenTextBox.Text, out int value))
+            {
+                if (value >= 0 && value <= 10)
+                {
+                    sharpenSlider.Value = value;
+                }
+            }
+        }
+
         private void sharpenToggle_Click(object sender, RoutedEventArgs e)
         {
             if (sharpenToggle.IsChecked == true)
@@ -462,18 +591,20 @@ namespace ImageEditor
         {
             if (editedBitmap != null)
             {
-                double blurRadius = blurSlider.Value;
-                BitmapSource blurredImage;
-                if (blurRadius > 0)
+                blurTextBox.Text = blurSlider.Value.ToString();
+                Image.Blur = blurSlider.Value;
+                UpdateImageDisplayWithFilters();
+            }
+        }
+
+        private void blurTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (int.TryParse(shadowsTextBox.Text, out int value))
+            {
+                if (value >= 0 && value <= 20)
                 {
-                    blurredImage = Blur.ApplyBlur(editedBitmap, blurRadius);
+                    shadowsSlider.Value = value;
                 }
-                else
-                {
-                    blurredImage = originalImage;
-                }
-                editedBitmap = new WriteableBitmap(blurredImage);
-                UpdateImageDisplay();
             }
         }
         #endregion
@@ -483,14 +614,24 @@ namespace ImageEditor
         {
             if (editedBitmap != null)
             {
-                double vibranceValue = vibranceSlider.Value;
-                BitmapSource adjustedBitmap = Vibrance.AdjustVibrance(editedBitmap, vibranceValue);
-                editedBitmap = new WriteableBitmap(adjustedBitmap);
-                UpdateImageDisplay();
+                vibranceTextBox.Text = vibranceSlider.Value.ToString();
+                Image.Vibrance = vibranceSlider.Value;
+                UpdateImageDisplayWithFilters();
             }
             else
             {
                 vibranceSlider.Value = 0;
+            }
+        }
+
+        private void vibranceTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (int.TryParse(vibranceTextBox.Text, out int value))
+            {
+                if (value >= 0 && value <= 5)
+                {
+                    vibranceSlider.Value = value;
+                }
             }
         }
         #endregion
@@ -536,7 +677,7 @@ namespace ImageEditor
         {
             double zoomDelta = e.Delta > 0 ? 0.1 : -0.1;
             double newZoomLevel = zoomLevel + zoomDelta;
-            if(newZoomLevel < 7 && newZoomLevel > -0.1)
+            if (newZoomLevel < 7 && newZoomLevel > -0.1)
             {
                 ApplyZoom(newZoomLevel);
                 zoomLevel = newZoomLevel;
@@ -564,6 +705,7 @@ namespace ImageEditor
             }
         }
 
+        #region Draw
         private void brushEditedImage_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (editedBitmap != null)
@@ -590,16 +732,9 @@ namespace ImageEditor
         {
             isDrawing = false;
         }
+        #endregion
 
-        private void Slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            byte red = (byte)redSlider.Value;
-            byte green = (byte)greenSlider.Value;
-            byte blue = (byte)blueSlider.Value;
-            currentBrush = new SolidColorBrush(System.Windows.Media.Color.FromRgb(red, green, blue));
-            SelectedColor = (SolidColorBrush)currentBrush;
-        }
-
+        #region Brush Button
         private void brushButton_Click(object sender, RoutedEventArgs e)
         {
             if (isBrushDrawingActive)
@@ -608,6 +743,8 @@ namespace ImageEditor
                 editedImage.MouseMove -= brushEditedImage_MouseMove;
                 editedImage.MouseUp -= brushEditedImage_MouseUp;
                 isBrushDrawingActive = false;
+                brushButton.Background = Brushes.White;
+                brushButton.Content = "Activate Brushe";
             }
             else
             {
@@ -615,8 +752,75 @@ namespace ImageEditor
                 editedImage.MouseMove += brushEditedImage_MouseMove;
                 editedImage.MouseUp += brushEditedImage_MouseUp;
                 isBrushDrawingActive = true;
+                brushButton.Background = Brushes.Gray;
+                brushButton.Content = "Activated";
             }
         }
+        #endregion
+
+        #region Brush Properties
+        private void brushSize_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            brushSizeTextBox.Text = brushSize.Value.ToString();
+        }
+
+        private void Slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            byte red = (byte)redSlider.Value;
+            byte green = (byte)greenSlider.Value;
+            byte blue = (byte)blueSlider.Value;
+            redTextBox.Text = redSlider.Value.ToString();
+            greenTextBox.Text = greenSlider.Value.ToString();
+            blueTextBox.Text = blueSlider.Value.ToString();
+            currentBrush = new SolidColorBrush(System.Windows.Media.Color.FromRgb(red, green, blue));
+            SelectedColor = (SolidColorBrush)currentBrush;
+        }
+
+        private void redTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (int.TryParse(redTextBox.Text, out int value))
+            {
+                if (value >= 0 && value <= 255)
+                {
+                    redSlider.Value = value;
+                }
+            }
+        }
+
+        private void greenTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (int.TryParse(greenTextBox.Text, out int value))
+            {
+                if (value >= 0 && value <= 255)
+                {
+                    greenSlider.Value = value;
+                }
+            }
+        }
+
+        private void blueTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (int.TryParse(blueTextBox.Text, out int value))
+            {
+                if (value >= 0 && value <= 255)
+                {
+                    blueSlider.Value = value;
+                }
+            }
+        }
+
+        private void brushSizeTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (int.TryParse(brushSizeTextBox.Text, out int value))
+            {
+                if (value >= 0 && value <= 100)
+                {
+                    brushSize.Value = value;
+                }
+            }
+        }
+        #endregion
+
 
         private void brushToggle_Click(object sender, RoutedEventArgs e)
         {
@@ -660,6 +864,7 @@ namespace ImageEditor
                         selectedTextBlock.FontWeight = isBold ? FontWeights.Bold : FontWeights.Normal;
                         selectedTextBlock.FontStyle = isItalic ? FontStyles.Italic : FontStyles.Normal;
                         selectedTextBlock.TextDecorations = isUnderline ? TextDecorations.Underline : null;
+                        deleteButton.Visibility = Visibility.Collapsed;
                     }
                     textButton.Content = "Add Text";
                 }
@@ -694,7 +899,7 @@ namespace ImageEditor
             editedImage.Cursor = Cursors.Arrow;
             editedImage.MouseLeftButtonDown -= AddText_MouseDown;
         }
-        
+
         private void AddTextToImage(string text, System.Windows.Point position)
         {
             Brush selectedBrush = Brushes.White; // Default brush if nothing is selected
@@ -718,8 +923,8 @@ namespace ImageEditor
                 Text = text,
                 FontSize = fontSizeSlider.Value,
                 FontWeight = isBold ? FontWeights.Bold : FontWeights.Normal,
-                FontStyle = isItalic? FontStyles.Italic: FontStyles.Normal,
-                TextDecorations = isUnderline? TextDecorations.Underline: null,
+                FontStyle = isItalic ? FontStyles.Italic : FontStyles.Normal,
+                TextDecorations = isUnderline ? TextDecorations.Underline : null,
                 TextAlignment = TextAlignment.Center,
                 FontFamily = fontComboBox.FontFamily,
                 Foreground = selectedBrush,
@@ -739,6 +944,7 @@ namespace ImageEditor
             imageScrollViewer.Cursor = Cursors.Arrow;
             italicButton.Background = Brushes.White;
             underlineButton.Background = Brushes.White;
+            boldButton.Background = Brushes.White;
             textInput.Text = "";
         }
         #endregion
@@ -782,19 +988,31 @@ namespace ImageEditor
         private void TextBlock_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
             textButton.Content = "Edit Text";
-            textPanel.Visibility = Visibility.Visible;
             selectedTextBlock = sender as TextBlock;
             textInput.Text = selectedTextBlock.Text;
             fontSizeSlider.Value = selectedTextBlock.FontSize;
             fontComboBox.SelectedItem = selectedTextBlock.FontFamily;
             colorComboBox.SelectedItem = selectedTextBlock.Foreground;
             isBold = selectedTextBlock.FontWeight == FontWeights.Bold ? true : false;
-            boldButton.Background = isBold ? Brushes.Gray: Brushes.White;
+            boldButton.Background = isBold ? Brushes.Gray : Brushes.White;
             isItalic = selectedTextBlock.FontStyle == FontStyles.Italic ? true : false;
-            italicButton.Background = isItalic ? Brushes.Gray: Brushes.White;
-            isUnderline = selectedTextBlock.TextDecorations == TextDecorations.Underline? true : false;
-            underlineButton.Background = isUnderline? Brushes.Gray: Brushes.White;
+            italicButton.Background = isItalic ? Brushes.Gray : Brushes.White;
+            isUnderline = selectedTextBlock.TextDecorations == TextDecorations.Underline ? true : false;
+            underlineButton.Background = isUnderline ? Brushes.Gray : Brushes.White;
+            deleteButton.Visibility = Visibility.Visible;
+        }
+        #endregion
 
+        #region Delete
+        private void deleteButton_Click(object sender, RoutedEventArgs e)
+        {
+            textCanvas.Children.Remove(selectedTextBlock);
+            deleteButton.Visibility = Visibility.Collapsed;
+            textButton.Content = "Add Text";
+            italicButton.Background = Brushes.White;
+            underlineButton.Background = Brushes.White;
+            boldButton.Background = Brushes.White;
+            textInput.Text = "";
         }
         #endregion
 
@@ -840,6 +1058,17 @@ namespace ImageEditor
                 underlineButton.Background = Brushes.Gray;
             }
         }
+
+        private void fontSizeTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (int.TryParse(fontSizeTextBox.Text, out int size))
+            {
+                if (size > 0)
+                {
+                    fontSizeSlider.Value = size;
+                }
+            }
+        }
         #endregion
 
         private void textToggle_Click(object sender, RoutedEventArgs e)
@@ -855,5 +1084,6 @@ namespace ImageEditor
         }
 
         #endregion
+
     }
 }

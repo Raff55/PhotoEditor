@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using System.Windows;
@@ -10,7 +7,7 @@ namespace ImageEditor.Exposure
 {
     public static class Brightness
     {
-        public static BitmapSource AdjustBrightness(BitmapSource source, double brightness)
+        public static async Task<WriteableBitmap> AdjustBrightnessAsync(WriteableBitmap source, double brightness)
         {
             WriteableBitmap adjustedBitmap = new WriteableBitmap(source.PixelWidth, source.PixelHeight, source.DpiX, source.DpiY, source.Format, null);
 
@@ -34,8 +31,12 @@ namespace ImageEditor.Exposure
                 pixelData[i + 2] = red;
             }
 
-            Int32Rect adjustedRect = new Int32Rect(0, 0, adjustedBitmap.PixelWidth, adjustedBitmap.PixelHeight);
-            adjustedBitmap.WritePixels(adjustedRect, pixelData, adjustedBitmap.PixelWidth * (adjustedBitmap.Format.BitsPerPixel / 8), 0);
+            // Update UI on the UI thread
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                Int32Rect adjustedRect = new Int32Rect(0, 0, adjustedBitmap.PixelWidth, adjustedBitmap.PixelHeight);
+                adjustedBitmap.WritePixels(adjustedRect, pixelData, adjustedBitmap.PixelWidth * (adjustedBitmap.Format.BitsPerPixel / 8), 0);
+            });
 
             return adjustedBitmap;
         }

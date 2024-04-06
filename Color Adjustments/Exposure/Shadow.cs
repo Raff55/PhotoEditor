@@ -12,7 +12,7 @@ namespace ImageEditor.Exposure
 {
     public static class Shadow
     {
-        public static BitmapSource AdjustShadows(WriteableBitmap originalImage, double shadowsValue)
+        public static async Task<WriteableBitmap> AdjustShadows(WriteableBitmap originalImage, double shadowsValue)
         {
             Bitmap bitmap = ConvertToBitmap(originalImage);
 
@@ -59,9 +59,9 @@ namespace ImageEditor.Exposure
             return bitmap;
         }
 
-        private static BitmapSource ConvertToBitmapSource(Bitmap bitmap)
+        private static WriteableBitmap ConvertToBitmapSource(Bitmap bitmap)
         {
-            BitmapSource bitmapSource;
+            WriteableBitmap writableBitmap;
             using (MemoryStream stream = new MemoryStream())
             {
                 bitmap.Save(stream, ImageFormat.Png);
@@ -71,9 +71,9 @@ namespace ImageEditor.Exposure
                 bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
                 bitmapImage.StreamSource = stream;
                 bitmapImage.EndInit();
-                bitmapSource = bitmapImage;
+                writableBitmap = new WriteableBitmap(bitmapImage);
             }
-            return bitmapSource;
+            return writableBitmap;
         }
     }
 }

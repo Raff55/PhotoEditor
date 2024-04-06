@@ -10,7 +10,7 @@
         </Grid.ColumnDefinitions>
 
         <StackPanel Orientation="Vertical" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,10,0,0">
-            
+
         </StackPanel>
 
         <Viewbox Grid.Column="1" Margin="0,0,0,40">
@@ -39,7 +39,7 @@
                 <StackPanel x:Name="transformationPanel" Visibility="Collapsed"  >
                     <Button x:Name="mirrorButton" Content="Mirror" Click="mirrorButton_Click" Width="120"/>
                     <Button x:Name="flipButton" Content="Flip" Click="flipButton_Click" Width="120"/>
-                
+
                     <Button x:Name="rotateButton" Content="Rotate"  Click="rotateButton_Click" Width="120" Background="White"/>
                     <Button x:Name="cropButton" Content="Crop" Click="cropButton_Click" Width="120"  Background="White"/>
                     <ToggleButton x:Name="resizeToggle" Margin="0,5,0,0" Width="115" ClickMode="Press" Click="resizeToggle_Click" IsChecked="False" Background="#353536">
@@ -49,10 +49,10 @@
                         <TextBox x:Name="widthTextBox" Width="50" Margin="5"/>
                         <TextBox x:Name="heightTextBox" Width="50" Margin="5"/>
                         <Button Content="Resize" Width="120" Click="resizeButton_Click"/>
-                    </StackPanel> 
+                    </StackPanel>
 
                 </StackPanel>
-           
+
                 <!--#endregion-->
 
                 <!--#region Exposure-->
@@ -60,34 +60,60 @@
                     <TextBlock Margin="0,0,0,5" Foreground="White" FontSize="9">Exposure</TextBlock>
                 </ToggleButton>
                 <StackPanel x:Name="exposurePanel" Visibility="Collapsed">
-                    <TextBlock Margin="10,0,0,5" Foreground="White" FontSize="9">Brightness</TextBlock>
+                    <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                        <Label Width="58" FontSize="10" Foreground="White" Padding="0,5,5,5" Content="Brightness" HorizontalAlignment="Left" Margin="10,0,0,0"/>
+                        <TextBox x:Name="brightnessTextBox" Width="30" Height="20" Margin="30,0,0,0" TextChanged="brightnessTextBox_TextChanged" Background="#353536"/>
+                    </StackPanel>
                     <Slider x:Name="brightnessSlider" Margin="5,0,0,5" Minimum="-100" Maximum="100" Width="120" ValueChanged="brightnessSlider_ValueChanged" />
-                    <TextBlock Margin="10,0,0,5" Foreground="White" FontSize="9">Contrast</TextBlock>
+                    <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                        <Label Width="58" FontSize="10" Foreground="White" Padding="0,5,5,5" Content="Contrast" HorizontalAlignment="Left" Margin="10,0,0,0"/>
+                        <TextBox x:Name="contrastTextBox" Width="30" Height="20" Margin="30,0,0,0" TextChanged="contrastTextBox_TextChanged" Background="#353536"/>
+                    </StackPanel>
                     <Slider x:Name="contrastSlider" Margin="5,0,0,5" Minimum="0" Maximum="100" Width="120" ValueChanged="contrastSlider_ValueChanged" />
-                    <TextBlock Margin="10,0,0,5" Foreground="White" FontSize="9">Highlights</TextBlock>
+                    <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                        <Label Width="58" FontSize="10" Foreground="White" Padding="0,5,5,5" Content="Highlight" HorizontalAlignment="Left" Margin="10,0,0,0"/>
+                        <TextBox x:Name="highlightTextBox" Width="30" Height="20" Margin="30,0,0,0" TextChanged="highlightTextBox_TextChanged" Background="#353536"/>
+                    </StackPanel>
                     <Slider x:Name="highlightSlider" Margin="5,0,0,5" Minimum="-50" Maximum="50" ValueChanged="highlightSlider_ValueChanged"/>
-                    <TextBlock Margin="10,0,0,5" Foreground="White" FontSize="9">Shadows</TextBlock>
-                    <Slider x:Name="shadowsSlider" Margin="5,0,0,5" Minimum="-75" Maximum="75" Value="0"  ValueChanged="shadowsSlider_ValueChanged"  />
-                    <TextBlock Margin="10,0,0,5" Foreground="White" FontSize="9">Blur</TextBlock>
-                    <Slider x:Name="blurSlider" Minimum="0" Maximum="20" Value="0" TickFrequency="10" TickPlacement="BottomRight" Width="120" Margin="5" ValueChanged="blurSlider_ValueChanged"/>
-                    <TextBlock Margin="10,0,0,5" Foreground="White" FontSize="9">Vibrance</TextBlock>
+                    <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                        <Label Width="58" FontSize="10" Foreground="White" Padding="0,5,5,5" Content="Shadows" HorizontalAlignment="Left" Margin="10,0,0,0"/>
+                        <TextBox x:Name="shadowsTextBox" Width="30" Height="20" Margin="30,0,0,0" TextChanged="shadowsTextBox_TextChanged" Background="#353536"/>
+                    </StackPanel>
+                    <Slider x:Name="shadowsSlider" Margin="5,0,0,5" Minimum="-75" Maximum="75" Value="0"  ValueChanged="shadowsSlider_ValueChanged" />
+                    <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                        <Label Width="58" FontSize="10" Foreground="White" Padding="0,5,5,5" Content="Blur" HorizontalAlignment="Left" Margin="10,0,0,0"/>
+                        <TextBox x:Name="blurTextBox" Width="30" Height="20" Margin="30,0,0,0" TextChanged="blurTextBox_TextChanged" Background="#353536"/>
+                    </StackPanel>
+                    <Slider x:Name="blurSlider" Minimum="0" Maximum="50" Value="0" Width="120" Margin="5" ValueChanged="blurSlider_ValueChanged"/>
+                    <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                        <Label Width="58" FontSize="10" Foreground="White" Padding="0,5,5,5" Content="Vibrance" HorizontalAlignment="Left" Margin="10,0,0,0"/>
+                        <TextBox x:Name="vibranceTextBox" Width="30" Height="20" Margin="30,0,0,0" TextChanged="vibranceTextBox_TextChanged" Background="#353536"/>
+                    </StackPanel>
                     <Slider x:Name="vibranceSlider" Minimum="0" Maximum="5" Value="0" TickPlacement="BottomRight"  Margin="10" Width="120" ValueChanged="vibranceSlider_ValueChanged" />
                 </StackPanel>
                 <!--#endregion-->
-            
+
                 <!--#region Color-->
                 <ToggleButton x:Name="colorToggle" Width="120" ClickMode="Press" Click="colorToggle_Click" IsChecked="False" Margin="0,5,0,0" Background="#353536">
                     <TextBlock Margin="0,0,0,5" Foreground="White" FontSize="9">Color</TextBlock>
                 </ToggleButton>
                 <StackPanel x:Name="colorPanel" Visibility="Collapsed">
-                    <TextBlock Margin="10,0,0,5" Foreground="White" FontSize="9">Hue</TextBlock>
-                    <Slider x:Name="hueSlider" Minimum="-180" Maximum="180" Value="0" TickFrequency="1" TickPlacement="BottomRight" Width="120" Margin="10" 
+                    <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                        <Label Width="58" FontSize="10" Foreground="White" Padding="0,5,5,5" Content="Hue" HorizontalAlignment="Left" Margin="10,0,0,0"/>
+                        <TextBox x:Name="hueTextBox" Width="30" Height="20" Margin="30,0,0,0" TextChanged="hueTextBox_TextChanged" Background="#353536"/>
+                    </StackPanel>
+                    <Slider x:Name="hueSlider" Minimum="-180" Maximum="180" Value="0" Width="120" Margin="10" 
                             VerticalAlignment="Center" HorizontalAlignment="Left" ValueChanged="hueSlider_ValueChanged"/>
-                    <TextBlock Margin="10,0,0,5" Foreground="White" FontSize="9">Saturation</TextBlock>
-                    <Slider x:Name="saturationSlider" Minimum="-100" Maximum="100" Value="0" TickFrequency="1" TickPlacement="BottomRight" Width="120" Margin="10" 
-                            VerticalAlignment="Center" HorizontalAlignment="Left" ValueChanged="saturationSlider_ValueChanged"/>
-                    <TextBlock Margin="10,0,0,5" Foreground="White" FontSize="9">Temperature</TextBlock>
-                    <Slider x:Name="temperatureSlider" Minimum="-5" Maximum="5" Value="0" TickFrequency="1" TickPlacement="BottomRight" Width="120" Margin="10" 
+                    <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                        <Label Width="58" FontSize="10" Foreground="White" Padding="0,5,5,5" Content="Saturation" HorizontalAlignment="Left" Margin="10,0,0,0"/>
+                        <TextBox x:Name="saturationTextBox" Width="30" Height="20" Margin="30,0,0,0" TextChanged="saturationTextBox_TextChanged" Background="#353536"/>
+                    </StackPanel>
+                    <Slider x:Name="saturationSlider" Minimum="-100" Maximum="100" Value="0" Width="120" Margin="10" VerticalAlignment="Center" HorizontalAlignment="Left" ValueChanged="saturationSlider_ValueChanged"/>
+                    <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                        <Label Width="60" FontSize="10" Foreground="White" Padding="0,5,5,5" Content="Temperature" HorizontalAlignment="Left" Margin="10,0,0,0"/>
+                        <TextBox x:Name="temperatureTextBox" Width="30" Height="20" Margin="30,0,0,0" TextChanged="temperatureTextBox_TextChanged" Background="#353536"/>
+                    </StackPanel>
+                    <Slider x:Name="temperatureSlider" Minimum="-5" Maximum="5" Value="0" Width="120" Margin="10" 
                             VerticalAlignment="Center" HorizontalAlignment="Left" ValueChanged="temperatureSlider_ValueChanged"/>
                 </StackPanel>
                 <!--#endregion-->
@@ -97,25 +123,40 @@
                     <TextBlock Margin="0,0,0,5" Foreground="White" FontSize="9">Sharpen</TextBlock>
                 </ToggleButton>
                 <StackPanel x:Name="sharpenPanel" Visibility="Collapsed">
-                    <TextBlock Margin="10,0,0,5" Foreground="White" FontSize="9">Sharpen</TextBlock>
-                    <Slider x:Name="sharpenSlider" Minimum="0" Maximum="10" Value="0" TickFrequency="1" TickPlacement="BottomRight" Width="120" Margin="10,0" ValueChanged="sharpenSlider_ValueChanged" />
+                    <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                        <Label Width="58" FontSize="10" Foreground="White" Padding="0,5,5,5" Content="Sharpen" HorizontalAlignment="Left" Margin="10,0,0,0"/>
+                        <TextBox x:Name="sharpenTextBox" Width="30" Height="20" Margin="30,0,0,0" TextChanged="sharpenTextBox_TextChanged" Background="#353536"/>
+                    </StackPanel>
+                    <Slider x:Name="sharpenSlider" Minimum="0" Maximum="10" Value="0"  Width="120" Margin="10,0" ValueChanged="sharpenSlider_ValueChanged" />
                 </StackPanel>
                 <!--#endregion-->
-            
+
                 <!--#region Brush-->
                 <ToggleButton x:Name="brushToggle" Margin="0,5,0,0" Width="120" ClickMode="Press" Click="brushToggle_Click" IsChecked="False" Background="#353536">
                     <TextBlock Margin="0,0,0,5" Foreground="White" FontSize="9">Brush</TextBlock>
                 </ToggleButton>
-                <StackPanel x:Name="brushPanel" Visibility="Collapsed">
-                    <Button x:Name="brushButton" Content="Brush" Click="brushButton_Click" Width="120"/>
-                    <TextBlock Margin="10,0,0,5" Foreground="White" FontSize="9">Red</TextBlock>
+                <StackPanel x:Name="brushPanel" Visibility="Visible">
+                    <Button x:Name="brushButton" Content="Activate Brush" Click="brushButton_Click" Width="120" Background="White"/>
+                    <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                        <Label Width="58" FontSize="10" Foreground="White" Padding="0,5,5,5" Content="Red" HorizontalAlignment="Left" Margin="10,0,0,0"/>
+                        <TextBox x:Name="redTextBox" Width="30" Height="20" Margin="30,0,0,0" Background="#353536" TextChanged="redTextBox_TextChanged"/>
+                    </StackPanel>
                     <Slider x:Name="redSlider" Minimum="0" Maximum="255" ValueChanged="Slider_ValueChanged"/>
-                    <TextBlock Margin="10,0,0,5" Foreground="White" FontSize="9">Green</TextBlock>
+                    <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                        <Label Width="58" FontSize="10" Foreground="White" Padding="0,5,5,5" Content="Green" HorizontalAlignment="Left" Margin="10,0,0,0"/>
+                        <TextBox x:Name="greenTextBox" Width="30" Height="20" Margin="30,0,0,0" Background="#353536" TextChanged="greenTextBox_TextChanged"/>
+                    </StackPanel>
                     <Slider x:Name="greenSlider" Minimum="0" Maximum="255" ValueChanged="Slider_ValueChanged"/>
-                    <TextBlock Margin="10,0,0,5" Foreground="White" FontSize="9">Blue</TextBlock>
+                    <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                        <Label Width="58" FontSize="10" Foreground="White" Padding="0,5,5,5" Content="Blue" HorizontalAlignment="Left" Margin="10,0,0,0"/>
+                        <TextBox x:Name="blueTextBox" Width="30" Height="20" Margin="30,0,0,0" Background="#353536" TextChanged="blueTextBox_TextChanged"/>
+                    </StackPanel>
                     <Slider x:Name="blueSlider" Minimum="0" Maximum="255" ValueChanged="Slider_ValueChanged"/>
-                    <TextBlock Margin="10,0,0,5" Foreground="White" FontSize="9">Brush Size</TextBlock>
-                    <Slider x:Name="brushSize" Minimum="1" Maximum="20"/>
+                    <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                        <Label Width="58" FontSize="10" Foreground="White" Padding="0,5,5,5" Content="Brush Size" HorizontalAlignment="Left" Margin="10,0,0,0"/>
+                        <TextBox x:Name="brushSizeTextBox" Width="30" Height="20" Margin="30,0,0,0" Background="#353536" TextChanged="brushSizeTextBox_TextChanged"/>
+                    </StackPanel>
+                    <Slider x:Name="brushSize" Minimum="1" Maximum="100" ValueChanged="brushSize_ValueChanged"/>
                     <Rectangle Width="100" Height="50" Margin="5">
                         <Rectangle.Fill>
                             <SolidColorBrush Color="{Binding SelectedColor.Color}"  />
@@ -132,32 +173,38 @@
                 <StackPanel x:Name="textPanel" Visibility="Collapsed">
                     <Label Width="116" FontSize="10" Foreground="White">Enter text here</Label>
                     <TextBox x:Name="textInput" Width="116" Background="White" />
-                    <ComboBox x:Name="fontComboBox" Margin="0,5,0,0" ItemsSource="{Binding AvailableFonts}" Width="116" />
-                    <ComboBox x:Name="colorComboBox" Margin="0,5,0,0" ItemsSource="{Binding AvailableColors}" Width="116" />
+                    <ComboBox x:Name="fontComboBox" Margin="0,5,0,0" Width="116" />
+                    <ComboBox x:Name="colorComboBox" Margin="0,5,0,0" Width="116" />
+
+                    <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                        <Label Width="58" FontSize="10" Foreground="White" Padding="0,5,5,5" Content="Font Size" HorizontalAlignment="Left" Margin="7,0,0,0"/>
+                        <TextBox x:Name="fontSizeTextBox" Width="30" Height="20" Margin="20,0,0,0" TextChanged="fontSizeTextBox_TextChanged" Background="#353536"/>
+                        <Label FontSize="10" Foreground="White" Content="px" Padding="0,5,5,5" HorizontalAlignment="Left" Margin="0,0,0,0"/>
+                    </StackPanel>
                     <Slider x:Name="fontSizeSlider" Margin="0,5,0,0" Minimum="8" Maximum="72" Value="8" Width="116" />
                     <StackPanel Orientation="Horizontal">
                         <Button x:Name="boldButton" Background="White" Width="25" Height="25" Margin="7,5,0,0" Click="boldButton_Click" HorizontalAlignment="Left">
-                             <Image Source="C:\Users\user\source\repos\PhotoEditor\Icons/bold.png" Width="20" Height="20"/>
+                            <Image Source="C:\Users\user\source\repos\PhotoEditor\Icons/bold.png" Width="20" Height="20"/>
                         </Button>
                         <Button x:Name="italicButton" Background="White" Width="25" Height="25" Margin="20,5,0,0" Click="italicButton_Click" >
-                            <Image Source="C:\Users\user\source\repos\PhotoEditor\Icons/italic.png"  Width="20" Height="20"/>
+                            <Image Source="C:\Users\user\source\repos\PhotoEditor\Icons/italic.png"  Width="15" Height="15"/>
                         </Button>
                         <Button x:Name="underlineButton" Background="White" Width="25" Height="25" Margin="20,5,0,0" Click="underlineButton_Click" >
                             <Image Source="C:\Users\user\source\repos\PhotoEditor\Icons/underline.png" Width="20" Height="20"/>
                         </Button>
                     </StackPanel>
                     <Button x:Name="textButton" Content="Add Text" Margin="0,5,0,0" Click="TextButton_Click" Background="White" Width="116"/>
+                    <Button x:Name="deleteButton" Content="Delete Text" Visibility="Collapsed" Margin="0,5,0,0" Click="deleteButton_Click" Background="White" Width="116"/>
                 </StackPanel>
                 <!--#endregion-->
-                
             </StackPanel>
         </ScrollViewer>
-        
+
         <!--#region Zoom-->
         <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="10">
             <Slider x:Name="zoomSlider" Minimum="0" Maximum="7" TickFrequency="0.5" TickPlacement="BottomRight" Width="150" ValueChanged="zoomSlider_ValueChanged"/>
         </StackPanel>
         <!--#endregion-->
-        
+
     </Grid>
 </Window>

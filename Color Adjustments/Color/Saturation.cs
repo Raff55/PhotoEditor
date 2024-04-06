@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Media.Imaging;
 
 namespace ImageEditor.Color
 {
     public static class Saturation
     {
-        public static BitmapSource AdjustSaturation(BitmapSource source, double saturationValue)
+        public static async Task<WriteableBitmap> AdjustSaturation(WriteableBitmap source, double saturationValue)
         {
             // Create a new WriteableBitmap based on the source image
             WriteableBitmap writableBitmap = new WriteableBitmap(source);
@@ -55,10 +56,11 @@ namespace ImageEditor.Color
                 }
             }
 
-            // Create a new bitmap source with the adjusted pixels
-            BitmapSource adjustedBitmap = BitmapSource.Create(width, height, source.DpiX, source.DpiY, source.Format, source.Palette, pixels, stride);
+            // Update the writable bitmap with the adjusted pixels
+            writableBitmap.WritePixels(new Int32Rect(0, 0, width, height), pixels, stride, 0);
 
-            return adjustedBitmap;
+            // Return the updated WriteableBitmap
+            return writableBitmap;
         }
     }
 }

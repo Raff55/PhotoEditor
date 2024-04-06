@@ -6,7 +6,7 @@ namespace ImageEditor.Color
 {
     public static class Temperature
     {
-        public static BitmapSource AdjustTemperature(BitmapSource sourceImage, double temperatureValue)
+        public static async Task<WriteableBitmap> AdjustTemperature(BitmapSource sourceImage, double temperatureValue)
         {
             // Convert the image to a writable bitmap
             WriteableBitmap bitmap = new WriteableBitmap(sourceImage);

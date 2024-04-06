@@ -10,7 +10,7 @@ namespace ImageEditor.Funtionals
 {
     public static class Sharpen
     {
-        public static BitmapSource AdjustSharpen(WriteableBitmap originalImage, double sharpenValue)
+        public static async Task<WriteableBitmap> AdjustSharpen(WriteableBitmap originalImage, double sharpenValue)
         {
             // Convert the BitmapImage to a WriteableBitmap for editing
             WriteableBitmap writeableBitmap = new WriteableBitmap(originalImage);
