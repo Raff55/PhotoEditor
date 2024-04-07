@@ -56,7 +56,7 @@
                 <!--#endregion-->
 
                 <!--#region Exposure-->
-                <ToggleButton x:Name="exposureToggle" Margin="0,5,0,0" Width="120" ClickMode="Press" Click="exposureToggle_Click" IsChecked="False" Background="#353536">
+                <ToggleButton x:Name="exposureToggle" Margin="0,0,0,0" Width="120" ClickMode="Press" Click="exposureToggle_Click" IsChecked="False" Background="#353536">
                     <TextBlock Margin="0,0,0,5" Foreground="White" FontSize="9">Exposure</TextBlock>
                 </ToggleButton>
                 <StackPanel x:Name="exposurePanel" Visibility="Collapsed">
@@ -127,7 +127,7 @@
                         <Label Width="58" FontSize="10" Foreground="White" Padding="0,5,5,5" Content="Sharpen" HorizontalAlignment="Left" Margin="10,0,0,0"/>
                         <TextBox x:Name="sharpenTextBox" Width="30" Height="20" Margin="30,0,0,0" TextChanged="sharpenTextBox_TextChanged" Background="#353536"/>
                     </StackPanel>
-                    <Slider x:Name="sharpenSlider" Minimum="0" Maximum="10" Value="0"  Width="120" Margin="10,0" ValueChanged="sharpenSlider_ValueChanged" />
+                    <Slider x:Name="sharpenSlider" Minimum="-50" Maximum="50" Value="0"  Width="120" Margin="10,0" ValueChanged="sharpenSlider_ValueChanged" />
                 </StackPanel>
                 <!--#endregion-->
 
@@ -135,7 +135,7 @@
                 <ToggleButton x:Name="brushToggle" Margin="0,5,0,0" Width="120" ClickMode="Press" Click="brushToggle_Click" IsChecked="False" Background="#353536">
                     <TextBlock Margin="0,0,0,5" Foreground="White" FontSize="9">Brush</TextBlock>
                 </ToggleButton>
-                <StackPanel x:Name="brushPanel" Visibility="Visible">
+                <StackPanel x:Name="brushPanel" Visibility="Collapsed">
                     <Button x:Name="brushButton" Content="Activate Brush" Click="brushButton_Click" Width="120" Background="White"/>
                     <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
                         <Label Width="58" FontSize="10" Foreground="White" Padding="0,5,5,5" Content="Red" HorizontalAlignment="Left" Margin="10,0,0,0"/>
@@ -178,18 +178,18 @@
 
                     <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
                         <Label Width="58" FontSize="10" Foreground="White" Padding="0,5,5,5" Content="Font Size" HorizontalAlignment="Left" Margin="7,0,0,0"/>
-                        <TextBox x:Name="fontSizeTextBox" Width="30" Height="20" Margin="20,0,0,0" TextChanged="fontSizeTextBox_TextChanged" Background="#353536"/>
+                        <TextBox x:Name="fontSizeTextBox" Width="30" Height="20" Margin="20,0,0,0" TextChanged="fontSizeTextBox_TextChanged" Background="#353536" Foreground="White"/>
                         <Label FontSize="10" Foreground="White" Content="px" Padding="0,5,5,5" HorizontalAlignment="Left" Margin="0,0,0,0"/>
                     </StackPanel>
-                    <Slider x:Name="fontSizeSlider" Margin="0,5,0,0" Minimum="8" Maximum="72" Value="8" Width="116" />
+                    <Slider x:Name="fontSizeSlider" Margin="0,5,0,0" Minimum="8" Maximum="72" Value="8" Width="116" ValueChanged="fontSizeSlider_ValueChanged" />
                     <StackPanel Orientation="Horizontal">
                         <Button x:Name="boldButton" Background="White" Width="25" Height="25" Margin="7,5,0,0" Click="boldButton_Click" HorizontalAlignment="Left">
                             <Image Source="C:\Users\user\source\repos\PhotoEditor\Icons/bold.png" Width="20" Height="20"/>
                         </Button>
-                        <Button x:Name="italicButton" Background="White" Width="25" Height="25" Margin="20,5,0,0" Click="italicButton_Click" >
+                        <Button x:Name="italicButton" Background="White" Width="25" Height="25" Margin="18,5,0,0" Click="italicButton_Click" >
                             <Image Source="C:\Users\user\source\repos\PhotoEditor\Icons/italic.png"  Width="15" Height="15"/>
                         </Button>
-                        <Button x:Name="underlineButton" Background="White" Width="25" Height="25" Margin="20,5,0,0" Click="underlineButton_Click" >
+                        <Button x:Name="underlineButton" Background="White" Width="25" Height="25" Margin="18,5,0,0" Click="underlineButton_Click" >
                             <Image Source="C:\Users\user\source\repos\PhotoEditor\Icons/underline.png" Width="20" Height="20"/>
                         </Button>
                     </StackPanel>

@@ -110,14 +110,15 @@ namespace ImageEditor
         #endregion
 
         #region Update Methods
-        private void UpdateImageDisplay()
+        private async void UpdateImageDisplay()
         {
             if (originalImage != null)
             {
                 if (editedBitmap != null)
                 {
-                    previousVersions.Add(editedBitmap);
-                    editedImage.Source = editedBitmap;
+                    var bitmap = await UpdateImageDisplayWithFiltersWithReturning();
+                    previousVersions.Add(bitmap);
+                    editedImage.Source = bitmap;
                 }
                 else
                 {
@@ -126,11 +127,11 @@ namespace ImageEditor
             }
         }
 
-        private async void UpdateImageDisplayWithFilters()
+        private async Task<WriteableBitmap> UpdateImageDisplayWithFiltersWithReturning()
         {
-            if (originalImage != null)
+            var exampleBitmap = new WriteableBitmap(editedBitmap);
+            if (editedBitmap != null)
             {
-                var exampleBitmap = new WriteableBitmap(originalImage);
                 if (!String.IsNullOrEmpty(brightnessTextBox.Text))
                 {
                     exampleBitmap = await Brightness.AdjustBrightnessAsync(exampleBitmap, Image.Brightness);
@@ -167,11 +168,63 @@ namespace ImageEditor
                 {
                     exampleBitmap = await Sharpen.AdjustSharpen(exampleBitmap, Image.Sharpen);
                 }
-                editedBitmap = exampleBitmap;
-                previousVersions.Add(editedBitmap);
-                UpdateImageDisplay();
+                //editedBitmap = exampleBitmap;
+                //previousVersions.Add(exampleBitmap);
+                //UpdateImageDisplay();
+                //editedImage.Source = exampleBitmap;
+            }
+            return exampleBitmap;
+        }
+
+
+        private async void UpdateImageDisplayWithFilters()
+        {
+            if (originalImage != null)
+            {
+                var exampleBitmap = new WriteableBitmap(editedBitmap);
+                if (!String.IsNullOrEmpty(brightnessTextBox.Text))
+                {
+                    exampleBitmap = await Brightness.AdjustBrightnessAsync(exampleBitmap, Image.Brightness);
+                }
+                if (!String.IsNullOrEmpty(contrastTextBox.Text))
+                {
+                    exampleBitmap = await Contrast.ApplyContrastFilter(exampleBitmap, Image.Contrast);
+                }
+                if (!String.IsNullOrEmpty(highlightTextBox.Text))
+                {
+                    exampleBitmap = await Highlight.ApplyHighlightFilter(exampleBitmap, Image.Highlight);
+                }
+                if (!String.IsNullOrEmpty(shadowsTextBox.Text))
+                {
+                    exampleBitmap = await Shadow.AdjustShadows(exampleBitmap, Image.Shadows);
+                }
+                if (!String.IsNullOrEmpty(blurTextBox.Text))
+                {
+                    exampleBitmap = await Blur.ApplyBlur(exampleBitmap, Image.Blur);
+                }
+                if (!String.IsNullOrEmpty(hueTextBox.Text))
+                {
+                    exampleBitmap = await Hue.AdjustHue(exampleBitmap, Image.Hue);
+                }
+                if (!String.IsNullOrEmpty(saturationTextBox.Text))
+                {
+                    exampleBitmap = await Saturation.AdjustSaturation(exampleBitmap, Image.Saturation);
+                }
+                if (!String.IsNullOrEmpty(temperatureTextBox.Text))
+                {
+                    exampleBitmap = await Temperature.AdjustTemperature(exampleBitmap, Image.Temperature);
+                }
+                if (!String.IsNullOrEmpty(sharpenTextBox.Text))
+                {
+                    exampleBitmap = await Sharpen.AdjustSharpen(exampleBitmap, Image.Sharpen);
+                }
+                //editedBitmap = exampleBitmap;
+                previousVersions.Add(exampleBitmap);
+                //UpdateImageDisplay();
+                editedImage.Source = exampleBitmap;
             }
         }
+
         #endregion
 
         #endregion
@@ -542,7 +595,7 @@ namespace ImageEditor
         {
             if (int.TryParse(sharpenTextBox.Text, out int value))
             {
-                if (value >= 0 && value <= 10)
+                if (value >= -5 && value <= 10)
                 {
                     sharpenSlider.Value = value;
                 }
@@ -821,7 +874,6 @@ namespace ImageEditor
         }
         #endregion
 
-
         private void brushToggle_Click(object sender, RoutedEventArgs e)
         {
             if (brushToggle.IsChecked == true)
@@ -1069,6 +1121,11 @@ namespace ImageEditor
                 }
             }
         }
+        
+        private void fontSizeSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            fontSizeTextBox.Text = fontSizeSlider.Value.ToString();
+        }
         #endregion
 
         private void textToggle_Click(object sender, RoutedEventArgs e)
@@ -1084,6 +1141,5 @@ namespace ImageEditor
         }
 
         #endregion
-
     }
 }
