@@ -19,17 +19,45 @@
                     <Image x:Name="editedImage" Stretch="None" MouseWheel="editedImage_MouseWheel" />
                 </ScrollViewer>
                 <Canvas x:Name="textCanvas" />
+                <Canvas x:Name="collageCanvas" />
+
+
             </Grid>
 
         </Viewbox>
+        <StackPanel Orientation="Horizontal" Height="20" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="15,15,5,5">
+            <Button Width="60" x:Name="EditTabButton" Content="Edit" Background="White" BorderBrush="White" Click="EditTabButton_Click"></Button>
+            <Button Width="60" x:Name="CollageTabButton" Content="Collage" Background="#353536" Foreground="White" BorderBrush="White" Click="CollageTabButton_Click"></Button>
+        </StackPanel>
 
+        <!--#region Collage Tab-->
+        <ScrollViewer Grid.Column="0" x:Name="collageView" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Disabled" HorizontalAlignment="Left" Margin="10,40,0,10" MaxWidth="140" Visibility="Visible" >
+            <StackPanel>
+                <Button x:Name="open2HorizontalImagesButton" Height="120" Width="120" Click="open2HorizontalImagesButton_Click" Margin="5" Background="White" VerticalAlignment="Top">
+                    <Image Source="C:\Users\user\source\repos\PhotoEditor\Icons\collage-two-horizontal.png" Width="100" Height="100"/>
+                </Button>
+                <Button x:Name="open2VerticalImagesButton" Height="120" Width="120" Click="open2VerticalImagesButton_Click" Margin="5" Background="White" VerticalAlignment="Top">
+                    <Image Source="C:\Users\user\source\repos\PhotoEditor\Icons\collage-two-vertical.png" Width="100" Height="100"/>
+                </Button>
+                <Button x:Name="open4ImagesButton" Height="120" Width="120" Click="open4ImagesButton_Click" Margin="5" Background="White" VerticalAlignment="Top">
+                    <Image Source="C:\Users\user\source\repos\PhotoEditor\Icons\collage-four.png" Width="100" Height="100"/>
+                </Button>
+                <TextBox x:Name="collageWidthTextBox" Width="50" Margin="5"/>
+                <TextBox x:Name="collageHeightTextBox" Width="50" Margin="5"/>
+                <Button Content="Enter Sizes Collage" Width="120" Background="White" Click="enterSizesCollageButton_Click"/>
+            </StackPanel>
+        </ScrollViewer>
+        <!--#endregion-->
 
-        <ScrollViewer Grid.Column="0" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Disabled" HorizontalAlignment="Left" Margin="10,10,0,10" MaxWidth="140">
+        <!--#region Edit Tab-->
+        <ScrollViewer Grid.Column="0" x:Name="editingView" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Disabled" HorizontalAlignment="Left" Margin="10,40,0,10" MaxWidth="140" Visibility="Collapsed" >
+                
             <StackPanel Orientation="Vertical">
-                <Button x:Name="openButton" Content="Open" Height="20" Width="120" Click="openButton_Click" Margin="5" Background="White"/>
-                <Button x:Name="saveButton" Content="Save" Height="20" Width="120" Click="saveButton_Click" Margin="5" Background="White"/>
-                <Button x:Name="undoButton" Content="Undo" Height="20" Width="120" Click="undoButton_Click" Margin="5" Background="White"/>
-                <Button x:Name="resetButton" Content="Reset Editing" Height="20" Width="120" Click="reserButton_Click" Margin="5" Background="White"/>
+
+                <Button x:Name="openButton" Content="Open" Height="25" Width="120" Click="openButton_Click" FontSize="16" Margin="0,2,0,0" Background="White"/>
+                <Button x:Name="saveButton" Content="Save" Height="25" Width="120" Click="saveButton_Click" FontSize="16" Margin="5" Background="White"/>
+                <Button x:Name="undoButton" Content="Undo" Height="25" Width="120" Click="undoButton_Click" FontSize="16" Margin="0,0,0,5" Background="White"/>
+                <Button x:Name="resetButton" Content="Reset Editing" Height="25" Width="120" FontSize="16" Click="reserButton_Click"  Margin="0,0,0,5" Background="White"/>
                 <ComboBox x:Name="filters" Width="120"  Margin="5,5, 5, 0" SelectionChanged="filters_SelectionChanged"/>
 
                 <!--#region Transformation-->
@@ -127,7 +155,7 @@
                         <Label Width="58" FontSize="10" Foreground="White" Padding="0,5,5,5" Content="Sharpen" HorizontalAlignment="Left" Margin="10,0,0,0"/>
                         <TextBox x:Name="sharpenTextBox" Width="30" Height="20" Margin="30,0,0,0" TextChanged="sharpenTextBox_TextChanged" Background="#353536"/>
                     </StackPanel>
-                    <Slider x:Name="sharpenSlider" Minimum="-50" Maximum="50" Value="0"  Width="120" Margin="10,0" ValueChanged="sharpenSlider_ValueChanged" />
+                    <Slider x:Name="sharpenSlider" Minimum="-5" Maximum="10" Value="0"  Width="120" Margin="10,0" ValueChanged="sharpenSlider_ValueChanged" />
                 </StackPanel>
                 <!--#endregion-->
 
@@ -197,9 +225,11 @@
                     <Button x:Name="deleteButton" Content="Delete Text" Visibility="Collapsed" Margin="0,5,0,0" Click="deleteButton_Click" Background="White" Width="116"/>
                 </StackPanel>
                 <!--#endregion-->
+                
             </StackPanel>
         </ScrollViewer>
-
+        <!--#endregion-->
+        
         <!--#region Zoom-->
         <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="10">
             <Slider x:Name="zoomSlider" Minimum="0" Maximum="7" TickFrequency="0.5" TickPlacement="BottomRight" Width="150" ValueChanged="zoomSlider_ValueChanged"/>

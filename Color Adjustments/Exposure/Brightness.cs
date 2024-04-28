@@ -7,7 +7,7 @@ namespace ImageEditor.Exposure
 {
     public static class Brightness
     {
-        public static async Task<WriteableBitmap> AdjustBrightnessAsync(WriteableBitmap source, double brightness)
+        public static async Task<WriteableBitmap> AdjustBrightness(WriteableBitmap source, double brightness)
         {
             WriteableBitmap adjustedBitmap = new WriteableBitmap(source.PixelWidth, source.PixelHeight, source.DpiX, source.DpiY, source.Format, null);
 
