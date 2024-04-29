@@ -3,16 +3,11 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Image Editor" Height="600" Width="800" Background="#353536">
     <Grid>
-
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="150"/>
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
-
-        <StackPanel Orientation="Vertical" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,10,0,0">
-
-        </StackPanel>
-
+        
         <Viewbox Grid.Column="1" Margin="0,0,0,40">
             <Grid>
                 <ScrollViewer x:Name="imageScrollViewer" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Disabled">
@@ -20,11 +15,9 @@
                 </ScrollViewer>
                 <Canvas x:Name="textCanvas" />
                 <Canvas x:Name="collageCanvas" />
-
-
             </Grid>
-
         </Viewbox>
+        
         <StackPanel Orientation="Horizontal" Height="20" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="15,15,5,5">
             <Button Width="60" x:Name="EditTabButton" Content="Edit" Background="White" BorderBrush="White" Click="EditTabButton_Click"></Button>
             <Button Width="60" x:Name="CollageTabButton" Content="Collage" Background="#353536" Foreground="White" BorderBrush="White" Click="CollageTabButton_Click"></Button>
@@ -33,6 +26,7 @@
         <!--#region Collage Tab-->
         <ScrollViewer Grid.Column="0" x:Name="collageView" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Disabled" HorizontalAlignment="Left" Margin="10,40,0,10" MaxWidth="140" Visibility="Visible" >
             <StackPanel>
+                <Button x:Name="saveCollageButton" Content="Save" Height="25" Width="120" Click="saveCollageButton_Click" FontSize="16" Margin="5" Background="White"/>
                 <Button x:Name="open2HorizontalImagesButton" Height="120" Width="120" Click="open2HorizontalImagesButton_Click" Margin="5" Background="White" VerticalAlignment="Top">
                     <Image Source="C:\Users\user\source\repos\PhotoEditor\Icons\collage-two-horizontal.png" Width="100" Height="100"/>
                 </Button>

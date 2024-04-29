@@ -3,10 +3,11 @@ using ImageEditor.Color_Adjustments;
 using ImageEditor.Exposure;
 using ImageEditor.Funtionals;
 using ImageEditor.Transformation;
-using SixLabors.ImageSharp;
 using System.ComponentModel;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -30,8 +31,6 @@ namespace ImageEditor
         private int xUp = 0;
         private int yUp = 0;
 
-
-
         public MainWindow()
         {
             InitializeComponent();
@@ -39,6 +38,7 @@ namespace ImageEditor
             InitializeComboBoxes();
         }
 
+        #region Common
         private void InitializeComboBoxes()
         {
             var pixelFormats = typeof(PixelFormats).GetProperties()
@@ -65,7 +65,6 @@ namespace ImageEditor
             colorComboBox.Items.Add("Gray");
         }
 
-        #region Common
         private void EditTabButton_Click(object sender, RoutedEventArgs e)
         {
             editingView.Visibility = Visibility.Visible;
@@ -75,6 +74,7 @@ namespace ImageEditor
             CollageTabButton.Background = commonColor;
             CollageTabButton.Foreground = Brushes.White;
         }
+
         private void CollageTabButton_Click(object sender, RoutedEventArgs e)
         {
             editingView.Visibility = Visibility.Collapsed;
@@ -83,6 +83,8 @@ namespace ImageEditor
             EditTabButton.Foreground = Brushes.White;
             CollageTabButton.Background = Brushes.White;
             CollageTabButton.Foreground = commonColor;
+            ShowPopup("This is a sample popup message.");
+
         }
 
         #endregion
@@ -1169,6 +1171,7 @@ namespace ImageEditor
         #region Collage
         private List<BitmapImage> selectedImages = new List<BitmapImage>();
 
+        #region Create
         private void AddImageToCollage(BitmapImage image, int count)
         {
             switch (count)
@@ -1279,5 +1282,49 @@ namespace ImageEditor
             editedImage.Height = double.Parse(collageHeightTextBox.Text);
         }
         #endregion
+
+        #region Save
+        private void saveCollageButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (collageCanvas != null)
+            {
+                Save.SaveCollage(collageCanvas);
+            }
+        }
+        #endregion
+
+        #endregion
+        private void ShowPopup(string message)
+        {
+            Popup popup = new Popup();
+            popup.Placement = PlacementMode.Center;
+            popup.PlacementTarget = this;
+            popup.StaysOpen = false;
+
+            // Create a TextBlock to display the message
+            TextBlock messageTextBlock = new TextBlock();
+            messageTextBlock.Text = message;
+            messageTextBlock.TextAlignment = TextAlignment.Center;
+            messageTextBlock.FontSize = 20;
+            messageTextBlock.Foreground = Brushes.White;
+            messageTextBlock.Margin = new Thickness(20);
+
+            // Create a Border to wrap the TextBlock
+            Border border = new Border();
+            border.Background = Brushes.Black;
+            border.CornerRadius = new CornerRadius(10);
+            border.Padding = new Thickness(20);
+            border.Child = messageTextBlock;
+
+            // Set the Border as the Child of the Popup
+            popup.Child = border;
+
+            // Set the dimensions of the Popup
+            popup.Width = 300;
+            popup.Height = 150;
+
+            // Show the Popup
+            popup.IsOpen = true;
+        }
     }
 }
