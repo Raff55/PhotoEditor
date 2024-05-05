@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 
@@ -15,19 +16,28 @@ namespace ImageEditor.Funtionals
         public static BitmapImage OpenImage()
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
+
             if (openFileDialog.ShowDialog() == true)
             {
-                originalImage = new BitmapImage(new Uri(openFileDialog.FileName));
-
-                BitmapFrame bitmapFrame = BitmapFrame.Create(originalImage.UriSource);
-                BitmapMetadata metadata = (BitmapMetadata)bitmapFrame.Metadata;
-                if (metadata != null)
+                string fileExtension = System.IO.Path.GetExtension(openFileDialog.FileName).ToLower();
+                if (fileExtension == ".bmp" || fileExtension == ".jpg" || fileExtension == ".jpeg" || fileExtension == ".png" || fileExtension == ".gif" || fileExtension == ".webp")
                 {
-                    const string descriptionQuery = "/app1/ifd/exif:{uint=270}";
-                    if (metadata.ContainsQuery(descriptionQuery))
+                    originalImage = new BitmapImage(new Uri(openFileDialog.FileName));
+
+                    BitmapFrame bitmapFrame = BitmapFrame.Create(originalImage.UriSource);
+                    BitmapMetadata metadata = (BitmapMetadata)bitmapFrame.Metadata;
+                    if (metadata != null)
                     {
-                        metadata.SetQuery(descriptionQuery, "New Image Description");
+                        const string descriptionQuery = "/app1/ifd/exif:{uint=270}";
+                        if (metadata.ContainsQuery(descriptionQuery))
+                        {
+                            metadata.SetQuery(descriptionQuery, "New Image Description");
+                        }
                     }
+                }
+                else
+                {
+                    MessageBox.Show("Please select a valid image file.", "Invalid File", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
             return originalImage;

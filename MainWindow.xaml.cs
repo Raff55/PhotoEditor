@@ -1,4 +1,5 @@
-﻿using ImageEditor.Color;
+﻿using ImageEditor.Collage;
+using ImageEditor.Color;
 using ImageEditor.Color_Adjustments;
 using ImageEditor.Exposure;
 using ImageEditor.Funtionals;
@@ -19,7 +20,7 @@ namespace ImageEditor
 {
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
-        private List<WriteableBitmap> previousVersions = new List<WriteableBitmap>();
+        private List<WriteableBitmap> previousVersions = new List<WriteableBitmap>(10);
         private BitmapImage originalImage;
         private WriteableBitmap editedBitmap;
         private Rectangle rectCropArea = new Rectangle();
@@ -65,16 +66,6 @@ namespace ImageEditor
             colorComboBox.Items.Add("Gray");
         }
 
-        private void EditTabButton_Click(object sender, RoutedEventArgs e)
-        {
-            editingView.Visibility = Visibility.Visible;
-            collageView.Visibility = Visibility.Collapsed;
-            EditTabButton.Background = Brushes.White;
-            EditTabButton.Foreground = commonColor;
-            CollageTabButton.Background = commonColor;
-            CollageTabButton.Foreground = Brushes.White;
-        }
-
         private void CollageTabButton_Click(object sender, RoutedEventArgs e)
         {
             editingView.Visibility = Visibility.Collapsed;
@@ -83,8 +74,38 @@ namespace ImageEditor
             EditTabButton.Foreground = Brushes.White;
             CollageTabButton.Background = Brushes.White;
             CollageTabButton.Foreground = commonColor;
-            ShowPopup("This is a sample popup message.");
 
+            popup.IsOpen = false;
+            popup.Child = null;
+            popup.Placement = PlacementMode.Center;
+            popup.PlacementTarget = this;
+            popup.StaysOpen = true;
+
+            collageWidthTextBox = new TextBox();
+            collageHeightTextBox = new TextBox();
+            collageWidthTextBox.Clear();
+            collageHeightTextBox.Clear();
+            CollageFunctions.ShowPopup(ref popup, ref collageWidthTextBox, ref collageHeightTextBox, enterSizesCollageButton_Click);
+        }
+
+        // In the EditTabButton_Click method, simply close the popup and clear its child
+        private void EditTabButton_Click(object sender, RoutedEventArgs e)
+        {
+            editingView.Visibility = Visibility.Visible;
+            collageView.Visibility = Visibility.Collapsed;
+            EditTabButton.Background = Brushes.White;
+            EditTabButton.Foreground = commonColor;
+            CollageTabButton.Background = commonColor;
+            CollageTabButton.Foreground = Brushes.White;
+            popup.IsOpen = false;
+            popup.Child = null;
+            if(collageCanvas.Children.Count > 0)
+            {
+                editedBitmap = CollageFunctions.RenderCanvasToImage(collageCanvas);
+                originalImage = CollageFunctions.originalImage;
+                collageCanvas.Children.Clear();
+                UpdateImageDisplay();
+            }
         }
 
         #endregion
@@ -148,6 +169,12 @@ namespace ImageEditor
                     var bitmap = await UpdateImageDisplayWithFiltersWithReturning();
                     previousVersions.Add(bitmap);
                     editedImage.Source = bitmap;
+                    Resources.MergedDictionaries.Clear();
+                    if(previousVersions.Count == 9)
+                    {
+                        previousVersions.Remove(previousVersions[0]);
+                    }
+                    previousVersions.Add(bitmap);
                 }
                 else
                 {
@@ -161,39 +188,41 @@ namespace ImageEditor
             var exampleBitmap = new WriteableBitmap(editedBitmap);
             if (editedBitmap != null)
             {
-                if (!String.IsNullOrEmpty(brightnessTextBox.Text) && brightnessSlider.Value != 0)
+                if (!String.IsNullOrEmpty(brightnessTextBox.Text) && brightnessSlider.Value != 0 && brightnessSlider.Value != Image.Brightness)
                 {
+                    Image.Brightness = brightnessSlider.Value;
                     exampleBitmap = await Brightness.AdjustBrightness(exampleBitmap, Image.Brightness);
                 }
-                if (!String.IsNullOrEmpty(contrastTextBox.Text) && contrastSlider.Value != 0)
+                if (!String.IsNullOrEmpty(contrastTextBox.Text) && contrastSlider.Value != 0 && contrastSlider.Value != Image.Contrast)
                 {
+                    Image.Contrast = contrastSlider.Value;
                     exampleBitmap = await Contrast.ApplyContrastFilter(exampleBitmap, Image.Contrast);
                 }
-                if (!String.IsNullOrEmpty(highlightTextBox.Text) && highlightSlider.Value != 0)
+                if (!String.IsNullOrEmpty(highlightTextBox.Text) && highlightSlider.Value != 0 && highlightSlider.Value != Image.Highlight)
                 {
                     exampleBitmap = await Highlight.ApplyHighlightFilter(exampleBitmap, Image.Highlight);
                 }
-                if (!String.IsNullOrEmpty(shadowsTextBox.Text) && shadowsSlider.Value != 0)
+                if (!String.IsNullOrEmpty(shadowsTextBox.Text) && shadowsSlider.Value != 0 && shadowsSlider.Value != Image.Shadows)
                 {
                     exampleBitmap = await Shadow.AdjustShadows(exampleBitmap, Image.Shadows);
                 }
-                if (!String.IsNullOrEmpty(blurTextBox.Text) && blurSlider.Value != 0)
+                if (!String.IsNullOrEmpty(blurTextBox.Text) && blurSlider.Value != 0 && blurSlider.Value != Image.Blur)
                 {
                     exampleBitmap = await Blur.ApplyBlur(exampleBitmap, Image.Blur);
                 }
-                if (!String.IsNullOrEmpty(hueTextBox.Text) && hueSlider.Value != 0)
+                if (!String.IsNullOrEmpty(hueTextBox.Text) && hueSlider.Value != 0 && hueSlider.Value != Image.Hue)
                 {
                     exampleBitmap = await Hue.AdjustHue(exampleBitmap, Image.Hue);
                 }
-                if (!String.IsNullOrEmpty(saturationTextBox.Text) && saturationSlider.Value != 0)
+                if (!String.IsNullOrEmpty(saturationTextBox.Text) && saturationSlider.Value != 0 && saturationSlider.Value != Image.Saturation)
                 {
                     exampleBitmap = await Saturation.AdjustSaturation(exampleBitmap, Image.Saturation);
                 }
-                if (!String.IsNullOrEmpty(temperatureTextBox.Text) && temperatureSlider.Value != 0)
+                if (!String.IsNullOrEmpty(temperatureTextBox.Text) && temperatureSlider.Value != 0 && temperatureSlider.Value != Image.Temperature)
                 {
                     exampleBitmap = await Temperature.AdjustTemperature(exampleBitmap, Image.Temperature);
                 }
-                if (!String.IsNullOrEmpty(sharpenTextBox.Text) && sharpenSlider.Value != 0)
+                if (!String.IsNullOrEmpty(sharpenTextBox.Text) && sharpenSlider.Value != 0 && sharpenSlider.Value != Image.Sharpen)
                 {
                     exampleBitmap = await Sharpen.AdjustSharpen(exampleBitmap, Image.Sharpen);
                 }
@@ -206,43 +235,45 @@ namespace ImageEditor
             if (originalImage != null)
             {
                 var exampleBitmap = new WriteableBitmap(editedBitmap);
-                if (!String.IsNullOrEmpty(brightnessTextBox.Text))
+                if (double.TryParse(brightnessTextBox.Text, out double brightnessValue) && brightnessValue != Image.Brightness)
                 {
+                    Image.Brightness = brightnessSlider.Value;
                     exampleBitmap = await Brightness.AdjustBrightness(exampleBitmap, Image.Brightness);
                 }
-                if (!String.IsNullOrEmpty(contrastTextBox.Text))
+                if (double.TryParse(contrastTextBox.Text, out double contrastValue) && contrastValue != Image.Contrast)
                 {
+                    Image.Contrast = contrastSlider.Value;
                     exampleBitmap = await Contrast.ApplyContrastFilter(exampleBitmap, Image.Contrast);
                 }
-                if (!String.IsNullOrEmpty(highlightTextBox.Text))
+                if (double.TryParse(highlightTextBox.Text, out double highlightValue) && highlightValue != Image.Highlight)
                 {
                     exampleBitmap = await Highlight.ApplyHighlightFilter(exampleBitmap, Image.Highlight);
                 }
-                if (!String.IsNullOrEmpty(shadowsTextBox.Text))
+                if (double.TryParse(shadowsTextBox.Text, out double shadowsValue) && shadowsValue != Image.Shadows)
                 {
                     exampleBitmap = await Shadow.AdjustShadows(exampleBitmap, Image.Shadows);
                 }
-                if (!String.IsNullOrEmpty(blurTextBox.Text))
+                if (double.TryParse(blurTextBox.Text, out double blurValue) && blurValue != Image.Blur)
                 {
                     exampleBitmap = await Blur.ApplyBlur(exampleBitmap, Image.Blur);
                 }
-                if (!String.IsNullOrEmpty(hueTextBox.Text))
+                if (double.TryParse(hueTextBox.Text, out double hueValue) && hueValue != Image.Hue)
                 {
                     exampleBitmap = await Hue.AdjustHue(exampleBitmap, Image.Hue);
                 }
-                if (!String.IsNullOrEmpty(saturationTextBox.Text))
+                if (double.TryParse(saturationTextBox.Text, out double saturationValue) && saturationValue != Image.Saturation)
                 {
                     exampleBitmap = await Saturation.AdjustSaturation(exampleBitmap, Image.Saturation);
                 }
-                if (!String.IsNullOrEmpty(temperatureTextBox.Text))
+                if (double.TryParse(temperatureTextBox.Text, out double temperatureValue) && temperatureValue != Image.Temperature)
                 {
                     exampleBitmap = await Temperature.AdjustTemperature(exampleBitmap, Image.Temperature);
                 }
-                if (!String.IsNullOrEmpty(sharpenTextBox.Text))
+                if (double.TryParse(sharpenTextBox.Text, out double sharpenValue) && sharpenValue != Image.Sharpen)
                 {
                     exampleBitmap = await Sharpen.AdjustSharpen(exampleBitmap, Image.Sharpen);
                 }
-                //editedBitmap = exampleBitmap;
+                editedBitmap = exampleBitmap;
                 previousVersions.Add(exampleBitmap);
                 //UpdateImageDisplay();
                 editedImage.Source = exampleBitmap;
@@ -416,7 +447,7 @@ namespace ImageEditor
             if (editedBitmap != null)
             {
                 contrastTextBox.Text = contrastSlider.Value.ToString();
-                Image.Contrast = contrastSlider.Value;
+                //Image.Contrast = contrastSlider.Value;
                 UpdateImageDisplayWithFilters();
             }
             else
@@ -1169,117 +1200,74 @@ namespace ImageEditor
         #endregion
 
         #region Collage
-        private List<BitmapImage> selectedImages = new List<BitmapImage>();
+        Popup popup = new Popup();
+        TextBox collageWidthTextBox = new TextBox();
+        TextBox collageHeightTextBox = new TextBox();
 
         #region Create
-        private void AddImageToCollage(BitmapImage image, int count)
-        {
-            switch (count)
-            {
-                case 1:
-                    if (selectedImages.Count < 4)
-                    {
-                        selectedImages.Add(image);
-                        UpdateCollageDisplay(2, 2);
-                    }
-                    else
-                    {
-                        MessageBox.Show("Maximum limit of 4 images reached for collage.");
-                    }
-                    break;
-                case 2:
-                    if (selectedImages.Count < 2)
-                    {
-                        selectedImages.Add(image);
-                        UpdateCollageDisplay(2, 0);
-                    }
-                    else
-                    {
-                        MessageBox.Show("Maximum limit of 2 images reached for collage.");
-                    }
-                    break;
-                case 3:
-                    if (selectedImages.Count < 2)
-                    {
-                        selectedImages.Add(image);
-                        UpdateCollageDisplay(0, 2);
-                    }
-                    else
-                    {
-                        MessageBox.Show("Maximum limit of 2 images reached for collage.");
-                    }
-                    break;
-            }
-        }
-
-        private void UpdateCollageDisplay(int vertical, int horizontal)
-        {
-            collageCanvas.Children.Clear();
-            int numRows = horizontal == 0 ? 1 : horizontal;
-            int numCols = vertical == 0 ? 1 : vertical;
-            double cellWidth = collageCanvas.ActualWidth / numCols;
-            double cellHeight = collageCanvas.ActualHeight / numRows;
-
-            for (int i = 0; i < selectedImages.Count; i++)
-            {
-                System.Windows.Controls.Image img = new System.Windows.Controls.Image();
-                img.Stretch = Stretch.UniformToFill;
-                img.Source = selectedImages[i];
-                img.Width = cellWidth;
-                img.Height = cellHeight;
-
-                int row = i / numCols;
-                int col = i % numCols;
-                Canvas.SetLeft(img, col * cellWidth);
-                Canvas.SetTop(img, row * cellHeight);
-                collageCanvas.Children.Add(img);
-            }
-        }
-
         private void open4ImagesButton_Click(object sender, RoutedEventArgs e)
         {
             collageCanvas.Children.Clear();
-            BitmapImage image = Open.OpenImage();
-            BitmapImage image1 = Open.OpenImage();
-            BitmapImage image2 = Open.OpenImage();
-            BitmapImage image3 = Open.OpenImage();
-            if (image != null && image1 != null && image2 != null && image3 != null)
-            {
-                AddImageToCollage(image, 1);
-                AddImageToCollage(image1, 1);
-                AddImageToCollage(image2, 1);
-                AddImageToCollage(image3, 1);
+            var images = new List<BitmapImage>();
+            //for (int i = 0; i < 4; i++)
+            //{
+            while(images.Count != 4 ) 
+            { 
+                BitmapImage image = Open.OpenImage();
+                if (image != null)
+                {
+                    images.Add(image);
+                }
+                else
+                {
+                    MessageBox.Show("Please select image");
+                }
             }
+            CollageFunctions.collageCanvas = collageCanvas;
+            collageCanvas = CollageFunctions.AddImagesToCollage(images, 1);
         }
 
         private void open2VerticalImagesButton_Click(object sender, RoutedEventArgs e)
         {
             collageCanvas.Children.Clear();
-            BitmapImage image = Open.OpenImage();
-            BitmapImage image1 = Open.OpenImage();
-            if (image != null && image1 != null)
+            var images = new List<BitmapImage>();
+            for(int i = 0; i < 2; i++)
             {
-                AddImageToCollage(image, 2);
-                AddImageToCollage(image1,2);
+                BitmapImage image = Open.OpenImage();
+                if (image != null)
+                {
+                    images.Add(image);
+                }
             }
+            CollageFunctions.collageCanvas = collageCanvas;
+            collageCanvas = CollageFunctions.AddImagesToCollage(images, 2);
         }
 
         private void open2HorizontalImagesButton_Click(object sender, RoutedEventArgs e)
         {
             collageCanvas.Children.Clear();
-            BitmapImage image = Open.OpenImage();
-            BitmapImage image1 = Open.OpenImage();
-            if (image != null && image1 != null)
+            var images = new List<BitmapImage>();
+            for (int i = 0; i < 2; i++)
             {
-                AddImageToCollage(image, 3);
-                AddImageToCollage(image1, 3);
+                BitmapImage image = Open.OpenImage();
+                if (image != null)
+                {
+                    images.Add(image);
+                }
             }
+            CollageFunctions.collageCanvas = collageCanvas;
+            collageCanvas = CollageFunctions.AddImagesToCollage(images, 3);
         }
 
         private void enterSizesCollageButton_Click(object sender, RoutedEventArgs e)
         {
-            editedImage.Width = double.Parse(collageWidthTextBox.Text);
-            editedImage.Height = double.Parse(collageHeightTextBox.Text);
+            if (double.TryParse(collageWidthTextBox.Text, out double width) && double.TryParse(collageHeightTextBox.Text, out double height))
+            {
+                editedImage.Width = width;
+                editedImage.Height = height;
+                popup.Child = null;
+                popup.IsOpen = false;
+            }
         }
         #endregion
 
@@ -1294,37 +1282,5 @@ namespace ImageEditor
         #endregion
 
         #endregion
-        private void ShowPopup(string message)
-        {
-            Popup popup = new Popup();
-            popup.Placement = PlacementMode.Center;
-            popup.PlacementTarget = this;
-            popup.StaysOpen = false;
-
-            // Create a TextBlock to display the message
-            TextBlock messageTextBlock = new TextBlock();
-            messageTextBlock.Text = message;
-            messageTextBlock.TextAlignment = TextAlignment.Center;
-            messageTextBlock.FontSize = 20;
-            messageTextBlock.Foreground = Brushes.White;
-            messageTextBlock.Margin = new Thickness(20);
-
-            // Create a Border to wrap the TextBlock
-            Border border = new Border();
-            border.Background = Brushes.Black;
-            border.CornerRadius = new CornerRadius(10);
-            border.Padding = new Thickness(20);
-            border.Child = messageTextBlock;
-
-            // Set the Border as the Child of the Popup
-            popup.Child = border;
-
-            // Set the dimensions of the Popup
-            popup.Width = 300;
-            popup.Height = 150;
-
-            // Show the Popup
-            popup.IsOpen = true;
-        }
     }
 }

@@ -1,7 +1,7 @@
 ﻿<Window x:Class="ImageEditor.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Image Editor" Height="600" Width="800" Background="#353536">
+        Title="Image Editor" Height="600" Width="800" Background="#353536" Icon="C:\Users\user\source\repos\PhotoEditor\Icons\icon.png">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="150"/>
@@ -24,9 +24,10 @@
         </StackPanel>
 
         <!--#region Collage Tab-->
-        <ScrollViewer Grid.Column="0" x:Name="collageView" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Disabled" HorizontalAlignment="Left" Margin="10,40,0,10" MaxWidth="140" Visibility="Visible" >
+        <ScrollViewer Grid.Column="0" x:Name="collageView" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Disabled" HorizontalAlignment="Left" Margin="10,40,0,10" MaxWidth="140" Visibility="Collapsed" >
             <StackPanel>
-                <Button x:Name="saveCollageButton" Content="Save" Height="25" Width="120" Click="saveCollageButton_Click" FontSize="16" Margin="5" Background="White"/>
+                <Button x:Name="saveCollageButton" Content="Save" Height="25" Width="120" Click="saveCollageButton_Click" FontSize="12" Margin="5" Background="White"/>
+                <TextBlock Text="Templates" FontSize="16" Margin="5,0,2,2" Foreground="White" />
                 <Button x:Name="open2HorizontalImagesButton" Height="120" Width="120" Click="open2HorizontalImagesButton_Click" Margin="5" Background="White" VerticalAlignment="Top">
                     <Image Source="C:\Users\user\source\repos\PhotoEditor\Icons\collage-two-horizontal.png" Width="100" Height="100"/>
                 </Button>
@@ -36,15 +37,12 @@
                 <Button x:Name="open4ImagesButton" Height="120" Width="120" Click="open4ImagesButton_Click" Margin="5" Background="White" VerticalAlignment="Top">
                     <Image Source="C:\Users\user\source\repos\PhotoEditor\Icons\collage-four.png" Width="100" Height="100"/>
                 </Button>
-                <TextBox x:Name="collageWidthTextBox" Width="50" Margin="5"/>
-                <TextBox x:Name="collageHeightTextBox" Width="50" Margin="5"/>
-                <Button Content="Enter Sizes Collage" Width="120" Background="White" Click="enterSizesCollageButton_Click"/>
             </StackPanel>
         </ScrollViewer>
         <!--#endregion-->
 
         <!--#region Edit Tab-->
-        <ScrollViewer Grid.Column="0" x:Name="editingView" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Disabled" HorizontalAlignment="Left" Margin="10,40,0,10" MaxWidth="140" Visibility="Collapsed" >
+        <ScrollViewer Grid.Column="0" x:Name="editingView" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Disabled" HorizontalAlignment="Left" Margin="10,40,0,10" MaxWidth="140" Visibility="Visible" >
                 
             <StackPanel Orientation="Vertical">
 
@@ -52,7 +50,7 @@
                 <Button x:Name="saveButton" Content="Save" Height="25" Width="120" Click="saveButton_Click" FontSize="16" Margin="5" Background="White"/>
                 <Button x:Name="undoButton" Content="Undo" Height="25" Width="120" Click="undoButton_Click" FontSize="16" Margin="0,0,0,5" Background="White"/>
                 <Button x:Name="resetButton" Content="Reset Editing" Height="25" Width="120" FontSize="16" Click="reserButton_Click"  Margin="0,0,0,5" Background="White"/>
-                <ComboBox x:Name="filters" Width="120"  Margin="5,5, 5, 0" SelectionChanged="filters_SelectionChanged"/>
+                <ComboBox x:Name="filters" Width="120"  Margin="5,0,5,0" SelectionChanged="filters_SelectionChanged"/>
 
                 <!--#region Transformation-->
                 <ToggleButton x:Name="transformationToggle" Width="120" Margin="5" ClickMode="Press" Click="transformationToggle_Click" IsChecked="False" Background="#353536">
