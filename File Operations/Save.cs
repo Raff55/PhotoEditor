@@ -9,7 +9,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
-namespace ImageEditor.Funtionals
+namespace ImageEditor.Functionals
 {
     public static class Save
     {

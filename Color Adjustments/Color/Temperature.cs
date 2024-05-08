@@ -1,4 +1,6 @@
-﻿using System.Windows.Media;
+﻿using System;
+using System.Threading.Tasks;
+using System.Windows.Media;
 using System.Windows;
 using System.Windows.Media.Imaging;
 
@@ -12,45 +14,36 @@ namespace ImageEditor.Color
             WriteableBitmap bitmap = new WriteableBitmap(sourceImage);
 
             // Get the pixel buffer of the writable bitmap
-            byte[] pixels = new byte[4 * bitmap.PixelWidth * bitmap.PixelHeight];
-            bitmap.CopyPixels(pixels, 4 * bitmap.PixelWidth, 0);
+            int width = bitmap.PixelWidth;
+            int height = bitmap.PixelHeight;
+            int stride = width * 4; // 4 bytes per pixel (BGR32 format)
+            int pixelCount = width * height;
+            byte[] pixels = new byte[pixelCount * 4];
+            bitmap.CopyPixels(pixels, stride, 0);
+
+            // Calculate the color adjustment based on the temperature value
+            double adjustment = temperatureValue * 255 / 100;
 
             // Adjust the temperature of each pixel
-            for (int i = 0; i < pixels.Length; i += 4)
+            for (int i = 0; i < pixelCount; i++)
             {
-                byte blue = pixels[i];
-                byte green = pixels[i + 1];
-                byte red = pixels[i + 2];
+                // Calculate the starting index of the current pixel
+                int index = i * 4;
 
-                // Adjust the color temperature
-                red = AdjustColor(red, temperatureValue);
-                blue = AdjustColor(blue, -temperatureValue);
+                // Adjust the blue channel
+                int adjustedBlue = pixels[index] + (int)(-temperatureValue * 255 / 100);
+                pixels[index] = (byte)Math.Min(Math.Max(adjustedBlue, 0), 255);
 
-                // Update the pixel values
-                pixels[i] = blue;
-                pixels[i + 1] = green;
-                pixels[i + 2] = red;
+                // Adjust the red channel
+                int adjustedRed = pixels[index + 2] + (int)(temperatureValue * 255 / 100);
+                pixels[index + 2] = (byte)Math.Min(Math.Max(adjustedRed, 0), 255);
             }
 
             // Create a new bitmap with the adjusted pixels
             WriteableBitmap adjustedBitmap = new WriteableBitmap(bitmap.PixelWidth, bitmap.PixelHeight, bitmap.DpiX, bitmap.DpiY, PixelFormats.Bgr32, null);
-            adjustedBitmap.WritePixels(new Int32Rect(0, 0, bitmap.PixelWidth, bitmap.PixelHeight), pixels, 4 * bitmap.PixelWidth, 0);
+            adjustedBitmap.WritePixels(new Int32Rect(0, 0, width, height), pixels, stride, 0);
 
             return adjustedBitmap;
-        }
-
-        private static byte AdjustColor(byte color, double temperatureValue)
-        {
-            // Calculate the color adjustment based on the temperature value
-            double adjustment = temperatureValue * 255 / 100;
-
-            // Apply the adjustment to the color
-            int adjustedColor = color + (int)adjustment;
-
-            // Ensure the adjusted color is within the valid range of 0-255
-            adjustedColor = Math.Min(Math.Max(adjustedColor, 0), 255);
-
-            return (byte)adjustedColor;
         }
     }
 }

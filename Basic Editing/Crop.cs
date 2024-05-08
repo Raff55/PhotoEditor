@@ -7,7 +7,7 @@ using System.Windows.Media.Imaging;
 using System.Windows;
 using System.Drawing;
 
-namespace ImageEditor.Funtionals
+namespace ImageEditor.Functionals
 {
     public static class Crop
     {

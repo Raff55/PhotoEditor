@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ImageEditor.Color
 {
-    public static class HslColor
+    public static class ColorUtils
     {
         public static void RgbToHsl(byte r, byte g, byte b, out double h, out double s, out double l)
         {

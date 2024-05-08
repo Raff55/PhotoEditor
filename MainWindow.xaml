@@ -49,7 +49,7 @@
                 <Button x:Name="openButton" Content="Open" Height="25" Width="120" Click="openButton_Click" FontSize="16" Margin="0,2,0,0" Background="White"/>
                 <Button x:Name="saveButton" Content="Save" Height="25" Width="120" Click="saveButton_Click" FontSize="16" Margin="5" Background="White"/>
                 <Button x:Name="undoButton" Content="Undo" Height="25" Width="120" Click="undoButton_Click" FontSize="16" Margin="0,0,0,5" Background="White"/>
-                <Button x:Name="resetButton" Content="Reset Editing" Height="25" Width="120" FontSize="16" Click="reserButton_Click"  Margin="0,0,0,5" Background="White"/>
+                <Button x:Name="resetButton" Content="Reset Editing" Height="25" Width="120" FontSize="16" Click="resetButton_Click"  Margin="0,0,0,5" Background="White"/>
                 <ComboBox x:Name="filters" Width="120"  Margin="5,0,5,0" SelectionChanged="filters_SelectionChanged"/>
 
                 <!--#region Transformation-->

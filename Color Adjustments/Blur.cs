@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Media.Effects;
-using System.Windows.Media.Imaging;
+﻿using System.Threading.Tasks;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using System.Windows;
+using System.Windows.Media.Effects;
+
 namespace ImageEditor.Color_Adjustments
 {
     public static class Blur
@@ -26,11 +23,12 @@ namespace ImageEditor.Color_Adjustments
             DrawingVisual drawingVisual = new DrawingVisual();
             using (DrawingContext drawingContext = drawingVisual.RenderOpen())
             {
+                // Draw the image directly without any transformation
                 drawingContext.DrawImage(source, new Rect(0, 0, source.PixelWidth, source.PixelHeight));
             }
             drawingVisual.Effect = blurEffect;
 
-            // Render the DrawingVisual to a WriteableBitmap
+            // Render the DrawingVisual to a RenderTargetBitmap
             RenderTargetBitmap rtb = new RenderTargetBitmap(
                 source.PixelWidth, source.PixelHeight, source.DpiX, source.DpiY, PixelFormats.Pbgra32);
             rtb.Render(drawingVisual);
@@ -40,6 +38,5 @@ namespace ImageEditor.Color_Adjustments
 
             return blurredBitmap;
         }
-
     }
 }

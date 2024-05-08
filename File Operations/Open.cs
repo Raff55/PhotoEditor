@@ -8,7 +8,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 
-namespace ImageEditor.Funtionals
+namespace ImageEditor.Functionals
 {
     public static class Open
     {

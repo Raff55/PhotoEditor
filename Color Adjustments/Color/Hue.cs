@@ -1,5 +1,6 @@
-﻿using System.Windows;
-using System.Windows.Media;
+﻿using System;
+using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Media.Imaging;
 
 namespace ImageEditor.Color
@@ -15,41 +16,40 @@ namespace ImageEditor.Color
             int width = writableBitmap.PixelWidth;
             int height = writableBitmap.PixelHeight;
             int stride = width * 4; // 4 bytes per pixel (ARGB)
-            byte[] pixels = new byte[height * stride];
+            int pixelCount = width * height;
+            byte[] pixels = new byte[pixelCount * 4];
             writableBitmap.CopyPixels(pixels, stride, 0);
 
             // Adjust the hue of each pixel in the image
-            for (int y = 0; y < height; y++)
+            for (int i = 0; i < pixelCount; i++)
             {
-                for (int x = 0; x < width; x++)
-                {
-                    int index = y * stride + 4 * x;
+                // Get the starting index of the current pixel
+                int index = i * 4;
 
-                    // Get the current pixel values (ARGB)
-                    byte alpha = pixels[index + 3];
-                    byte red = pixels[index + 2];
-                    byte green = pixels[index + 1];
-                    byte blue = pixels[index];
+                // Get the current pixel values (ARGB)
+                byte alpha = pixels[index + 3];
+                byte red = pixels[index + 2];
+                byte green = pixels[index + 1];
+                byte blue = pixels[index];
 
-                    // Convert RGB to HSL (Hue, Saturation, Lightness)
-                    double h, s, l;
-                    HslColor.RgbToHsl(red, green, blue, out h, out s, out l);
+                // Convert RGB to HSL (Hue, Saturation, Lightness)
+                double h, s, l;
+                ColorUtils.RgbToHsl(red, green, blue, out h, out s, out l);
 
-                    // Adjust the hue value
-                    h += hueValue;
+                // Adjust the hue value
+                h += hueValue;
 
-                    // Wrap the hue value within the valid range (0-360)
-                    h = h < 0 ? h + 360 : h > 360 ? h - 360 : h;
+                // Wrap the hue value within the valid range (0-360)
+                h = h < 0 ? h + 360 : h > 360 ? h - 360 : h;
 
-                    // Convert HSL back to RGB
-                    HslColor.HslToRgb(h, s, l, out red, out green, out blue);
+                // Convert HSL back to RGB
+                ColorUtils.HslToRgb(h, s, l, out red, out green, out blue);
 
-                    // Update the pixel values in the writable bitmap
-                    pixels[index + 3] = alpha;
-                    pixels[index + 2] = red;
-                    pixels[index + 1] = green;
-                    pixels[index] = blue;
-                }
+                // Update the pixel values in the writable bitmap
+                pixels[index + 3] = alpha;
+                pixels[index + 2] = red;
+                pixels[index + 1] = green;
+                pixels[index] = blue;
             }
 
             // Update the writable bitmap with the adjusted pixels

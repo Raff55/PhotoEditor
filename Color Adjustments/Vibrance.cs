@@ -10,11 +10,8 @@ namespace ImageEditor.Color_Adjustments
 {
     public static class Vibrance
     {
-        public static BitmapSource AdjustVibrance(BitmapSource source, double vibranceValue)
+        public static async Task<WriteableBitmap> AdjustVibrance(WriteableBitmap bitmap, double vibranceValue)
         {
-            // Convert the BitmapSource to a WriteableBitmap for editing
-            WriteableBitmap bitmap = new WriteableBitmap(source);
-
             int stride = (bitmap.PixelWidth * bitmap.Format.BitsPerPixel + 7) / 8;
             int size = stride * bitmap.PixelHeight;
             byte[] pixels = new byte[size];

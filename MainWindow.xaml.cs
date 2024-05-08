@@ -2,7 +2,7 @@
 using ImageEditor.Color;
 using ImageEditor.Color_Adjustments;
 using ImageEditor.Exposure;
-using ImageEditor.Funtionals;
+using ImageEditor.Functionals;
 using ImageEditor.Transformation;
 using System.ComponentModel;
 using System.IO;
@@ -12,6 +12,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Shapes;
 using Brushes = System.Windows.Media.Brushes;
 using Rectangle = System.Drawing.Rectangle;
 
@@ -150,12 +151,52 @@ namespace ImageEditor
         #endregion
 
         #region Reset
-        private void reserButton_Click(object sender, RoutedEventArgs e)
+        private void resetButton_Click(object sender, RoutedEventArgs e)
         {
             previousVersions.Clear();
             textCanvas.Children.Clear();
             editedBitmap = new WriteableBitmap(originalImage);
             editedImage.Source = originalImage;
+            //Brightness
+            Image.Brightness = 0;
+            brightnessSlider.Value = 0;
+            brightnessTextBox.Text = "";
+            //Blur
+            Image.Blur = 0;
+            blurSlider.Value = 0;
+            blurTextBox.Text = "";
+            //Contrast
+            Image.Contrast = 0;
+            contrastSlider.Value = 0;
+            contrastTextBox.Text = "";
+            //Highlight
+            Image.Highlight = 0;
+            highlightSlider.Value = 0;
+            highlightTextBox.Text = "";
+            //Shadows
+            Image.Shadows = 0;
+            shadowsSlider.Value = 0;
+            shadowsTextBox.Text = "";
+            //Vibrance
+            Image.Vibrance = 0;
+            vibranceSlider.Value = 0;
+            vibranceTextBox.Text = "";
+            //Hue
+            Image.Hue = 0;
+            hueSlider.Value = 0;
+            hueTextBox.Text = "";
+            //Saturation
+            Image.Saturation = 0;
+            saturationSlider.Value = 0;
+            saturationTextBox.Text = "";
+            //Temperature
+            Image.Temperature = 0;
+            temperatureSlider.Value = 0;
+            temperatureTextBox.Text = "";
+            //Sharpen
+            Image.Sharpen = 0;
+            sharpenSlider.Value = 0;
+            sharpenTextBox.Text = "";
         }
         #endregion
 
@@ -167,119 +208,60 @@ namespace ImageEditor
                 if (editedBitmap != null)
                 {
                     var bitmap = await UpdateImageDisplayWithFiltersWithReturning();
-                    previousVersions.Add(bitmap);
+                    //previousVersions.Add(bitmap);
                     editedImage.Source = bitmap;
                     Resources.MergedDictionaries.Clear();
-                    if(previousVersions.Count == 9)
+                    previousVersions.Add(bitmap);
+                    bitmap = null;
+                    if (previousVersions.Count == 11)
                     {
                         previousVersions.Remove(previousVersions[0]);
                     }
-                    previousVersions.Add(bitmap);
-                }
-                else
-                {
-                    editedImage.Source = originalImage;
                 }
             }
+            Resources.MergedDictionaries.Clear();
         }
 
         private async Task<WriteableBitmap> UpdateImageDisplayWithFiltersWithReturning()
         {
-            var exampleBitmap = new WriteableBitmap(editedBitmap);
-            if (editedBitmap != null)
-            {
-                if (!String.IsNullOrEmpty(brightnessTextBox.Text) && brightnessSlider.Value != 0 && brightnessSlider.Value != Image.Brightness)
-                {
-                    Image.Brightness = brightnessSlider.Value;
-                    exampleBitmap = await Brightness.AdjustBrightness(exampleBitmap, Image.Brightness);
-                }
-                if (!String.IsNullOrEmpty(contrastTextBox.Text) && contrastSlider.Value != 0 && contrastSlider.Value != Image.Contrast)
-                {
-                    Image.Contrast = contrastSlider.Value;
-                    exampleBitmap = await Contrast.ApplyContrastFilter(exampleBitmap, Image.Contrast);
-                }
-                if (!String.IsNullOrEmpty(highlightTextBox.Text) && highlightSlider.Value != 0 && highlightSlider.Value != Image.Highlight)
-                {
-                    exampleBitmap = await Highlight.ApplyHighlightFilter(exampleBitmap, Image.Highlight);
-                }
-                if (!String.IsNullOrEmpty(shadowsTextBox.Text) && shadowsSlider.Value != 0 && shadowsSlider.Value != Image.Shadows)
-                {
-                    exampleBitmap = await Shadow.AdjustShadows(exampleBitmap, Image.Shadows);
-                }
-                if (!String.IsNullOrEmpty(blurTextBox.Text) && blurSlider.Value != 0 && blurSlider.Value != Image.Blur)
-                {
-                    exampleBitmap = await Blur.ApplyBlur(exampleBitmap, Image.Blur);
-                }
-                if (!String.IsNullOrEmpty(hueTextBox.Text) && hueSlider.Value != 0 && hueSlider.Value != Image.Hue)
-                {
-                    exampleBitmap = await Hue.AdjustHue(exampleBitmap, Image.Hue);
-                }
-                if (!String.IsNullOrEmpty(saturationTextBox.Text) && saturationSlider.Value != 0 && saturationSlider.Value != Image.Saturation)
-                {
-                    exampleBitmap = await Saturation.AdjustSaturation(exampleBitmap, Image.Saturation);
-                }
-                if (!String.IsNullOrEmpty(temperatureTextBox.Text) && temperatureSlider.Value != 0 && temperatureSlider.Value != Image.Temperature)
-                {
-                    exampleBitmap = await Temperature.AdjustTemperature(exampleBitmap, Image.Temperature);
-                }
-                if (!String.IsNullOrEmpty(sharpenTextBox.Text) && sharpenSlider.Value != 0 && sharpenSlider.Value != Image.Sharpen)
-                {
-                    exampleBitmap = await Sharpen.AdjustSharpen(exampleBitmap, Image.Sharpen);
-                }
-            }
+            if (editedBitmap == null)
+                return null;
+
+            // Clone the original bitmap to avoid modifying the original
+            var exampleBitmap = editedBitmap.Clone();
+
+            if (!String.IsNullOrEmpty(brightnessTextBox.Text) && brightnessSlider.Value != 0)
+                exampleBitmap = await Brightness.AdjustBrightness(exampleBitmap, Image.Brightness);
+
+            if (!String.IsNullOrEmpty(contrastTextBox.Text) && contrastSlider.Value != 0)
+                exampleBitmap = await Contrast.ApplyContrastFilter(exampleBitmap, Image.Contrast);
+
+            if (!String.IsNullOrEmpty(highlightTextBox.Text) && highlightSlider.Value != 0)
+                exampleBitmap = await Highlight.ApplyHighlightFilter(exampleBitmap, Image.Highlight);
+
+            if (!String.IsNullOrEmpty(shadowsTextBox.Text) && shadowsSlider.Value != 0)
+                exampleBitmap = await Shadow.AdjustShadows(exampleBitmap, Image.Shadows);
+
+            if (!String.IsNullOrEmpty(blurTextBox.Text) && blurSlider.Value != 0)
+                exampleBitmap = await Blur.ApplyBlur(exampleBitmap, Image.Blur);
+
+            if (!String.IsNullOrEmpty(hueTextBox.Text) && hueSlider.Value != 0)
+                exampleBitmap = await Hue.AdjustHue(exampleBitmap, Image.Hue);
+
+            if (!String.IsNullOrEmpty(saturationTextBox.Text) && saturationSlider.Value != 0)
+                exampleBitmap = await Saturation.AdjustSaturation(exampleBitmap, Image.Saturation);
+
+            if (!String.IsNullOrEmpty(temperatureTextBox.Text) && temperatureSlider.Value != 0)
+                exampleBitmap = await Temperature.AdjustTemperature(exampleBitmap, Image.Temperature);
+
+            if (!String.IsNullOrEmpty(sharpenTextBox.Text) && sharpenSlider.Value != 0)
+                exampleBitmap = await Sharpen.AdjustSharpen(exampleBitmap, Image.Sharpen);
+
+            if (!String.IsNullOrEmpty(vibranceTextBox.Text) && vibranceSlider.Value != 0)
+                exampleBitmap = await Vibrance.AdjustVibrance(exampleBitmap, Image.Vibrance);
+
             return exampleBitmap;
         }
-
-        private async void UpdateImageDisplayWithFilters()
-        {
-            if (originalImage != null)
-            {
-                var exampleBitmap = new WriteableBitmap(editedBitmap);
-                if (double.TryParse(brightnessTextBox.Text, out double brightnessValue) && brightnessValue != Image.Brightness)
-                {
-                    Image.Brightness = brightnessSlider.Value;
-                    exampleBitmap = await Brightness.AdjustBrightness(exampleBitmap, Image.Brightness);
-                }
-                if (double.TryParse(contrastTextBox.Text, out double contrastValue) && contrastValue != Image.Contrast)
-                {
-                    Image.Contrast = contrastSlider.Value;
-                    exampleBitmap = await Contrast.ApplyContrastFilter(exampleBitmap, Image.Contrast);
-                }
-                if (double.TryParse(highlightTextBox.Text, out double highlightValue) && highlightValue != Image.Highlight)
-                {
-                    exampleBitmap = await Highlight.ApplyHighlightFilter(exampleBitmap, Image.Highlight);
-                }
-                if (double.TryParse(shadowsTextBox.Text, out double shadowsValue) && shadowsValue != Image.Shadows)
-                {
-                    exampleBitmap = await Shadow.AdjustShadows(exampleBitmap, Image.Shadows);
-                }
-                if (double.TryParse(blurTextBox.Text, out double blurValue) && blurValue != Image.Blur)
-                {
-                    exampleBitmap = await Blur.ApplyBlur(exampleBitmap, Image.Blur);
-                }
-                if (double.TryParse(hueTextBox.Text, out double hueValue) && hueValue != Image.Hue)
-                {
-                    exampleBitmap = await Hue.AdjustHue(exampleBitmap, Image.Hue);
-                }
-                if (double.TryParse(saturationTextBox.Text, out double saturationValue) && saturationValue != Image.Saturation)
-                {
-                    exampleBitmap = await Saturation.AdjustSaturation(exampleBitmap, Image.Saturation);
-                }
-                if (double.TryParse(temperatureTextBox.Text, out double temperatureValue) && temperatureValue != Image.Temperature)
-                {
-                    exampleBitmap = await Temperature.AdjustTemperature(exampleBitmap, Image.Temperature);
-                }
-                if (double.TryParse(sharpenTextBox.Text, out double sharpenValue) && sharpenValue != Image.Sharpen)
-                {
-                    exampleBitmap = await Sharpen.AdjustSharpen(exampleBitmap, Image.Sharpen);
-                }
-                editedBitmap = exampleBitmap;
-                previousVersions.Add(exampleBitmap);
-                //UpdateImageDisplay();
-                editedImage.Source = exampleBitmap;
-            }
-        }
-
         #endregion
 
         #endregion
@@ -421,7 +403,7 @@ namespace ImageEditor
             {
                 brightnessTextBox.Text = brightnessSlider.Value.ToString();
                 Image.Brightness = brightnessSlider.Value;
-                UpdateImageDisplayWithFilters();
+                UpdateImageDisplay();
             }
             else
             {
@@ -447,8 +429,8 @@ namespace ImageEditor
             if (editedBitmap != null)
             {
                 contrastTextBox.Text = contrastSlider.Value.ToString();
-                //Image.Contrast = contrastSlider.Value;
-                UpdateImageDisplayWithFilters();
+                Image.Contrast = contrastSlider.Value;
+                UpdateImageDisplay();
             }
             else
             {
@@ -475,7 +457,7 @@ namespace ImageEditor
             {
                 highlightTextBox.Text = highlightSlider.Value.ToString();
                 Image.Highlight = highlightSlider.Value;
-                UpdateImageDisplayWithFilters();
+                UpdateImageDisplay();
             }
             else
             {
@@ -502,7 +484,7 @@ namespace ImageEditor
             {
                 shadowsTextBox.Text = shadowsSlider.Value.ToString();
                 Image.Shadows = shadowsSlider.Value;
-                UpdateImageDisplayWithFilters();
+                UpdateImageDisplay();
             }
             else
             {
@@ -545,7 +527,7 @@ namespace ImageEditor
             {
                 hueTextBox.Text = hueSlider.Value.ToString();
                 Image.Hue = hueSlider.Value;
-                UpdateImageDisplayWithFilters();
+                UpdateImageDisplay();
             }
             else
             {
@@ -571,7 +553,7 @@ namespace ImageEditor
             {
                 saturationTextBox.Text = saturationSlider.Value.ToString();
                 Image.Saturation = saturationSlider.Value;
-                UpdateImageDisplayWithFilters();
+                UpdateImageDisplay();
             }
             else
             {
@@ -598,7 +580,7 @@ namespace ImageEditor
             {
                 temperatureTextBox.Text = temperatureSlider.Value.ToString();
                 Image.Temperature = temperatureSlider.Value;
-                UpdateImageDisplayWithFilters();
+                UpdateImageDisplay();
             }
             else
             {
@@ -638,7 +620,7 @@ namespace ImageEditor
             {
                 sharpenTextBox.Text = sharpenSlider.Value.ToString();
                 Image.Sharpen = sharpenSlider.Value;
-                UpdateImageDisplayWithFilters();
+                UpdateImageDisplay();
             }
             else
             {
@@ -685,7 +667,7 @@ namespace ImageEditor
                 if (selectedPixelFormatProperty != null)
                 {
                     var selectedPixelFormat = (System.Windows.Media.PixelFormat)selectedPixelFormatProperty.GetValue(null);
-                    var filteredImage = Filter.SetFilter(selectedPixelFormat, editedBitmap);
+                    var filteredImage = Filter.SetFilter(selectedPixelFormat,editedBitmap);
                     editedBitmap = new WriteableBitmap(filteredImage);
                     UpdateImageDisplay();
                 }
@@ -701,17 +683,17 @@ namespace ImageEditor
             {
                 blurTextBox.Text = blurSlider.Value.ToString();
                 Image.Blur = blurSlider.Value;
-                UpdateImageDisplayWithFilters();
+                UpdateImageDisplay();
             }
         }
 
         private void blurTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (int.TryParse(shadowsTextBox.Text, out int value))
+            if (int.TryParse(blurTextBox.Text, out int value))
             {
                 if (value >= 0 && value <= 20)
                 {
-                    shadowsSlider.Value = value;
+                    blurSlider.Value = value;
                 }
             }
         }
@@ -724,7 +706,7 @@ namespace ImageEditor
             {
                 vibranceTextBox.Text = vibranceSlider.Value.ToString();
                 Image.Vibrance = vibranceSlider.Value;
-                UpdateImageDisplayWithFilters();
+                UpdateImageDisplay();
             }
             else
             {

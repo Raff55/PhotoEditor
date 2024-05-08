@@ -1,10 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Drawing.Imaging;
-using System.Drawing;
-using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 
@@ -14,66 +8,53 @@ namespace ImageEditor.Exposure
     {
         public static async Task<WriteableBitmap> AdjustShadows(WriteableBitmap originalImage, double shadowsValue)
         {
-            Bitmap bitmap = ConvertToBitmap(originalImage);
+            int width = originalImage.PixelWidth;
+            int height = originalImage.PixelHeight;
 
-            // Apply shadow adjustment to the bitmap
-            int width = bitmap.Width;
-            int height = bitmap.Height;
-            Bitmap adjustedBitmap = new Bitmap(width, height);
+            // Calculate shadow adjustment factor
+            double shadowFactor = (100 + shadowsValue) / 100;
 
-            using (Graphics graphics = Graphics.FromImage(adjustedBitmap))
+            // Create a new WriteableBitmap with the same properties as the original image
+            WriteableBitmap adjustedImage = new WriteableBitmap(width, height, originalImage.DpiX, originalImage.DpiY, originalImage.Format, originalImage.Palette);
+
+            // Calculate stride (width of a single row of pixels in bytes)
+            int stride = width * ((originalImage.Format.BitsPerPixel + 7) / 8);
+
+            // Create byte array to hold pixel data
+            byte[] pixelBuffer = new byte[stride * height];
+
+            // Copy pixel data from the original image to the buffer
+            originalImage.CopyPixels(pixelBuffer, stride, 0);
+
+            // Adjust pixel intensity for each channel (RGBA) separately
+            for (int i = 0; i < pixelBuffer.Length; i += 4)
             {
-                // Create an ImageAttributes object for adjusting image attributes
-                ImageAttributes imageAttributes = new ImageAttributes();
+                byte red = pixelBuffer[i];
+                byte green = pixelBuffer[i + 1];
+                byte blue = pixelBuffer[i + 2];
 
-                // Set the shadows value in the ColorMatrix
-                float shadowValue = (float)(shadowsValue / 100.0);
-                ColorMatrix colorMatrix = new ColorMatrix(
-                [
-                    [1, 0, 0, 0, 0],
-                    [0, 1, 0, 0, 0],
-                    [0, 0, 1, 0, 0],
-                    [0, 0, 0, 1, 0],
-                    [shadowValue, shadowValue, shadowValue, 0, 1]
-                ]);
+                // Adjust shadow intensity for each channel
+                red = AdjustChannel(red, shadowFactor);
+                green = AdjustChannel(green, shadowFactor);
+                blue = AdjustChannel(blue, shadowFactor);
 
-                imageAttributes.SetColorMatrix(colorMatrix);
-
-                // Draw the original bitmap onto the adjusted bitmap using the image attributes
-                graphics.DrawImage(bitmap, new Rectangle(0, 0, width, height), 0, 0, width, height, GraphicsUnit.Pixel, imageAttributes);
+                // Update pixel values in the buffer
+                pixelBuffer[i] = red;
+                pixelBuffer[i + 1] = green;
+                pixelBuffer[i + 2] = blue;
             }
 
-            return ConvertToBitmapSource(adjustedBitmap);
+            // Write modified pixel data back to the adjusted image
+            adjustedImage.WritePixels(new System.Windows.Int32Rect(0, 0, width, height), pixelBuffer, stride, 0);
+
+            return adjustedImage;
         }
 
-        private static Bitmap ConvertToBitmap(WriteableBitmap bitmapImage)
+        private static byte AdjustChannel(byte originalValue, double shadowFactor)
         {
-            Bitmap bitmap;
-            using (MemoryStream stream = new MemoryStream())
-            {
-                BitmapEncoder encoder = new BmpBitmapEncoder();
-                encoder.Frames.Add(BitmapFrame.Create(bitmapImage));
-                encoder.Save(stream);
-                bitmap = new Bitmap(stream);
-            }
-            return bitmap;
-        }
-
-        private static WriteableBitmap ConvertToBitmapSource(Bitmap bitmap)
-        {
-            WriteableBitmap writableBitmap;
-            using (MemoryStream stream = new MemoryStream())
-            {
-                bitmap.Save(stream, ImageFormat.Png);
-                stream.Position = 0;
-                BitmapImage bitmapImage = new BitmapImage();
-                bitmapImage.BeginInit();
-                bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
-                bitmapImage.StreamSource = stream;
-                bitmapImage.EndInit();
-                writableBitmap = new WriteableBitmap(bitmapImage);
-            }
-            return writableBitmap;
+            // Adjust pixel intensity for a single channel
+            double adjustedValue = originalValue * shadowFactor;
+            return (byte)Math.Min(255, adjustedValue);
         }
     }
 }

@@ -1,16 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
-namespace ImageEditor.Funtionals
+namespace ImageEditor.Functionals
 {
     public static class Filter
     {
-        private static Dictionary<string, PixelFormat> pixelFormats = new Dictionary<string, PixelFormat>()
+        private static readonly Dictionary<string, PixelFormat> pixelFormats = new Dictionary<string, PixelFormat>()
         {
             { "Bgr32", PixelFormats.Bgr32 },
             { "Bgra32", PixelFormats.Bgra32 },
@@ -27,9 +23,9 @@ namespace ImageEditor.Funtionals
 
         public static PixelFormat GetPixelFormat(string formatName)
         {
-            if (pixelFormats.ContainsKey(formatName))
+            if (pixelFormats.TryGetValue(formatName, out PixelFormat format))
             {
-                return pixelFormats[formatName];
+                return format;
             }
 
             throw new ArgumentException("Invalid pixel format name.");
@@ -37,15 +33,20 @@ namespace ImageEditor.Funtionals
 
         public static string[] GetPixelFormatNames()
         {
-            string[] formatNames = new string[pixelFormats.Count];
-            pixelFormats.Keys.CopyTo(formatNames, 0);
-            return formatNames;
+            return pixelFormats.Keys.ToArray();
         }
 
         public static FormatConvertedBitmap SetFilter(PixelFormat format, WriteableBitmap img)
         {
-            FormatConvertedBitmap filteredImage = new FormatConvertedBitmap(img, PixelFormats.Gray8, null, 0);
-            return filteredImage;
+            // Check if the requested format is already the same as the input image format
+            if (img.Format == format)
+            {
+                // No need to convert, return the original image
+                return new FormatConvertedBitmap(img, format, null, 0);
+            }
+
+            // Convert the input image to the desired format
+            return new FormatConvertedBitmap(img, format, null, 0);
         }
     }
 }

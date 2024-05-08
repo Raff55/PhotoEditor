@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 
@@ -17,44 +14,37 @@ namespace ImageEditor.Exposure
             // Create a new WriteableBitmap with the same properties as the original image
             WriteableBitmap bitmap = new WriteableBitmap(image);
 
-            // Lock the bitmap to manipulate the pixel data
-            bitmap.Lock();
+            // Calculate the stride (width of a single row of pixels in bytes)
+            int stride = (width * bitmap.Format.BitsPerPixel + 7) / 8;
 
-            // Get the address of the first pixel
-            nint backBuffer = bitmap.BackBuffer;
+            // Create a byte array buffer to hold the modified pixel data
+            byte[] pixelBuffer = new byte[stride * height];
 
-            // Get the stride (width of a single row of pixels in bytes)
-            int stride = bitmap.BackBufferStride;
+            // Copy the original pixel data to the buffer
+            image.CopyPixels(pixelBuffer, stride, 0);
 
-            // Iterate over each row and column of pixels
-            for (int y = 0; y < height; y++)
+            // Adjust the highlight of each pixel in the buffer
+            for (int i = 0; i < pixelBuffer.Length; i += 4)
             {
-                for (int x = 0; x < width; x++)
-                {
-                    // Compute the address of the current pixel
-                    nint pixelAddress = backBuffer + y * stride + x * 4;
+                // Extract color components from the buffer
+                byte blue = pixelBuffer[i];
+                byte green = pixelBuffer[i + 1];
+                byte red = pixelBuffer[i + 2];
+                byte alpha = pixelBuffer[i + 3];
 
-                    // Read the color values of the pixel
-                    byte blue = System.Runtime.InteropServices.Marshal.ReadByte(pixelAddress);
-                    byte green = System.Runtime.InteropServices.Marshal.ReadByte(pixelAddress + 1);
-                    byte red = System.Runtime.InteropServices.Marshal.ReadByte(pixelAddress + 2);
-                    byte alpha = System.Runtime.InteropServices.Marshal.ReadByte(pixelAddress + 3);
+                // Adjust the highlight/brightness of the color
+                byte newRed = AdjustHighlight(red, highlightValue);
+                byte newGreen = AdjustHighlight(green, highlightValue);
+                byte newBlue = AdjustHighlight(blue, highlightValue);
 
-                    // Adjust the highlight/brightness of the color
-                    byte newRed = AdjustHighlight(red, highlightValue);
-                    byte newGreen = AdjustHighlight(green, highlightValue);
-                    byte newBlue = AdjustHighlight(blue, highlightValue);
-
-                    // Write the modified color values back to the pixel
-                    System.Runtime.InteropServices.Marshal.WriteByte(pixelAddress, newBlue);
-                    System.Runtime.InteropServices.Marshal.WriteByte(pixelAddress + 1, newGreen);
-                    System.Runtime.InteropServices.Marshal.WriteByte(pixelAddress + 2, newRed);
-                    System.Runtime.InteropServices.Marshal.WriteByte(pixelAddress + 3, alpha);
-                }
+                // Write the modified color values back to the buffer
+                pixelBuffer[i] = newBlue;
+                pixelBuffer[i + 1] = newGreen;
+                pixelBuffer[i + 2] = newRed;
             }
 
-            // Unlock the bitmap to finish the manipulation
-            bitmap.Unlock();
+            // Write the modified pixel data from the buffer to the bitmap
+            bitmap.WritePixels(new System.Windows.Int32Rect(0, 0, width, height), pixelBuffer, stride, 0);
 
             return bitmap;
         }

@@ -2,40 +2,43 @@
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using System.Windows;
+using System.Windows.Media;
 
 namespace ImageEditor.Exposure
 {
     public static class Brightness
     {
-        public static async Task<WriteableBitmap> AdjustBrightness(WriteableBitmap source, double brightness)
+        public static async Task<WriteableBitmap> AdjustBrightness(ImageSource source, double brightness)
         {
-            WriteableBitmap adjustedBitmap = new WriteableBitmap(source.PixelWidth, source.PixelHeight, source.DpiX, source.DpiY, source.Format, null);
+            // Convert the ImageSource to a WriteableBitmap
+            WriteableBitmap sourceBitmap = new WriteableBitmap((BitmapSource)source);
 
-            Int32Rect sourceRect = new Int32Rect(0, 0, source.PixelWidth, source.PixelHeight);
-            byte[] pixelData = new byte[source.PixelWidth * source.PixelHeight * (source.Format.BitsPerPixel / 8)];
-            source.CopyPixels(sourceRect, pixelData, source.PixelWidth * (source.Format.BitsPerPixel / 8), 0);
+            // Create a new WriteableBitmap for the adjusted image
+            WriteableBitmap adjustedBitmap = new WriteableBitmap(sourceBitmap.PixelWidth, sourceBitmap.PixelHeight, sourceBitmap.DpiX, sourceBitmap.DpiY, sourceBitmap.Format, null);
 
+            // Calculate brightness factor
             double brightnessFactor = (brightness + 100) / 100.0;
-            for (int i = 0; i < pixelData.Length; i += source.Format.BitsPerPixel / 8)
+
+            // Create a buffer to hold pixel data
+            int bytesPerPixel = (sourceBitmap.Format.BitsPerPixel + 7) / 8;
+            int stride = sourceBitmap.PixelWidth * bytesPerPixel;
+            byte[] pixelData = new byte[stride * sourceBitmap.PixelHeight];
+            sourceBitmap.CopyPixels(pixelData, stride, 0);
+
+            // Adjust pixel brightness
+            for (int i = 0; i < pixelData.Length; i += bytesPerPixel)
             {
-                byte blue = pixelData[i];
-                byte green = pixelData[i + 1];
-                byte red = pixelData[i + 2];
-
-                blue = AdjustBrightnessComponent(blue, brightnessFactor);
-                green = AdjustBrightnessComponent(green, brightnessFactor);
-                red = AdjustBrightnessComponent(red, brightnessFactor);
-
-                pixelData[i] = blue;
-                pixelData[i + 1] = green;
-                pixelData[i + 2] = red;
+                // Apply brightness adjustment to each color component
+                pixelData[i] = AdjustBrightnessComponent(pixelData[i], brightnessFactor);       // Blue
+                pixelData[i + 1] = AdjustBrightnessComponent(pixelData[i + 1], brightnessFactor); // Green
+                pixelData[i + 2] = AdjustBrightnessComponent(pixelData[i + 2], brightnessFactor); // Red
             }
 
             // Update UI on the UI thread
-            Application.Current.Dispatcher.Invoke(() =>
+            await Application.Current.Dispatcher.InvokeAsync(() =>
             {
                 Int32Rect adjustedRect = new Int32Rect(0, 0, adjustedBitmap.PixelWidth, adjustedBitmap.PixelHeight);
-                adjustedBitmap.WritePixels(adjustedRect, pixelData, adjustedBitmap.PixelWidth * (adjustedBitmap.Format.BitsPerPixel / 8), 0);
+                adjustedBitmap.WritePixels(adjustedRect, pixelData, stride, 0);
             });
 
             return adjustedBitmap;
@@ -43,6 +46,7 @@ namespace ImageEditor.Exposure
 
         private static byte AdjustBrightnessComponent(byte component, double brightnessFactor)
         {
+            // Adjust brightness of a single color component
             double adjustedComponent = component * brightnessFactor;
             adjustedComponent = Math.Max(0, Math.Min(255, adjustedComponent));
             return (byte)adjustedComponent;

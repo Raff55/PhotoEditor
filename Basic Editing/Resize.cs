@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using System.Windows.Media;
 
-namespace ImageEditor.Funtionals
+namespace ImageEditor.Functionals
 {
     public static class Resize
     {
