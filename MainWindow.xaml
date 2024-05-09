@@ -8,6 +8,7 @@
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
         
+        <!--#region Common-->
         <Viewbox Grid.Column="1" Margin="0,0,0,40">
             <Grid>
                 <ScrollViewer x:Name="imageScrollViewer" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Disabled">
@@ -15,13 +16,15 @@
                 </ScrollViewer>
                 <Canvas x:Name="textCanvas" />
                 <Canvas x:Name="collageCanvas" />
+                <Canvas x:Name="brushCanvas"/>
             </Grid>
         </Viewbox>
-        
+
         <StackPanel Orientation="Horizontal" Height="20" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="15,15,5,5">
             <Button Width="60" x:Name="EditTabButton" Content="Edit" Background="White" BorderBrush="White" Click="EditTabButton_Click"></Button>
             <Button Width="60" x:Name="CollageTabButton" Content="Collage" Background="#353536" Foreground="White" BorderBrush="White" Click="CollageTabButton_Click"></Button>
         </StackPanel>
+        <!--#endregion-->
 
         <!--#region Collage Tab-->
         <ScrollViewer Grid.Column="0" x:Name="collageView" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Disabled" HorizontalAlignment="Left" Margin="10,40,0,10" MaxWidth="140" Visibility="Collapsed" >

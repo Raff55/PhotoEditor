@@ -155,6 +155,7 @@ namespace ImageEditor
         {
             previousVersions.Clear();
             textCanvas.Children.Clear();
+            brushCanvas.Children.Clear();
             editedBitmap = new WriteableBitmap(originalImage);
             editedImage.Source = originalImage;
             //Brightness
@@ -208,7 +209,6 @@ namespace ImageEditor
                 if (editedBitmap != null)
                 {
                     var bitmap = await UpdateImageDisplayWithFiltersWithReturning();
-                    //previousVersions.Add(bitmap);
                     editedImage.Source = bitmap;
                     Resources.MergedDictionaries.Clear();
                     previousVersions.Add(bitmap);
@@ -733,9 +733,8 @@ namespace ImageEditor
         {
             if (originalImage != null)
             {
-                double zoomValue = zoomSlider.Value;
-                ApplyZoom(zoomValue);
-                zoomLevel = zoomValue;
+                zoomLevel = zoomSlider.Value;
+                ApplyZoom(zoomSlider.Value);
             }
         }
 
@@ -781,7 +780,6 @@ namespace ImageEditor
         private Brush currentBrush = Brushes.Black;
         private bool isBrushDrawingActive = false;
         private bool isDrawing = false;
-        double brushSizeValue;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -798,26 +796,20 @@ namespace ImageEditor
         #region Draw
         private void brushEditedImage_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            if (editedBitmap != null)
+            if (isBrushDrawingActive)
             {
                 isDrawing = true;
-                var drawedBitmap = Tools.Brush.Draw(editedBitmap, e.GetPosition(editedImage), brushSizeValue, currentBrush, editedImage.ActualWidth, editedImage.ActualHeight);
-                editedBitmap = drawedBitmap;
-                UpdateImageDisplay();
+                brushCanvas.Children.Add(Tools.Brush.Draw(e.GetPosition(brushCanvas), currentBrush, brushSize.Value));
             }
         }
 
-        private void brushEditedImage_MouseMove(object sender, MouseEventArgs e)
+        private void brushCanvas_MouseMove(object sender, MouseEventArgs e)
         {
-            if (isDrawing && editedBitmap != null)
+            if (isDrawing && isBrushDrawingActive)
             {
-                brushSizeValue = brushSize.Value;
-                var drawedBitmap = Tools.Brush.Draw(editedBitmap, e.GetPosition(editedImage), brushSizeValue, currentBrush, editedImage.ActualWidth, editedImage.ActualHeight);
-                editedBitmap = drawedBitmap;
-                UpdateImageDisplay();
+                brushCanvas.Children.Add(Tools.Brush.Draw(e.GetPosition(brushCanvas), currentBrush, brushSize.Value));
             }
         }
-
         private void brushEditedImage_MouseUp(object sender, MouseButtonEventArgs e)
         {
             isDrawing = false;
@@ -830,17 +822,19 @@ namespace ImageEditor
             if (isBrushDrawingActive)
             {
                 editedImage.MouseDown -= brushEditedImage_MouseDown;
-                editedImage.MouseMove -= brushEditedImage_MouseMove;
-                editedImage.MouseUp -= brushEditedImage_MouseUp;
+                editedImage.MouseMove -= brushCanvas_MouseMove;
+                brushCanvas.MouseUp -= brushEditedImage_MouseUp;
+
                 isBrushDrawingActive = false;
                 brushButton.Background = Brushes.White;
-                brushButton.Content = "Activate Brushe";
+                brushButton.Content = "Activate Brush";
             }
             else
             {
                 editedImage.MouseDown += brushEditedImage_MouseDown;
-                editedImage.MouseMove += brushEditedImage_MouseMove;
-                editedImage.MouseUp += brushEditedImage_MouseUp;
+                editedImage.MouseMove += brushCanvas_MouseMove;
+                brushCanvas.MouseUp += brushEditedImage_MouseUp;
+
                 isBrushDrawingActive = true;
                 brushButton.Background = Brushes.Gray;
                 brushButton.Content = "Activated";
