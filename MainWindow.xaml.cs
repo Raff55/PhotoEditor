@@ -5,14 +5,12 @@ using ImageEditor.Exposure;
 using ImageEditor.Functionals;
 using ImageEditor.Transformation;
 using System.ComponentModel;
-using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using Brushes = System.Windows.Media.Brushes;
 using Rectangle = System.Drawing.Rectangle;
 
@@ -21,6 +19,7 @@ namespace ImageEditor
 {
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
+
         private List<WriteableBitmap> previousVersions = new List<WriteableBitmap>(10);
         private BitmapImage originalImage;
         private WriteableBitmap editedBitmap;
@@ -970,65 +969,42 @@ namespace ImageEditor
         private void AddText_MouseDown(object sender, MouseButtonEventArgs e)
         {
             System.Windows.Point position = e.GetPosition(editedImage);
+            Brush selectedBrush = Brushes.White;
 
-            string text = textInput.Text;//Microsoft.VisualBasic.Interaction.InputBox("Enter text:", "Add Text", "");
-
-            if (!string.IsNullOrWhiteSpace(text))
+            //string text = Microsoft.VisualBasic.Interaction.InputBox("Enter text:", "Add Text", "");
+            if (!string.IsNullOrWhiteSpace(textInput.Text))
             {
-                AddTextToImage(text, position);
-                boldButton.Background = Brushes.White;
-            }
+                if (colorComboBox.SelectedItem != null)
+                {
+                    var converter = new System.Windows.Media.BrushConverter();
+                    try
+                    {
+                        selectedBrush = (Brush)converter.ConvertFromString(colorComboBox.SelectedItem.ToString()) ?? Brushes.White;
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new Exception(ex.Message);
+                    }
+                }
+                var textBlock = Tools.Text.AddTextToImage(textInput.Text, fontSizeSlider.Value, selectedBrush, fontComboBox.FontFamily, isBold, isItalic, isUnderline);
+                Canvas.SetLeft(textBlock, position.X);
+                Canvas.SetTop(textBlock, position.Y);
 
+                textBlock.MouseLeftButtonDown += TextBlock_MouseLeftButtonDown;
+                textBlock.MouseMove += TextBlock_MouseMove;
+                textBlock.MouseLeftButtonUp += TextBlock_MouseLeftButtonUp;
+                textBlock.MouseRightButtonDown += TextBlock_MouseRightButtonDown;
+
+                // Add the TextBlock to the textCanvas
+                textCanvas.Children.Add(textBlock);
+                imageScrollViewer.Cursor = Cursors.Arrow;
+                italicButton.Background = Brushes.White;
+                underlineButton.Background = Brushes.White;
+                boldButton.Background = Brushes.White;
+                textInput.Text = "";
+            }
             editedImage.Cursor = Cursors.Arrow;
             editedImage.MouseLeftButtonDown -= AddText_MouseDown;
-        }
-
-        private void AddTextToImage(string text, System.Windows.Point position)
-        {
-            Brush selectedBrush = Brushes.White; // Default brush if nothing is selected
-            if (colorComboBox.SelectedItem != null)
-            {
-                var converter = new System.Windows.Media.BrushConverter();
-                try
-                {
-                    selectedBrush = (Brush)converter.ConvertFromString(colorComboBox.SelectedItem.ToString()) ?? Brushes.White;
-                }
-                catch (Exception ex)
-                {
-                    throw new Exception(ex.Message);
-                }
-            }
-
-
-            // Create a new TextBlock
-            TextBlock textBlock = new TextBlock
-            {
-                Text = text,
-                FontSize = fontSizeSlider.Value,
-                FontWeight = isBold ? FontWeights.Bold : FontWeights.Normal,
-                FontStyle = isItalic ? FontStyles.Italic : FontStyles.Normal,
-                TextDecorations = isUnderline ? TextDecorations.Underline : null,
-                TextAlignment = TextAlignment.Center,
-                FontFamily = fontComboBox.FontFamily,
-                Foreground = selectedBrush,
-            };
-
-            // Set the position of the TextBlock within the Canvas
-            Canvas.SetLeft(textBlock, position.X);
-            Canvas.SetTop(textBlock, position.Y);
-
-            textBlock.MouseLeftButtonDown += TextBlock_MouseLeftButtonDown;
-            textBlock.MouseMove += TextBlock_MouseMove;
-            textBlock.MouseLeftButtonUp += TextBlock_MouseLeftButtonUp;
-            textBlock.MouseRightButtonDown += TextBlock_MouseRightButtonDown;
-
-            // Add the TextBlock to the textCanvas
-            textCanvas.Children.Add(textBlock);
-            imageScrollViewer.Cursor = Cursors.Arrow;
-            italicButton.Background = Brushes.White;
-            underlineButton.Background = Brushes.White;
-            boldButton.Background = Brushes.White;
-            textInput.Text = "";
         }
         #endregion
 
