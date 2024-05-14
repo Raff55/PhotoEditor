@@ -3,6 +3,7 @@ using ImageEditor.Color;
 using ImageEditor.Color_Adjustments;
 using ImageEditor.Exposure;
 using ImageEditor.Functionals;
+using ImageEditor.Resources;
 using ImageEditor.Transformation;
 using System.ComponentModel;
 using System.Windows;
@@ -88,7 +89,6 @@ namespace ImageEditor
             CollageFunctions.ShowPopup(ref popup, ref collageWidthTextBox, ref collageHeightTextBox, enterSizesCollageButton_Click);
         }
 
-        // In the EditTabButton_Click method, simply close the popup and clear its child
         private void EditTabButton_Click(object sender, RoutedEventArgs e)
         {
             editingView.Visibility = Visibility.Visible;
@@ -391,9 +391,9 @@ namespace ImageEditor
 
         #endregion
 
-        #region Color Adjustments
+        #region Adjustments
 
-        #region Exposure
+        #region Tonal Adjustments
 
         #region Brightness
         private void brightnessSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
@@ -517,7 +517,7 @@ namespace ImageEditor
 
         #endregion
 
-        #region Color
+        #region Color Adjustments
 
         #region Hue
         private async void hueSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
@@ -598,21 +598,7 @@ namespace ImageEditor
         }
         #endregion
 
-        private void colorToggle_Click(object sender, RoutedEventArgs e)
-        {
-            if (colorToggle.IsChecked == true)
-            {
-                colorPanel.Visibility = Visibility.Visible;
-            }
-            else
-            {
-                colorPanel.Visibility = Visibility.Collapsed;
-            }
-        }
-
-        #endregion
-
-        #region Sharpen
+        #region Sharpness
         private void sharpenSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             if (editedBitmap != null)
@@ -652,28 +638,21 @@ namespace ImageEditor
 
         #endregion
 
-        #region Filter
-        private void filters_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void colorToggle_Click(object sender, RoutedEventArgs e)
         {
-            // Get the selected format name
-            if (editedBitmap != null)
+            if (colorToggle.IsChecked == true)
             {
-                var selectedFormatName = e.AddedItems[0].ToString();
-
-                // Find the corresponding PixelFormat property using reflection
-                var selectedPixelFormatProperty = typeof(PixelFormats).GetProperty(selectedFormatName);
-
-                if (selectedPixelFormatProperty != null)
-                {
-                    var selectedPixelFormat = (System.Windows.Media.PixelFormat)selectedPixelFormatProperty.GetValue(null);
-                    var filteredImage = Filter.SetFilter(selectedPixelFormat,editedBitmap);
-                    editedBitmap = new WriteableBitmap(filteredImage);
-                    UpdateImageDisplay();
-                }
+                colorPanel.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                colorPanel.Visibility = Visibility.Collapsed;
             }
         }
 
         #endregion
+
+        #region Special Effects
 
         #region Blur
         private void blurSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
@@ -723,6 +702,31 @@ namespace ImageEditor
                 }
             }
         }
+        #endregion
+
+        #endregion
+
+        #region Filter
+        private void filters_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            // Get the selected format name
+            if (editedBitmap != null)
+            {
+                var selectedFormatName = e.AddedItems[0].ToString();
+
+                // Find the corresponding PixelFormat property using reflection
+                var selectedPixelFormatProperty = typeof(PixelFormats).GetProperty(selectedFormatName);
+
+                if (selectedPixelFormatProperty != null)
+                {
+                    var selectedPixelFormat = (System.Windows.Media.PixelFormat)selectedPixelFormatProperty.GetValue(null);
+                    var filteredImage = Filter.SetFilter(selectedPixelFormat,editedBitmap);
+                    editedBitmap = new WriteableBitmap(filteredImage);
+                    UpdateImageDisplay();
+                }
+            }
+        }
+
         #endregion
 
         #endregion
@@ -809,6 +813,7 @@ namespace ImageEditor
                 brushCanvas.Children.Add(Tools.Brush.Draw(e.GetPosition(brushCanvas), currentBrush, brushSize.Value));
             }
         }
+
         private void brushEditedImage_MouseUp(object sender, MouseButtonEventArgs e)
         {
             isDrawing = false;
@@ -826,7 +831,7 @@ namespace ImageEditor
 
                 isBrushDrawingActive = false;
                 brushButton.Background = Brushes.White;
-                brushButton.Content = "Activate Brush";
+                brushButton.Content = Editor.ACTIVATE_BRUSH;
             }
             else
             {
@@ -836,7 +841,7 @@ namespace ImageEditor
 
                 isBrushDrawingActive = true;
                 brushButton.Background = Brushes.Gray;
-                brushButton.Content = "Activated";
+                brushButton.Content = Editor.ACTIVATED;
             }
         }
         #endregion
@@ -930,7 +935,7 @@ namespace ImageEditor
         {
             if (editedBitmap != null && !String.IsNullOrEmpty(textInput.Text) && fontSizeSlider != null && fontComboBox.SelectedIndex != -1 && colorComboBox.SelectedIndex != -1)
             {
-                if (textButton.Content.ToString() == "Edit Text")
+                if (textButton.Content.ToString() == Editor.EDIT_TEXT)
                 {
                     Brush? selectedBrush = (Brush)new BrushConverter().ConvertFromString(colorComboBox.SelectedItem.ToString());
                     string newText = textInput.Text;
@@ -948,19 +953,19 @@ namespace ImageEditor
                         selectedTextBlock.TextDecorations = isUnderline ? TextDecorations.Underline : null;
                         deleteButton.Visibility = Visibility.Collapsed;
                     }
-                    textButton.Content = "Add Text";
+                    textButton.Content = Editor.ADD_TEXT;
                 }
-                else if (textButton.Content.ToString() == "Cancel")
+                else if (textButton.Content.ToString() == Editor.CANCEL)
                 {
                     editedImage.Cursor = Cursors.Arrow;
                     editedImage.MouseLeftButtonDown -= AddText_MouseDown;
-                    textButton.Content = "Add Text";
+                    textButton.Content = Editor.ADD_TEXT;
                 }
                 else
                 {
                     editedImage.MouseLeftButtonDown += AddText_MouseDown;
                     editedImage.Cursor = Cursors.IBeam;
-                    textButton.Content = "Cancel";
+                    textButton.Content = Editor.CANCEL;
                 }
             }
         }
@@ -1038,7 +1043,7 @@ namespace ImageEditor
             {
                 isTextMoving = false;
                 selectedTextBlock.ReleaseMouseCapture();
-                textButton.Content = "Add Text";
+                textButton.Content = Editor.ADD_TEXT;
             }
         }
         #endregion
@@ -1046,7 +1051,7 @@ namespace ImageEditor
         #region Edit
         private void TextBlock_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
-            textButton.Content = "Edit Text";
+            textButton.Content = Editor.EDIT_TEXT;
             selectedTextBlock = sender as TextBlock;
             textInput.Text = selectedTextBlock.Text;
             fontSizeSlider.Value = selectedTextBlock.FontSize;
@@ -1067,7 +1072,7 @@ namespace ImageEditor
         {
             textCanvas.Children.Remove(selectedTextBlock);
             deleteButton.Visibility = Visibility.Collapsed;
-            textButton.Content = "Add Text";
+            textButton.Content = Editor.ADD_TEXT;
             italicButton.Background = Brushes.White;
             underlineButton.Background = Brushes.White;
             boldButton.Background = Brushes.White;
@@ -1161,18 +1166,18 @@ namespace ImageEditor
         {
             collageCanvas.Children.Clear();
             var images = new List<BitmapImage>();
-            //for (int i = 0; i < 4; i++)
-            //{
-            while(images.Count != 4 ) 
+            BitmapImage? image;
+            while (images.Count != 4 ) 
             { 
-                BitmapImage image = Open.OpenImage();
+                image = Open.OpenImage();
                 if (image != null)
                 {
                     images.Add(image);
+                    image = null;
                 }
                 else
                 {
-                    MessageBox.Show("Please select image");
+                    MessageBox.Show(Editor.PLEASE_SELECT_IMAGE);
                 }
             }
             CollageFunctions.collageCanvas = collageCanvas;
@@ -1183,12 +1188,14 @@ namespace ImageEditor
         {
             collageCanvas.Children.Clear();
             var images = new List<BitmapImage>();
-            for(int i = 0; i < 2; i++)
+            BitmapImage? image;
+            while (images.Count != 2)
             {
-                BitmapImage image = Open.OpenImage();
+                image = Open.OpenImage();
                 if (image != null)
                 {
                     images.Add(image);
+                    image = null;
                 }
             }
             CollageFunctions.collageCanvas = collageCanvas;
@@ -1199,12 +1206,14 @@ namespace ImageEditor
         {
             collageCanvas.Children.Clear();
             var images = new List<BitmapImage>();
-            for (int i = 0; i < 2; i++)
+            //for (int i = 0; i < 2; i++)
+            while (images.Count != 2)
             {
                 BitmapImage image = Open.OpenImage();
                 if (image != null)
                 {
                     images.Add(image);
+                    image = null;
                 }
             }
             CollageFunctions.collageCanvas = collageCanvas;

@@ -13,4 +13,25 @@
     <PackageReference Include="System.Drawing.Common" Version="8.0.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Update="Resources\Editor.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Editor.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Resources\Editor.hy-AM.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Editor.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Editor.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Editor.ru-Ru.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+
 </Project>

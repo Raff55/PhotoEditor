@@ -27,7 +27,6 @@ namespace ImageEditor.Transformation
                     int index1 = y * stride + x * bytesPerPixel;
                     int index2 = (height - y - 1) * stride + x * bytesPerPixel;
 
-                    // Swap pixel values
                     for (int i = 0; i < bytesPerPixel; i++)
                     {
                         byte temp = pixels[index1 + i];

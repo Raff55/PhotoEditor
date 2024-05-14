@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ImageEditor.Resources;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -30,35 +31,35 @@ namespace ImageEditor.Collage
             stackPanel.Margin = new Thickness(20);
 
             TextBlock messageTextBlock = new TextBlock();
-            messageTextBlock.Text = "Enter image width";
+            messageTextBlock.Text = Resources.Editor.ENTER_IMAGE_WIDTH;
             messageTextBlock.TextAlignment = TextAlignment.Left;
-            messageTextBlock.FontSize = 20;
+            messageTextBlock.FontSize = 16;
             messageTextBlock.Foreground = Brushes.White;
             stackPanel.Children.Add(messageTextBlock);
 
             // Create the first TextBox
-            collageWidthTextBox.Margin = new Thickness(0, 0, 0, 10);
+            collageWidthTextBox.Margin = new Thickness(0, 10, 0, 10);
             collageWidthTextBox.FontSize = 16;
             collageWidthTextBox.Foreground = Brushes.Black;
             collageWidthTextBox.Background = Brushes.White;
             stackPanel.Children.Add(collageWidthTextBox);
 
             TextBlock messageTextBlock1 = new TextBlock();
-            messageTextBlock1.Text = "Enter image height";
+            messageTextBlock1.Text = Resources.Editor.ENTER_IMAGE_HEIGHT;
             messageTextBlock1.TextAlignment = TextAlignment.Left;
-            messageTextBlock1.FontSize = 20;
+            messageTextBlock1.FontSize = 16;
             messageTextBlock1.Foreground = Brushes.White;
             stackPanel.Children.Add(messageTextBlock1);
 
             // Create the second TextBox
-            collageHeightTextBox.Margin = new Thickness(0, 0, 0, 20);
+            collageHeightTextBox.Margin = new Thickness(0, 10, 0, 20);
             collageHeightTextBox.FontSize = 16;
             collageHeightTextBox.Foreground = Brushes.Black;
             collageHeightTextBox.Background = Brushes.White;
             stackPanel.Children.Add(collageHeightTextBox);
 
             Button button = new Button();
-            button.Content = "Submit";
+            button.Content = Resources.Editor.SUBMIT;
             button.Margin = new Thickness(0, 10, 0, 0);
             button.Padding = new Thickness(10);
             button.FontSize = 16;
@@ -80,7 +81,7 @@ namespace ImageEditor.Collage
             popup.Child = border;
 
             // Set the dimensions of the Popup
-            popup.Width = 200;
+            popup.Width = 350;
             popup.Height = 250;
 
             // Show the Popup
@@ -127,7 +128,7 @@ namespace ImageEditor.Collage
                                 UpdateCollageDisplay(2, 2);
                         }
                         else
-                            MessageBox.Show("Maximum limit of 4 images reached for collage.");
+                            MessageBox.Show(Editor.MAX_LIMIT_4);
                         break;
                     case 2:
                         if (selectedImages.Count < 2)
@@ -137,7 +138,7 @@ namespace ImageEditor.Collage
                                 UpdateCollageDisplay(2, 0);
                         }
                         else
-                            MessageBox.Show("Maximum limit of 2 images reached for collage.");
+                            MessageBox.Show(Editor.MAX_LIMIT_2);
                         break;
                     case 3:
                         if (selectedImages.Count < 2)
@@ -147,7 +148,7 @@ namespace ImageEditor.Collage
                                 UpdateCollageDisplay(0, 2);
                         }
                         else
-                            MessageBox.Show("Maximum limit of 2 images reached for collage.");
+                            MessageBox.Show(Editor.MAX_LIMIT_2);
                         break;
                 }
             }

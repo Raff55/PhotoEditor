@@ -1,4 +1,5 @@
-﻿using Microsoft.Win32;
+﻿using ImageEditor.Resources;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,7 +38,7 @@ namespace ImageEditor.Functionals
                 }
                 else
                 {
-                    MessageBox.Show("Please select a valid image file.", "Invalid File", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show(Editor.SELECT_VALID_IMAGE, Editor.INVALID_FILE, MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
             return originalImage;

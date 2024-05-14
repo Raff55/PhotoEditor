@@ -1,0 +1,247 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+		Microsoft ResX Schema
+
+		Version 1.3
+
+		The primary goals of this format is to allow a simple XML format 
+		that is mostly human readable. The generation and parsing of the 
+		various data types are done through the TypeConverter classes 
+		associated with the data types.
+
+		Example:
+
+		... ado.net/XML headers & schema ...
+		<resheader name="resmimetype">text/microsoft-resx</resheader>
+		<resheader name="version">1.3</resheader>
+		<resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+		<resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+		<data name="Name1">this is my long string</data>
+		<data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+		<data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+			[base64 mime encoded serialized .NET Framework object]
+		</data>
+		<data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+			[base64 mime encoded string representing a byte array form of the .NET Framework object]
+		</data>
+
+		There are any number of "resheader" rows that contain simple 
+		name/value pairs.
+
+		Each data row contains a name, and value. The row also contains a 
+		type or mimetype. Type corresponds to a .NET class that support 
+		text/value conversion through the TypeConverter architecture. 
+		Classes that don't support this are serialized and stored with the 
+		mimetype set.
+
+		The mimetype is used for serialized objects, and tells the 
+		ResXResourceReader how to depersist the object. This is currently not 
+		extensible. For a given mimetype the value must be set accordingly:
+
+		Note - application/x-microsoft.net.object.binary.base64 is the format 
+		that the ResXResourceWriter will generate, however the reader can 
+		read any of the formats listed below.
+
+		mimetype: application/x-microsoft.net.object.binary.base64
+		value   : The object must be serialized with 
+			: System.Serialization.Formatters.Binary.BinaryFormatter
+			: and then encoded with base64 encoding.
+
+		mimetype: application/x-microsoft.net.object.soap.base64
+		value   : The object must be serialized with 
+			: System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+			: and then encoded with base64 encoding.
+
+		mimetype: application/x-microsoft.net.object.bytearray.base64
+		value   : The object must be serialized into a byte array 
+			: using a System.ComponentModel.TypeConverter
+			: and then encoded with base64 encoding.
+	-->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>1.3</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="UPLOAD" xml:space="preserve">
+    <value>Загрузить изображение</value>
+  </data>
+  <data name="SAVE" xml:space="preserve">
+    <value>Сохранить изображение</value>
+  </data>
+  <data name="UNDO" xml:space="preserve">
+    <value>Отменить</value>
+  </data>
+  <data name="EDIT" xml:space="preserve">
+    <value>Редактировать</value>
+  </data>
+  <data name="COLLAGE" xml:space="preserve">
+    <value>Коллаж</value>
+  </data>
+  <data name="RESET_EDITING" xml:space="preserve">
+    <value>Сбросить редактирование</value>
+  </data>
+  <data name="TRANSFORMATION" xml:space="preserve">
+    <value>Трансформация</value>
+  </data>
+  <data name="MIRROR" xml:space="preserve">
+    <value>Зеркало</value>
+  </data>
+  <data name="FLIP" xml:space="preserve">
+    <value>Перевернуть</value>
+  </data>
+  <data name="ROTATE" xml:space="preserve">
+    <value>Поворот</value>
+  </data>
+  <data name="CROP" xml:space="preserve">
+    <value>Обрезать</value>
+  </data>
+  <data name="RESIZE" xml:space="preserve">
+    <value>Изменить размер</value>
+  </data>
+  <data name="TONAL_ADJUSTMENTS" xml:space="preserve">
+    <value>Тональные изменения</value>
+  </data>
+  <data name="BRIGHTNESS" xml:space="preserve">
+    <value>Яркость</value>
+  </data>
+  <data name="CONTRAST" xml:space="preserve">
+    <value>Контраст</value>
+  </data>
+  <data name="HIGHLIGHT" xml:space="preserve">
+    <value>Световой эффект</value>
+  </data>
+  <data name="SHADOWS" xml:space="preserve">
+    <value>Тени</value>
+  </data>
+  <data name="COLOR_ADJUSTMENTS" xml:space="preserve">
+    <value>Регулировка цвета</value>
+  </data>
+  <data name="HUE" xml:space="preserve">
+    <value>Оттенок</value>
+  </data>
+  <data name="SATURATION" xml:space="preserve">
+    <value>Насыщенность</value>
+  </data>
+  <data name="TEMPERATURE" xml:space="preserve">
+    <value>Температура</value>
+  </data>
+  <data name="SHARPNESS" xml:space="preserve">
+    <value>Чёткость</value>
+  </data>
+  <data name="BLUR" xml:space="preserve">
+    <value>Размытие</value>
+  </data>
+  <data name="BRUSH" xml:space="preserve">
+    <value>Кисть</value>
+  </data>
+  <data name="ACTIVATE_BRUSH" xml:space="preserve">
+    <value>Активировать кисть</value>
+  </data>
+  <data name="RED" xml:space="preserve">
+    <value>Красный</value>
+  </data>
+  <data name="GREEN" xml:space="preserve">
+    <value>Зеленый</value>
+  </data>
+  <data name="BLUE" xml:space="preserve">
+    <value>Синий</value>
+  </data>
+  <data name="BRUSH_SIZE" xml:space="preserve">
+    <value>Размер кисти</value>
+  </data>
+  <data name="TEXT" xml:space="preserve">
+    <value>Текст</value>
+  </data>
+  <data name="ENTER_TEXT_HERE" xml:space="preserve">
+    <value>Введите текст здесь</value>
+  </data>
+  <data name="FONT_SIZE" xml:space="preserve">
+    <value>Размер шрифта</value>
+  </data>
+  <data name="ADD_TEXT" xml:space="preserve">
+    <value>Добавьте текст</value>
+  </data>
+  <data name="DELETE_TEXT" xml:space="preserve">
+    <value>Удалить текст</value>
+  </data>
+  <data name="VIBRANCE" xml:space="preserve">
+    <value>Сочность</value>
+  </data>
+  <data name="SPECIAL_EFFECTS" xml:space="preserve">
+    <value>Спецэффекты</value>
+  </data>
+  <data name="TEMPLATES" xml:space="preserve">
+    <value>Шаблоны</value>
+  </data>
+  <data name="ENTER_IMAGE_WIDTH" xml:space="preserve">
+    <value>Введите ширину изображения</value>
+  </data>
+  <data name="ENTER_IMAGE_HEIGHT" xml:space="preserve">
+    <value>Введите высоту изображения</value>
+  </data>
+  <data name="SUBMIT" xml:space="preserve">
+    <value>Подтверждать</value>
+  </data>
+  <data name="EDIT_TEXT" xml:space="preserve">
+    <value>Редактировать текст</value>
+  </data>
+  <data name="PLEASE_SELECT_IMAGE" xml:space="preserve">
+    <value>Пожалуйста, выберите изображение</value>
+  </data>
+  <data name="MAX_LIMIT_4" xml:space="preserve">
+    <value>Для коллажа доступно максимум 4 изображения</value>
+  </data>
+  <data name="MAX_LIMIT_2" xml:space="preserve">
+    <value>Для коллажа доступно максимум 2 изображения</value>
+  </data>
+  <data name="SELECT_VALID_IMAGE" xml:space="preserve">
+    <value>Пожалуйста, выберите действительный файл изображения</value>
+  </data>
+  <data name="INVALID_FILE" xml:space="preserve">
+    <value>Неверный файл</value>
+  </data>
+  <data name="ACTIVATED" xml:space="preserve">
+    <value>Активировано</value>
+  </data>
+  <data name="IMAGE_EDITOR" xml:space="preserve">
+    <value>Редактор изображений</value>
+  </data>
+  <data name="CANCEL" xml:space="preserve">
+    <value>Отмена</value>
+  </data>
+</root>
