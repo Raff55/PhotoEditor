@@ -5,7 +5,11 @@ using ImageEditor.Exposure;
 using ImageEditor.Functionals;
 using ImageEditor.Resources;
 using ImageEditor.Transformation;
+using System;
+using System.Collections;
 using System.ComponentModel;
+using System.Globalization;
+using System.Resources;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -35,6 +39,7 @@ namespace ImageEditor
 
         public MainWindow()
         {
+            App.Culture_EN();
             InitializeComponent();
             DataContext = this;
             InitializeComboBoxes();
@@ -1206,7 +1211,6 @@ namespace ImageEditor
         {
             collageCanvas.Children.Clear();
             var images = new List<BitmapImage>();
-            //for (int i = 0; i < 2; i++)
             while (images.Count != 2)
             {
                 BitmapImage image = Open.OpenImage();
@@ -1243,5 +1247,39 @@ namespace ImageEditor
         #endregion
 
         #endregion
+
+        private void HYButton_Click(object sender, RoutedEventArgs e)
+        {
+            App.Culture_HY();
+            UpdateButtonStates(HYButton);
+        }
+
+        private void ENButton_Click(object sender, RoutedEventArgs e)
+        {
+            App.Culture_EN();
+
+            UpdateButtonStates(ENButton);
+        }
+
+        private void RUButton_Click(object sender, RoutedEventArgs e)
+        {
+            App.Culture_RU();
+            UpdateButtonStates(RUButton);
+        }
+
+        private void UpdateButtonStates(Button activeButton)
+        {
+            HYButton.Background = Brushes.White;
+            HYButton.Foreground = commonColor;
+
+            ENButton.Background = Brushes.White;
+            ENButton.Foreground = commonColor;
+
+            RUButton.Background = Brushes.White;
+            RUButton.Foreground = commonColor;
+
+            activeButton.Background = Brushes.Gray;
+            activeButton.Foreground = Brushes.White;
+        }
     }
 }

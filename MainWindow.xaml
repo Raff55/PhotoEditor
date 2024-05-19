@@ -3,7 +3,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:local="clr-namespace:ImageEditor"
         xmlns:rs="clr-namespace:ImageEditor.Resources"
-        Title="{x:Static rs:Editor.IMAGE_EDITOR}" Height="600" Width="800" Background="#353536" Icon="C:\Users\user\source\repos\PhotoEditor\Icons\icon.png">
+        xmlns:hm="http://schemas.hpod9.com/haley/mvvm"
+        Title="{DynamicResource IMAGE_EDITOR}" Height="600" Width="800" Background="#353536" Icon="C:\Users\user\source\repos\PhotoEditor\Icons\icon.png">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="200"/>
@@ -21,18 +22,22 @@
                 <Canvas x:Name="brushCanvas"/>
             </Grid>
         </Viewbox>
-
         <StackPanel Orientation="Horizontal" Height="20" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="15,15,5,5">
-            <Button Width="85" x:Name="EditTabButton" Content="{x:Static rs:Editor.EDIT}" Background="White" BorderBrush="White" Click="EditTabButton_Click"></Button>
-            <Button Width="85" x:Name="CollageTabButton" Content="{x:Static rs:Editor.COLLAGE}" Background="#353536" Foreground="White" BorderBrush="White" Click="CollageTabButton_Click"></Button>
+            <Button Width="53" x:Name="HYButton" Content="HY" Background="White" Margin="0,0,6,0" Click="HYButton_Click" />
+            <Button Width="53" x:Name="ENButton" Content="EN" Background="White" Margin="0,0,5,0" Click="ENButton_Click" />
+            <Button Width="53" x:Name="RUButton" Content="RU" Background="White" Click="RUButton_Click" />
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Height="20" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="15,38,5,5">
+            <Button Width="85" x:Name="EditTabButton" Content="{DynamicResource EDIT}" Background="White" BorderBrush="White" Click="EditTabButton_Click"></Button>
+            <Button Width="85" x:Name="CollageTabButton" Content="{DynamicResource COLLAGE}" Background="#353536" Foreground="White" BorderBrush="White" Click="CollageTabButton_Click"></Button>
         </StackPanel>
         <!--#endregion-->
 
         <!--#region Collage Tab-->
-        <ScrollViewer Grid.Column="0" x:Name="collageView" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Disabled" HorizontalAlignment="Left" Margin="10,40,0,10" MaxWidth="190" Visibility="Collapsed" >
+        <ScrollViewer Grid.Column="0" x:Name="collageView" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Disabled" HorizontalAlignment="Left"  Margin="10,60,0,10" MaxWidth="190" Visibility="Visible" >
             <StackPanel>
-                <Button x:Name="saveCollageButton" Content="{x:Static rs:Editor.SAVE}" Height="25" Width="170" Click="saveCollageButton_Click" Margin="5" Background="White"/>
-                <TextBlock Text="{x:Static rs:Editor.TEMPLATES}" Margin="5,0,2,2" Foreground="White" HorizontalAlignment="Center" />
+                <Button x:Name="saveCollageButton" Content="{DynamicResource SAVE}" Height="25" Width="170" Click="saveCollageButton_Click" Margin="5" Background="White"/>
+                <TextBlock Text="{DynamicResource TEMPLATES}" Margin="5,0,2,2" Foreground="White" HorizontalAlignment="Center" />
                 <Button x:Name="open2HorizontalImagesButton" Height="150" Width="150" Click="open2HorizontalImagesButton_Click" Margin="5" Background="White" VerticalAlignment="Top">
                     <Image Source="C:\Users\user\source\repos\PhotoEditor\Icons\collage-two-horizontal.png" Width="125" Height="125"/>
                 </Button>
@@ -47,32 +52,32 @@
         <!--#endregion-->
 
         <!--#region Edit Tab-->
-        <ScrollViewer Grid.Column="0" x:Name="editingView" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" HorizontalAlignment="Left" Margin="10,40,0,10" MaxWidth="190" Visibility="Visible" >
+        <ScrollViewer Grid.Column="0" x:Name="editingView" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" HorizontalAlignment="Left" Margin="10,60,0,10" MaxWidth="190" Visibility="Collapsed" >
                 
             <StackPanel Orientation="Vertical">
 
-                <Button x:Name="openButton" Content="{x:Static rs:Editor.UPLOAD}" Height="25" Width="170" Click="openButton_Click" Margin="0,2,0,0" Background="White"/>
-                <Button x:Name="saveButton" Content="{x:Static rs:Editor.SAVE}" Height="25" Width="170" Click="saveButton_Click" Margin="5" Background="White"/>
-                <Button x:Name="undoButton" Content="{x:Static rs:Editor.UNDO}" Height="25" Width="170" Click="undoButton_Click" Margin="0,0,0,5" Background="White"/>
-                <Button x:Name="resetButton" Content="{x:Static rs:Editor.RESET_EDITING}" Height="25" Width="170" Click="resetButton_Click"  Margin="0,0,0,5" Background="White"/>
+                <Button x:Name="openButton" Content="{DynamicResource UPLOAD}" Height="25" Width="170" Click="openButton_Click" Margin="0,2,0,0" Background="White"/>
+                <Button x:Name="saveButton" Content="{DynamicResource SAVE}" Height="25" Width="170" Click="saveButton_Click" Margin="5" Background="White"/>
+                <Button x:Name="undoButton" Content="{DynamicResource UNDO}" Height="25" Width="170" Click="undoButton_Click" Margin="0,0,0,5" Background="White"/>
+                <Button x:Name="resetButton" Content="{DynamicResource RESET_EDITING}" Height="25" Width="170" Click="resetButton_Click"  Margin="0,0,0,5" Background="White"/>
                 <ComboBox x:Name="filters" Width="170"  Margin="5,0,5,0" SelectionChanged="filters_SelectionChanged"/>
 
                 <!--#region Transformation-->
                 <ToggleButton x:Name="transformationToggle" Width="170" Margin="5" ClickMode="Press" Click="transformationToggle_Click" IsChecked="False" Background="#353536">
-                    <TextBlock Margin="0,0,0,5" Foreground="White" Text="{x:Static rs:Editor.TRANSFORMATION}"/>
+                    <TextBlock Margin="0,0,0,5" Foreground="White" Text="{DynamicResource TRANSFORMATION}"/>
                 </ToggleButton>
                 <StackPanel x:Name="transformationPanel" Visibility="Collapsed">
-                    <Button x:Name="mirrorButton" Content="{x:Static rs:Editor.MIRROR}" Click="mirrorButton_Click" Width="170" Background="White" Margin="0,0,0,5"/>
-                    <Button x:Name="flipButton" Content="{x:Static rs:Editor.FLIP}" Click="flipButton_Click" Width="170" Background="White" Margin="0,0,0,5"/>
-                    <Button x:Name="rotateButton" Content="{x:Static rs:Editor.ROTATE}"  Click="rotateButton_Click" Width="170" Background="White" Margin="0,0,0,5"/>
-                    <Button x:Name="cropButton" Content="{x:Static rs:Editor.CROP}" Click="cropButton_Click" Width="170"  Background="White" Margin="0,0,0,5"/>
+                    <Button x:Name="mirrorButton" Content="{DynamicResource MIRROR}" Click="mirrorButton_Click" Width="170" Background="White" Margin="0,0,0,5"/>
+                    <Button x:Name="flipButton" Content="{DynamicResource FLIP}" Click="flipButton_Click" Width="170" Background="White" Margin="0,0,0,5"/>
+                    <Button x:Name="rotateButton" Content="{DynamicResource ROTATE}"  Click="rotateButton_Click" Width="170" Background="White" Margin="0,0,0,5"/>
+                    <Button x:Name="cropButton" Content="{DynamicResource CROP}" Click="cropButton_Click" Width="170"  Background="White" Margin="0,0,0,5"/>
                     <ToggleButton x:Name="resizeToggle" Width="165" ClickMode="Press" Click="resizeToggle_Click" IsChecked="False" Background="#353536" Margin="0,0,0,6">
-                        <TextBlock Margin="0,0,0,5" Foreground="White" Text="{x:Static rs:Editor.RESIZE}" />
+                        <TextBlock Margin="0,0,0,5" Foreground="White" Text="{DynamicResource RESIZE}" />
                     </ToggleButton>
                     <StackPanel x:Name="resizePanel" Visibility="Collapsed" >
                         <TextBox x:Name="widthTextBox" Width="50" Margin="5"/>
                         <TextBox x:Name="heightTextBox" Width="50" Margin="5"/>
-                        <Button Content="{x:Static rs:Editor.RESIZE}" Width="120" Click="resizeButton_Click"/>
+                        <Button Content="{DynamicResource RESIZE}" Width="120" Click="resizeButton_Click"/>
                     </StackPanel>
 
                 </StackPanel>
@@ -81,12 +86,12 @@
 
                 <!--#region Tonal Adjustments-->
                 <ToggleButton x:Name="exposureToggle" Margin="0,0,0,0" Width="170" ClickMode="Press" Click="exposureToggle_Click" IsChecked="False" Background="#353536">
-                    <TextBlock Margin="0,0,0,5" Foreground="White" Text="{x:Static rs:Editor.TONAL_ADJUSTMENTS}" />
+                    <TextBlock Margin="0,0,0,5" Foreground="White" Text="{DynamicResource TONAL_ADJUSTMENTS}" />
                 </ToggleButton>
                 <StackPanel x:Name="exposurePanel" Visibility="Collapsed">
                     <!--#region Brightness-->
                     <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
-                        <Label Width="108" Foreground="White" Padding="0,5,5,5" Content="{x:Static rs:Editor.BRIGHTNESS}" HorizontalAlignment="Left" Margin="10,0,0,0"/>
+                        <Label Width="108" Foreground="White" Padding="0,5,5,5" Content="{DynamicResource BRIGHTNESS}" HorizontalAlignment="Left" Margin="10,0,0,0"/>
                         <TextBox x:Name="brightnessTextBox" Width="40" Height="20" Margin="17,0,0,0" TextChanged="brightnessTextBox_TextChanged" Background="#353536" Foreground="White"/>
                     </StackPanel>
                     <Slider x:Name="brightnessSlider" Margin="5,0,0,5" Minimum="-100" Maximum="100" Width="170" ValueChanged="brightnessSlider_ValueChanged" />
@@ -94,7 +99,7 @@
 
                     <!--#region Contrast-->
                     <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
-                        <Label Width="108" Foreground="White" Padding="0,5,5,5" Content="{x:Static rs:Editor.CONTRAST}" HorizontalAlignment="Left" Margin="10,0,0,0"/>
+                        <Label Width="108" Foreground="White" Padding="0,5,5,5" Content="{DynamicResource CONTRAST}" HorizontalAlignment="Left" Margin="10,0,0,0"/>
                         <TextBox x:Name="contrastTextBox" Width="40" Height="20" Margin="17,0,0,0" TextChanged="contrastTextBox_TextChanged" Background="#353536" Foreground="White"/>
                     </StackPanel>
                     <Slider x:Name="contrastSlider" Margin="5,0,0,5" Minimum="0" Maximum="100" Width="170" ValueChanged="contrastSlider_ValueChanged" />
@@ -102,7 +107,7 @@
 
                     <!--#region Highlight-->
                     <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
-                        <Label Width="108" Foreground="White" Padding="0,5,5,5" Content="{x:Static rs:Editor.HIGHLIGHT}" HorizontalAlignment="Left" Margin="10,0,0,0"/>
+                        <Label Width="108" Foreground="White" Padding="0,5,5,5" Content="{DynamicResource HIGHLIGHT}" HorizontalAlignment="Left" Margin="10,0,0,0"/>
                         <TextBox x:Name="highlightTextBox" Width="40" Height="20" Margin="17,0,0,0" TextChanged="highlightTextBox_TextChanged" Background="#353536" Foreground="White"/>
                     </StackPanel>
                     <Slider x:Name="highlightSlider" Margin="5,0,0,5" Minimum="-50" Maximum="50" ValueChanged="highlightSlider_ValueChanged"/>
@@ -110,7 +115,7 @@
 
                     <!--#region Shadows-->
                     <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
-                        <Label Width="108" Foreground="White" Padding="0,5,5,5" Content="{x:Static rs:Editor.SHADOWS}" HorizontalAlignment="Left" Margin="10,0,0,0"/>
+                        <Label Width="108" Foreground="White" Padding="0,5,5,5" Content="{DynamicResource SHADOWS}" HorizontalAlignment="Left" Margin="10,0,0,0"/>
                         <TextBox x:Name="shadowsTextBox" Width="40" Height="20" Margin="17,0,0,0" TextChanged="shadowsTextBox_TextChanged" Background="#353536" Foreground="White"/>
                     </StackPanel>
                     <Slider x:Name="shadowsSlider" Margin="5,0,0,5" Minimum="-75" Maximum="75" Value="0"  ValueChanged="shadowsSlider_ValueChanged" />
@@ -121,12 +126,12 @@
 
                 <!--#region Color Adjustments-->
                 <ToggleButton x:Name="colorToggle" Width="170" ClickMode="Press" Click="colorToggle_Click" IsChecked="False" Margin="0,5,0,0" Background="#353536">
-                    <TextBlock Margin="0,0,0,5" Foreground="White" Text="{x:Static rs:Editor.COLOR_ADJUSTMENTS}" />
+                    <TextBlock Margin="0,0,0,5" Foreground="White" Text="{DynamicResource COLOR_ADJUSTMENTS}" />
                 </ToggleButton>
                 <StackPanel x:Name="colorPanel" Visibility="Collapsed">
                     <!--#region Hue-->
                     <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
-                        <Label Width="108" Foreground="White" Padding="0,5,5,5" Content="{x:Static rs:Editor.HUE}" HorizontalAlignment="Left" Margin="10,0,0,0"/>
+                        <Label Width="108" Foreground="White" Padding="0,5,5,5" Content="{DynamicResource HUE}" HorizontalAlignment="Left" Margin="10,0,0,0"/>
                         <TextBox x:Name="hueTextBox" Width="40" Height="20" Margin="17,0,0,0" TextChanged="hueTextBox_TextChanged" Background="#353536"  Foreground="White"/>
                     </StackPanel>
                     <Slider x:Name="hueSlider" Minimum="-180" Maximum="180" Value="0" Margin="5,0,0,5" ValueChanged="hueSlider_ValueChanged"/>
@@ -134,7 +139,7 @@
 
                     <!--#region Saturation-->
                     <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
-                        <Label Width="108" Foreground="White" Padding="0,5,5,5" Content="{x:Static rs:Editor.SATURATION}" HorizontalAlignment="Left" Margin="10,0,0,0"/>
+                        <Label Width="108" Foreground="White" Padding="0,5,5,5" Content="{DynamicResource SATURATION}" HorizontalAlignment="Left" Margin="10,0,0,0"/>
                         <TextBox x:Name="saturationTextBox" Width="40" Height="20" Margin="17,0,0,0" TextChanged="saturationTextBox_TextChanged" Background="#353536"  Foreground="White"/>
                     </StackPanel>
                     <Slider x:Name="saturationSlider" Minimum="-100" Maximum="100" Value="0" Margin="5,0,0,5" ValueChanged="saturationSlider_ValueChanged"/>
@@ -142,7 +147,7 @@
 
                     <!--#region Temperature-->
                     <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
-                        <Label Width="108" Foreground="White" Padding="0,5,5,5" Content="{x:Static rs:Editor.TEMPERATURE}" HorizontalAlignment="Left" Margin="10,0,0,0"/>
+                        <Label Width="108" Foreground="White" Padding="0,5,5,5" Content="{DynamicResource TEMPERATURE}" HorizontalAlignment="Left" Margin="10,0,0,0"/>
                         <TextBox x:Name="temperatureTextBox" Width="40" Height="20" Margin="17,0,0,0" TextChanged="temperatureTextBox_TextChanged" Background="#353536"  Foreground="White"/>
                     </StackPanel>
                     <Slider x:Name="temperatureSlider" Minimum="-5" Maximum="5" Value="0" Margin="5,0,0,5" ValueChanged="temperatureSlider_ValueChanged"/>
@@ -150,7 +155,7 @@
 
                     <!--#region Vibrance-->
                     <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
-                        <Label Width="108" Foreground="White" Padding="0,5,5,5" Content="{x:Static rs:Editor.VIBRANCE}" HorizontalAlignment="Left" Margin="10,0,0,0"/>
+                        <Label Width="108" Foreground="White" Padding="0,5,5,5" Content="{DynamicResource VIBRANCE}" HorizontalAlignment="Left" Margin="10,0,0,0"/>
                         <TextBox x:Name="vibranceTextBox" Width="40" Height="20" Margin="17,0,0,0" TextChanged="vibranceTextBox_TextChanged" Background="#353536"  Foreground="White"/>
                     </StackPanel>
                     <Slider x:Name="vibranceSlider" Minimum="0" Maximum="5" Value="0" Margin="5,0,0,5" ValueChanged="vibranceSlider_ValueChanged" />
@@ -160,12 +165,12 @@
 
                 <!--#region Special Effects-->
                 <ToggleButton x:Name="sharpenToggle" Margin="0,5,0,0" Width="170" ClickMode="Press" Click="sharpenToggle_Click" IsChecked="False" Background="#353536">
-                    <TextBlock Margin="0,0,0,5" Foreground="White" Text="{x:Static rs:Editor.SPECIAL_EFFECTS}" />
+                    <TextBlock Margin="0,0,0,5" Foreground="White" Text="{DynamicResource SPECIAL_EFFECTS}" />
                 </ToggleButton>
                 <StackPanel x:Name="sharpenPanel" Visibility="Collapsed">
                     <!--#region Sharpen-->
                     <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
-                        <Label Width="108" Foreground="White" Padding="0,5,5,5" Content="{x:Static rs:Editor.SHARPNESS}" HorizontalAlignment="Left" Margin="10,0,0,0"/>
+                        <Label Width="108" Foreground="White" Padding="0,5,5,5" Content="{DynamicResource SHARPNESS}" HorizontalAlignment="Left" Margin="10,0,0,0"/>
                         <TextBox x:Name="sharpenTextBox" Width="40" Height="20" Margin="17,0,0,0" TextChanged="sharpenTextBox_TextChanged" Background="#353536"/>
                     </StackPanel>
                     <Slider x:Name="sharpenSlider" Minimum="-5" Maximum="10" Value="0" Margin="5,0,0,5" ValueChanged="sharpenSlider_ValueChanged" />
@@ -173,7 +178,7 @@
                     
                     <!--#region Blur-->
                     <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
-                        <Label Width="108" Foreground="White" Padding="0,5,5,5" Content="{x:Static rs:Editor.BLUR}" HorizontalAlignment="Left" Margin="10,0,0,0"/>
+                        <Label Width="108" Foreground="White" Padding="0,5,5,5" Content="{DynamicResource BLUR}" HorizontalAlignment="Left" Margin="10,0,0,0"/>
                         <TextBox x:Name="blurTextBox" Width="40" Height="20" Margin="17,0,0,0" TextChanged="blurTextBox_TextChanged" Background="#353536"/>
                     </StackPanel>
                     <Slider x:Name="blurSlider" Minimum="0" Maximum="50" Value="0" Margin="5,0,0,5" ValueChanged="blurSlider_ValueChanged"/>
@@ -183,27 +188,27 @@
 
                 <!--#region Brush-->
                 <ToggleButton x:Name="brushToggle" Margin="0,5,0,0" Width="170" ClickMode="Press" Click="brushToggle_Click" IsChecked="False" Background="#353536">
-                    <TextBlock Margin="0,0,0,5" Foreground="White" Text="{x:Static rs:Editor.BRUSH}" />
+                    <TextBlock Margin="0,0,0,5" Foreground="White" Text="{DynamicResource BRUSH}" />
                 </ToggleButton>
                 <StackPanel x:Name="brushPanel" Visibility="Collapsed">
-                    <Button x:Name="brushButton" Content="{x:Static rs:Editor.ACTIVATE_BRUSH}" Click="brushButton_Click" Width="170" Height="25" Background="White" Margin="0,5,0,0"/>
+                    <Button x:Name="brushButton" Content="{DynamicResource ACTIVATE_BRUSH}" Click="brushButton_Click" Width="170" Height="25" Background="White" Margin="0,5,0,0"/>
                     <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
-                        <Label Width="108" Foreground="White" Padding="0,5,5,5" Content="{x:Static rs:Editor.RED}" HorizontalAlignment="Left" Margin="10,0,0,0"/>
+                        <Label Width="108" Foreground="White" Padding="0,5,5,5" Content="{DynamicResource RED}" HorizontalAlignment="Left" Margin="10,0,0,0"/>
                         <TextBox x:Name="redTextBox" Width="40" Height="20" Margin="17,0,0,0" Background="#353536" TextChanged="redTextBox_TextChanged"/>
                     </StackPanel>
                     <Slider x:Name="redSlider" Minimum="0" Maximum="255" Margin="5,0,0,5" ValueChanged="Slider_ValueChanged"/>
                     <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
-                        <Label Width="108" Foreground="White" Padding="0,5,5,5" Content="{x:Static rs:Editor.GREEN}" HorizontalAlignment="Left" Margin="10,0,0,0"/>
+                        <Label Width="108" Foreground="White" Padding="0,5,5,5" Content="{DynamicResource GREEN}" HorizontalAlignment="Left" Margin="10,0,0,0"/>
                         <TextBox x:Name="greenTextBox" Width="40" Height="20" Margin="17,0,0,0" Background="#353536" TextChanged="greenTextBox_TextChanged"/>
                     </StackPanel>
                     <Slider x:Name="greenSlider" Minimum="0" Maximum="255" Margin="5,0,0,5" ValueChanged="Slider_ValueChanged"/>
                     <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
-                        <Label Width="108" Foreground="White" Padding="0,5,5,5" Content="{x:Static rs:Editor.BLUE}" HorizontalAlignment="Left" Margin="10,0,0,0"/>
+                        <Label Width="108" Foreground="White" Padding="0,5,5,5" Content="{DynamicResource BLUE}" HorizontalAlignment="Left" Margin="10,0,0,0"/>
                         <TextBox x:Name="blueTextBox" Width="40" Height="20" Margin="17,0,0,0" Background="#353536" TextChanged="blueTextBox_TextChanged"/>
                     </StackPanel>
                     <Slider x:Name="blueSlider" Minimum="0" Maximum="255" Margin="5,0,0,5" ValueChanged="Slider_ValueChanged"/>
                     <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
-                        <Label Width="108" Foreground="White" Padding="0,5,5,5" Content="{x:Static rs:Editor.BRUSH_SIZE}" HorizontalAlignment="Left" Margin="10,0,0,0"/>
+                        <Label Width="108" Foreground="White" Padding="0,5,5,5" Content="{DynamicResource BRUSH_SIZE}" HorizontalAlignment="Left" Margin="10,0,0,0"/>
                         <TextBox x:Name="brushSizeTextBox" Width="40" Height="20" Margin="17,0,0,0" Background="#353536" TextChanged="brushSizeTextBox_TextChanged"/>
                     </StackPanel>
                     <Slider x:Name="brushSize" Minimum="1" Maximum="100" Margin="5,0,0,5" ValueChanged="brushSize_ValueChanged"/>
@@ -217,17 +222,17 @@
 
                 <!--#region Text-->
                 <ToggleButton x:Name="textToggle" Margin="0,5,0,0" Width="170" ClickMode="Press" Click="textToggle_Click" IsChecked="False" Background="#353536">
-                    <TextBlock Margin="0,0,0,5" Foreground="White" Text="{x:Static rs:Editor.TEXT}" />
+                    <TextBlock Margin="0,0,0,5" Foreground="White" Text="{DynamicResource TEXT}" />
                 </ToggleButton>
 
                 <StackPanel x:Name="textPanel" Visibility="Collapsed">
-                    <Label Width="166" Foreground="White" Content="{x:Static rs:Editor.ENTER_TEXT_HERE}" />
+                    <Label Width="166" Foreground="White" Content="{DynamicResource ENTER_TEXT_HERE}" />
                     <TextBox x:Name="textInput" Width="166" Background="White" />
                     <ComboBox x:Name="fontComboBox" Margin="0,5,0,0" Width="166" />
                     <ComboBox x:Name="colorComboBox" Margin="0,5,0,0" Width="166" />
 
                     <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
-                        <Label Width="108" Foreground="White" Padding="0,5,5,5" Content="{x:Static rs:Editor.FONT_SIZE}" HorizontalAlignment="Left" Margin="7,0,0,0"/>
+                        <Label Width="108" Foreground="White" Padding="0,5,5,5" Content="{DynamicResource FONT_SIZE}" HorizontalAlignment="Left" Margin="7,0,0,0"/>
                         <TextBox x:Name="fontSizeTextBox" Width="35" Height="20" Margin="5,5,0,0" TextChanged="fontSizeTextBox_TextChanged" Background="#353536" Foreground="White"/>
                         <Label Foreground="White" Content="px" Padding="0,5,5,5" HorizontalAlignment="Left" Margin="0,0,0,0"/>
                     </StackPanel>
@@ -243,8 +248,8 @@
                             <Image Source="C:\Users\user\source\repos\PhotoEditor\Icons/underline.png" Width="20" Height="20"/>
                         </Button>
                     </StackPanel>
-                    <Button x:Name="textButton" Content="{x:Static rs:Editor.ADD_TEXT}" Margin="0,5,0,0" Click="TextButton_Click" Background="White" Width="166"/>
-                    <Button x:Name="deleteButton" Content="{x:Static rs:Editor.DELETE_TEXT}" Visibility="Collapsed" Margin="0,5,0,0" Click="deleteButton_Click" Background="White" Width="166"/>
+                    <Button x:Name="textButton" Content="{DynamicResource ADD_TEXT}" Margin="0,5,0,0" Click="TextButton_Click" Background="White" Width="166"/>
+                    <Button x:Name="deleteButton" Content="{DynamicResource DELETE_TEXT}" Visibility="Collapsed" Margin="0,5,0,0" Click="deleteButton_Click" Background="White" Width="166"/>
                 </StackPanel>
                 <!--#endregion-->
                 
