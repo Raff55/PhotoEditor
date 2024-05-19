@@ -1,10 +1,7 @@
 ﻿<Window x:Class="ImageEditor.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:local="clr-namespace:ImageEditor"
-        xmlns:rs="clr-namespace:ImageEditor.Resources"
-        xmlns:hm="http://schemas.hpod9.com/haley/mvvm"
-        Title="{DynamicResource IMAGE_EDITOR}" Height="600" Width="800" Background="#353536" Icon="C:\Users\user\source\repos\PhotoEditor\Icons\icon.png">
+        Title="{DynamicResource IMAGE_EDITOR}" Height="700" Width="900" Background="#353536" Icon="C:\Users\user\source\repos\PhotoEditor\Icons\icon.png">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="200"/>
@@ -23,9 +20,9 @@
             </Grid>
         </Viewbox>
         <StackPanel Orientation="Horizontal" Height="20" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="15,15,5,5">
-            <Button Width="53" x:Name="HYButton" Content="HY" Background="White" Margin="0,0,6,0" Click="HYButton_Click" />
+            <Button Width="53" x:Name="HYButton" Content="ՀՅ" Background="Gray" Foreground="White" Margin="0,0,6,0" Click="HYButton_Click" />
             <Button Width="53" x:Name="ENButton" Content="EN" Background="White" Margin="0,0,5,0" Click="ENButton_Click" />
-            <Button Width="53" x:Name="RUButton" Content="RU" Background="White" Click="RUButton_Click" />
+            <Button Width="53" x:Name="RUButton" Content="РУ" Background="White" Click="RUButton_Click" />
         </StackPanel>
         <StackPanel Orientation="Horizontal" Height="20" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="15,38,5,5">
             <Button Width="85" x:Name="EditTabButton" Content="{DynamicResource EDIT}" Background="White" BorderBrush="White" Click="EditTabButton_Click"></Button>
@@ -34,7 +31,7 @@
         <!--#endregion-->
 
         <!--#region Collage Tab-->
-        <ScrollViewer Grid.Column="0" x:Name="collageView" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Disabled" HorizontalAlignment="Left"  Margin="10,60,0,10" MaxWidth="190" Visibility="Visible" >
+        <ScrollViewer Grid.Column="0" x:Name="collageView" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Disabled" HorizontalAlignment="Left"  Margin="10,60,0,10" MaxWidth="190" Visibility="Collapsed" >
             <StackPanel>
                 <Button x:Name="saveCollageButton" Content="{DynamicResource SAVE}" Height="25" Width="170" Click="saveCollageButton_Click" Margin="5" Background="White"/>
                 <TextBlock Text="{DynamicResource TEMPLATES}" Margin="5,0,2,2" Foreground="White" HorizontalAlignment="Center" />
@@ -52,7 +49,7 @@
         <!--#endregion-->
 
         <!--#region Edit Tab-->
-        <ScrollViewer Grid.Column="0" x:Name="editingView" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" HorizontalAlignment="Left" Margin="10,60,0,10" MaxWidth="190" Visibility="Collapsed" >
+        <ScrollViewer Grid.Column="0" x:Name="editingView" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" HorizontalAlignment="Left" Margin="10,60,0,10" MaxWidth="190" Visibility="Visible" >
                 
             <StackPanel Orientation="Vertical">
 
@@ -173,7 +170,7 @@
                         <Label Width="108" Foreground="White" Padding="0,5,5,5" Content="{DynamicResource SHARPNESS}" HorizontalAlignment="Left" Margin="10,0,0,0"/>
                         <TextBox x:Name="sharpenTextBox" Width="40" Height="20" Margin="17,0,0,0" TextChanged="sharpenTextBox_TextChanged" Background="#353536"/>
                     </StackPanel>
-                    <Slider x:Name="sharpenSlider" Minimum="-5" Maximum="10" Value="0" Margin="5,0,0,5" ValueChanged="sharpenSlider_ValueChanged" />
+                    <Slider x:Name="sharpenSlider" Minimum="0" Maximum="1.5" Value="0" Margin="5,0,0,5" ValueChanged="sharpenSlider_ValueChanged" />
                     <!--#endregion-->
                     
                     <!--#region Blur-->

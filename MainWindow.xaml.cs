@@ -5,10 +5,12 @@ using ImageEditor.Exposure;
 using ImageEditor.Functionals;
 using ImageEditor.Resources;
 using ImageEditor.Transformation;
+using Microsoft.Win32;
 using System;
 using System.Collections;
 using System.ComponentModel;
 using System.Globalization;
+using System.IO;
 using System.Resources;
 using System.Windows;
 using System.Windows.Controls;
@@ -39,7 +41,7 @@ namespace ImageEditor
 
         public MainWindow()
         {
-            App.Culture_EN();
+            App.SetCulture("hy-AM");
             InitializeComponent();
             DataContext = this;
             InitializeComboBoxes();
@@ -113,6 +115,39 @@ namespace ImageEditor
             }
         }
 
+        private void HYButton_Click(object sender, RoutedEventArgs e)
+        {
+            App.SetCulture("hy-AM");
+            UpdateButtonStates(HYButton);
+        }
+
+        private void ENButton_Click(object sender, RoutedEventArgs e)
+        {
+            App.SetCulture("en");
+            UpdateButtonStates(ENButton);
+        }
+
+        private void RUButton_Click(object sender, RoutedEventArgs e)
+        {
+            App.SetCulture("ru-RU");
+            UpdateButtonStates(RUButton);
+        }
+
+        private void UpdateButtonStates(Button activeButton)
+        {
+            HYButton.Background = Brushes.White;
+            HYButton.Foreground = commonColor;
+
+            ENButton.Background = Brushes.White;
+            ENButton.Foreground = commonColor;
+
+            RUButton.Background = Brushes.White;
+            RUButton.Foreground = commonColor;
+
+            activeButton.Background = Brushes.Gray;
+            activeButton.Foreground = Brushes.White;
+        }
+
         #endregion
 
         #region Edit
@@ -134,10 +169,15 @@ namespace ImageEditor
         #region Save
         private void saveButton_Click(object sender, RoutedEventArgs e)
         {
-            if (editedBitmap != null)
-            {
-                Save.SaveImage(editedBitmap);
-            }
+            int width = (int)editedImage.ActualWidth;
+            int height = (int)editedImage.ActualHeight;
+            RenderTargetBitmap renderBitmap = new RenderTargetBitmap(width, height, 96, 96, PixelFormats.Default);
+
+            renderBitmap.Render(editedImage);
+            renderBitmap.Render(textCanvas);
+            renderBitmap.Render(brushCanvas);
+
+            Save.SaveImage(new WriteableBitmap(renderBitmap));
         }
         #endregion
 
@@ -214,7 +254,6 @@ namespace ImageEditor
                 {
                     var bitmap = await UpdateImageDisplayWithFiltersWithReturning();
                     editedImage.Source = bitmap;
-                    Resources.MergedDictionaries.Clear();
                     previousVersions.Add(bitmap);
                     bitmap = null;
                     if (previousVersions.Count == 11)
@@ -223,7 +262,6 @@ namespace ImageEditor
                     }
                 }
             }
-            Resources.MergedDictionaries.Clear();
         }
 
         private async Task<WriteableBitmap> UpdateImageDisplayWithFiltersWithReturning()
@@ -622,7 +660,7 @@ namespace ImageEditor
         {
             if (int.TryParse(sharpenTextBox.Text, out int value))
             {
-                if (value >= -5 && value <= 10)
+                if (value >= 0 && value <= 1.5)
                 {
                     sharpenSlider.Value = value;
                 }
@@ -1247,39 +1285,5 @@ namespace ImageEditor
         #endregion
 
         #endregion
-
-        private void HYButton_Click(object sender, RoutedEventArgs e)
-        {
-            App.Culture_HY();
-            UpdateButtonStates(HYButton);
-        }
-
-        private void ENButton_Click(object sender, RoutedEventArgs e)
-        {
-            App.Culture_EN();
-
-            UpdateButtonStates(ENButton);
-        }
-
-        private void RUButton_Click(object sender, RoutedEventArgs e)
-        {
-            App.Culture_RU();
-            UpdateButtonStates(RUButton);
-        }
-
-        private void UpdateButtonStates(Button activeButton)
-        {
-            HYButton.Background = Brushes.White;
-            HYButton.Foreground = commonColor;
-
-            ENButton.Background = Brushes.White;
-            ENButton.Foreground = commonColor;
-
-            RUButton.Background = Brushes.White;
-            RUButton.Foreground = commonColor;
-
-            activeButton.Background = Brushes.Gray;
-            activeButton.Foreground = Brushes.White;
-        }
     }
 }
