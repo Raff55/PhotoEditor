@@ -804,7 +804,6 @@ namespace ImageEditor
 
                 editedImage.Height = newHeight;
                 editedImage.Width = newWidth;
-                UpdateImageDisplay();
             }
         }
 

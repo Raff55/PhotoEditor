@@ -13,22 +13,24 @@ namespace ImageEditor.Color_Adjustments
             if (source == null || blurRadius <= 0)
                 return source;
 
-            // Create a BlurEffect
+            // Create a BlurEffect with the specified radius
             BlurEffect blurEffect = new BlurEffect
             {
                 Radius = blurRadius
             };
 
-            // Apply the blur effect to the image
+            // Create a DrawingVisual to hold the drawing context
             DrawingVisual drawingVisual = new DrawingVisual();
             using (DrawingContext drawingContext = drawingVisual.RenderOpen())
             {
-                // Draw the image directly without any transformation
+                // Draw the image into the drawing context
                 drawingContext.DrawImage(source, new Rect(0, 0, source.PixelWidth, source.PixelHeight));
             }
+
+            // Apply the blur effect to the DrawingVisual
             drawingVisual.Effect = blurEffect;
 
-            // Render the DrawingVisual to a RenderTargetBitmap
+            // Create a RenderTargetBitmap to render the visual
             RenderTargetBitmap rtb = new RenderTargetBitmap(
                 source.PixelWidth, source.PixelHeight, source.DpiX, source.DpiY, PixelFormats.Pbgra32);
             rtb.Render(drawingVisual);
