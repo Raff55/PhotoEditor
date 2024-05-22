@@ -21,12 +21,10 @@ using System.Windows.Media.Imaging;
 using Brushes = System.Windows.Media.Brushes;
 using Rectangle = System.Drawing.Rectangle;
 
-
 namespace ImageEditor
 {
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
-
         private List<WriteableBitmap> previousVersions = new List<WriteableBitmap>(10);
         private BitmapImage originalImage;
         private WriteableBitmap editedBitmap;
@@ -82,18 +80,20 @@ namespace ImageEditor
             EditTabButton.Foreground = Brushes.White;
             CollageTabButton.Background = Brushes.White;
             CollageTabButton.Foreground = commonColor;
+            if (CollageFunctions.originalImage == null)
+            {
+                popup.IsOpen = false;
+                popup.Child = null;
+                popup.Placement = PlacementMode.Center;
+                popup.PlacementTarget = this;
+                popup.StaysOpen = true;
 
-            popup.IsOpen = false;
-            popup.Child = null;
-            popup.Placement = PlacementMode.Center;
-            popup.PlacementTarget = this;
-            popup.StaysOpen = true;
-
-            collageWidthTextBox = new TextBox();
-            collageHeightTextBox = new TextBox();
-            collageWidthTextBox.Clear();
-            collageHeightTextBox.Clear();
-            CollageFunctions.ShowPopup(ref popup, ref collageWidthTextBox, ref collageHeightTextBox, enterSizesCollageButton_Click);
+                collageWidthTextBox = new TextBox();
+                collageHeightTextBox = new TextBox();
+                collageWidthTextBox.Clear();
+                collageHeightTextBox.Clear();
+                CollageFunctions.ShowPopup(ref popup, ref collageWidthTextBox, ref collageHeightTextBox, enterSizesCollageButton_Click);
+            }
         }
 
         private void EditTabButton_Click(object sender, RoutedEventArgs e)
@@ -115,6 +115,7 @@ namespace ImageEditor
             }
         }
 
+        #region Language Buttons
         private void HYButton_Click(object sender, RoutedEventArgs e)
         {
             App.SetCulture("hy-AM");
@@ -147,6 +148,7 @@ namespace ImageEditor
             activeButton.Background = Brushes.Gray;
             activeButton.Foreground = Brushes.White;
         }
+        #endregion
 
         #endregion
 
@@ -169,15 +171,18 @@ namespace ImageEditor
         #region Save
         private void saveButton_Click(object sender, RoutedEventArgs e)
         {
-            int width = (int)editedImage.ActualWidth;
-            int height = (int)editedImage.ActualHeight;
-            RenderTargetBitmap renderBitmap = new RenderTargetBitmap(width, height, 96, 96, PixelFormats.Default);
+            if (editedImage.Source != null)
+            {
+                int width = (int)editedImage.ActualWidth;
+                int height = (int)editedImage.ActualHeight;
+                RenderTargetBitmap renderBitmap = new RenderTargetBitmap(width, height, 96, 96, PixelFormats.Default);
 
-            renderBitmap.Render(editedImage);
-            renderBitmap.Render(textCanvas);
-            renderBitmap.Render(brushCanvas);
+                renderBitmap.Render(editedImage);
+                renderBitmap.Render(textCanvas);
+                renderBitmap.Render(brushCanvas);
 
-            Save.SaveImage(new WriteableBitmap(renderBitmap));
+                Save.SaveImage(new WriteableBitmap(renderBitmap));
+            }
         }
         #endregion
 
@@ -197,51 +202,54 @@ namespace ImageEditor
         #region Reset
         private void resetButton_Click(object sender, RoutedEventArgs e)
         {
-            previousVersions.Clear();
-            textCanvas.Children.Clear();
-            brushCanvas.Children.Clear();
-            editedBitmap = new WriteableBitmap(originalImage);
-            editedImage.Source = originalImage;
-            //Brightness
-            Image.Brightness = 0;
-            brightnessSlider.Value = 0;
-            brightnessTextBox.Text = "";
-            //Blur
-            Image.Blur = 0;
-            blurSlider.Value = 0;
-            blurTextBox.Text = "";
-            //Contrast
-            Image.Contrast = 0;
-            contrastSlider.Value = 0;
-            contrastTextBox.Text = "";
-            //Highlight
-            Image.Highlight = 0;
-            highlightSlider.Value = 0;
-            highlightTextBox.Text = "";
-            //Shadows
-            Image.Shadows = 0;
-            shadowsSlider.Value = 0;
-            shadowsTextBox.Text = "";
-            //Vibrance
-            Image.Vibrance = 0;
-            vibranceSlider.Value = 0;
-            vibranceTextBox.Text = "";
-            //Hue
-            Image.Hue = 0;
-            hueSlider.Value = 0;
-            hueTextBox.Text = "";
-            //Saturation
-            Image.Saturation = 0;
-            saturationSlider.Value = 0;
-            saturationTextBox.Text = "";
-            //Temperature
-            Image.Temperature = 0;
-            temperatureSlider.Value = 0;
-            temperatureTextBox.Text = "";
-            //Sharpen
-            Image.Sharpen = 0;
-            sharpenSlider.Value = 0;
-            sharpenTextBox.Text = "";
+            if (originalImage != null)
+            {
+                previousVersions.Clear();
+                textCanvas.Children.Clear();
+                brushCanvas.Children.Clear();
+                editedBitmap = new WriteableBitmap(originalImage);
+                editedImage.Source = originalImage;
+                //Brightness
+                Image.Brightness = 0;
+                brightnessSlider.Value = 0;
+                brightnessTextBox.Text = "";
+                //Blur
+                Image.Blur = 0;
+                blurSlider.Value = 0;
+                blurTextBox.Text = "";
+                //Contrast
+                Image.Contrast = 0;
+                contrastSlider.Value = 0;
+                contrastTextBox.Text = "";
+                //Highlight
+                Image.Highlight = 0;
+                highlightSlider.Value = 0;
+                highlightTextBox.Text = "";
+                //Shadows
+                Image.Shadows = 0;
+                shadowsSlider.Value = 0;
+                shadowsTextBox.Text = "";
+                //Vibrance
+                Image.Vibrance = 0;
+                vibranceSlider.Value = 0;
+                vibranceTextBox.Text = "";
+                //Hue
+                Image.Hue = 0;
+                hueSlider.Value = 0;
+                hueTextBox.Text = "";
+                //Saturation
+                Image.Saturation = 0;
+                saturationSlider.Value = 0;
+                saturationTextBox.Text = "";
+                //Temperature
+                Image.Temperature = 0;
+                temperatureSlider.Value = 0;
+                temperatureTextBox.Text = "";
+                //Sharpen
+                Image.Sharpen = 0;
+                sharpenSlider.Value = 0;
+                sharpenTextBox.Text = "";
+            }
         }
         #endregion
 
@@ -378,11 +386,13 @@ namespace ImageEditor
         {
             xDown = 0;
             yDown = 0;
-
-            editedImage.MouseDown += EditedImage_MouseDown;
-            editedImage.MouseMove += EditedImage_MouseMove;
-            editedImage.MouseUp += EditedImage_MouseUp;
-            editedImage.Cursor = Cursors.Cross;
+            if (editedBitmap != null)
+            {
+                editedImage.MouseDown += EditedImage_MouseDown;
+                editedImage.MouseMove += EditedImage_MouseMove;
+                editedImage.MouseUp += EditedImage_MouseUp;
+                editedImage.Cursor = Cursors.Cross;
+            }
         }
 
         private void EditedImage_MouseDown(object sender, MouseButtonEventArgs e)
@@ -706,6 +716,10 @@ namespace ImageEditor
                 Image.Blur = blurSlider.Value;
                 UpdateImageDisplay();
             }
+            else
+            {
+                blurSlider.Value = 0;
+            }
         }
 
         private void blurTextBox_TextChanged(object sender, TextChangedEventArgs e)
@@ -865,25 +879,28 @@ namespace ImageEditor
         #region Brush Button
         private void brushButton_Click(object sender, RoutedEventArgs e)
         {
-            if (isBrushDrawingActive)
+            if (editedImage.Source != null)
             {
-                editedImage.MouseDown -= brushEditedImage_MouseDown;
-                editedImage.MouseMove -= brushCanvas_MouseMove;
-                brushCanvas.MouseUp -= brushEditedImage_MouseUp;
+                if (isBrushDrawingActive)
+                {
+                    editedImage.MouseDown -= brushEditedImage_MouseDown;
+                    editedImage.MouseMove -= brushCanvas_MouseMove;
+                    brushCanvas.MouseUp -= brushEditedImage_MouseUp;
 
-                isBrushDrawingActive = false;
-                brushButton.Background = Brushes.White;
-                brushButton.Content = Editor.ACTIVATE_BRUSH;
-            }
-            else
-            {
-                editedImage.MouseDown += brushEditedImage_MouseDown;
-                editedImage.MouseMove += brushCanvas_MouseMove;
-                brushCanvas.MouseUp += brushEditedImage_MouseUp;
+                    isBrushDrawingActive = false;
+                    brushButton.Background = Brushes.White;
+                    brushButton.Content = Editor.ACTIVATE_BRUSH;
+                }
+                else
+                {
+                    editedImage.MouseDown += brushEditedImage_MouseDown;
+                    editedImage.MouseMove += brushCanvas_MouseMove;
+                    brushCanvas.MouseUp += brushEditedImage_MouseUp;
 
-                isBrushDrawingActive = true;
-                brushButton.Background = Brushes.Gray;
-                brushButton.Content = Editor.ACTIVATED;
+                    isBrushDrawingActive = true;
+                    brushButton.Background = Brushes.Gray;
+                    brushButton.Content = Editor.ACTIVATED;
+                }
             }
         }
         #endregion
