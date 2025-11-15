@@ -1,7 +1,7 @@
 ﻿<Window x:Class="ImageEditor.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="{DynamicResource IMAGE_EDITOR}" Height="700" Width="900" Background="#353536" Icon="C:\Users\user\source\repos\PhotoEditor\Icons\icon.png">
+        Title="{DynamicResource IMAGE_EDITOR}" Height="700" Width="900" Background="#353536" Icon="Icons\icon.png">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="200"/>
@@ -36,13 +36,13 @@
                 <Button x:Name="saveCollageButton" Content="{DynamicResource SAVE}" Height="25" Width="170" Click="saveCollageButton_Click" Margin="5" Background="White"/>
                 <TextBlock Text="{DynamicResource TEMPLATES}" Margin="5,0,2,2" Foreground="White" HorizontalAlignment="Center" />
                 <Button x:Name="open2HorizontalImagesButton" Height="150" Width="150" Click="open2HorizontalImagesButton_Click" Margin="5" Background="White" VerticalAlignment="Top">
-                    <Image Source="C:\Users\user\source\repos\PhotoEditor\Icons\collage-two-horizontal.png" Width="125" Height="125"/>
+                    <Image Source="Icons\collage-two-horizontal.png" Width="125" Height="125"/>
                 </Button>
                 <Button x:Name="open2VerticalImagesButton" Height="150" Width="150" Click="open2VerticalImagesButton_Click" Margin="5" Background="White" VerticalAlignment="Top">
-                    <Image Source="C:\Users\user\source\repos\PhotoEditor\Icons\collage-two-vertical.png" Width="125" Height="125"/>
+                    <Image Source="Icons\collage-two-vertical.png" Width="125" Height="125"/>
                 </Button>
                 <Button x:Name="open4ImagesButton" Height="150" Width="150" Click="open4ImagesButton_Click" Margin="5" Background="White" VerticalAlignment="Top">
-                    <Image Source="C:\Users\user\source\repos\PhotoEditor\Icons\collage-four.png" Width="125" Height="125"/>
+                    <Image Source="Icons\collage-four.png" Width="125" Height="125"/>
                 </Button>
             </StackPanel>
         </ScrollViewer>
@@ -68,13 +68,13 @@
                     <Button x:Name="flipButton" Content="{DynamicResource FLIP}" Click="flipButton_Click" Width="170" Background="White" Margin="0,0,0,5"/>
                     <Button x:Name="rotateButton" Content="{DynamicResource ROTATE}"  Click="rotateButton_Click" Width="170" Background="White" Margin="0,0,0,5"/>
                     <Button x:Name="cropButton" Content="{DynamicResource CROP}" Click="cropButton_Click" Width="170"  Background="White" Margin="0,0,0,5"/>
-                    <ToggleButton x:Name="resizeToggle" Width="165" ClickMode="Press" Click="resizeToggle_Click" IsChecked="False" Background="#353536" Margin="0,0,0,6">
-                        <TextBlock Margin="0,0,0,5" Foreground="White" Text="{DynamicResource RESIZE}" />
+                    <ToggleButton x:Name="resizeToggle" Width="165" ClickMode="Press" Click="resizeToggle_Click" IsChecked="False" Background="White" Margin="0,0,0,6">
+                        <TextBlock Margin="0,0,0,5" Foreground="Black" Text="{DynamicResource RESIZE}" />
                     </ToggleButton>
                     <StackPanel x:Name="resizePanel" Visibility="Collapsed" >
                         <TextBox x:Name="widthTextBox" Width="50" Margin="5"/>
                         <TextBox x:Name="heightTextBox" Width="50" Margin="5"/>
-                        <Button Content="{DynamicResource RESIZE}" Width="120" Click="resizeButton_Click"/>
+                        <Button Content="{DynamicResource RESIZE}" Width="120" Click="resizeButton_Click" Margin="0,0,0,8"/>
                     </StackPanel>
 
                 </StackPanel>
@@ -236,13 +236,13 @@
                     <Slider x:Name="fontSizeSlider"  Margin="5,0,0,5" Minimum="8" Maximum="72" Value="8" ValueChanged="fontSizeSlider_ValueChanged" />
                     <StackPanel Orientation="Horizontal">
                         <Button x:Name="boldButton" Background="White" Width="30" Height="30" Margin="7,5,0,0" Click="boldButton_Click" HorizontalAlignment="Left">
-                            <Image Source="C:\Users\user\source\repos\PhotoEditor\Icons/bold.png" Width="20" Height="20"/>
+                            <Image Source="Icons\bold.png" Width="20" Height="20"/>
                         </Button>
                         <Button x:Name="italicButton" Background="White" Width="30" Height="30" Margin="37,5,0,0" Click="italicButton_Click" >
-                            <Image Source="C:\Users\user\source\repos\PhotoEditor\Icons/italic.png"  Width="15" Height="15"/>
+                            <Image Source="Icons\italic.png"  Width="15" Height="15"/>
                         </Button>
                         <Button x:Name="underlineButton" Background="White" Width="30" Height="30" Margin="37,5,0,0" Click="underlineButton_Click" >
-                            <Image Source="C:\Users\user\source\repos\PhotoEditor\Icons/underline.png" Width="20" Height="20"/>
+                            <Image Source="Icons\underline.png" Width="20" Height="20"/>
                         </Button>
                     </StackPanel>
                     <Button x:Name="textButton" Content="{DynamicResource ADD_TEXT}" Margin="0,5,0,0" Click="TextButton_Click" Background="White" Width="166"/>

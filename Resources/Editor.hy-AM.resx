@@ -200,7 +200,7 @@
     <value>Ջնջել տեքստը</value>
   </data>
   <data name="VIBRANCE" xml:space="preserve">
-    <value>Հյութալիություն</value>
+    <value>Խտություն</value>
   </data>
   <data name="SPECIAL_EFFECTS" xml:space="preserve">
     <value>Հատուկ էֆեկտներ</value>
@@ -243,5 +243,23 @@
   </data>
   <data name="CANCEL" xml:space="preserve">
     <value>Չեղարկել</value>
+  </data>
+  <data name="WHITE" xml:space="preserve">
+    <value>Սպիտակ</value>
+  </data>
+  <data name="BLACK" xml:space="preserve">
+    <value>Սև</value>
+  </data>
+  <data name="YELLOW" xml:space="preserve">
+    <value>Դեղին</value>
+  </data>
+  <data name="ORANGE" xml:space="preserve">
+    <value>Նարնջագույն</value>
+  </data>
+  <data name="PURPLE" xml:space="preserve">
+    <value>Մանուշակագույն</value>
+  </data>
+  <data name="GRAY" xml:space="preserve">
+    <value>Մոխրագույն</value>
   </data>
 </root>

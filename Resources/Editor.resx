@@ -244,4 +244,22 @@
   <data name="CANCEL" xml:space="preserve">
     <value>Cancel</value>
   </data>
+  <data name="WHITE" xml:space="preserve">
+    <value>White</value>
+  </data>
+  <data name="BLACK" xml:space="preserve">
+    <value>Black</value>
+  </data>
+  <data name="YELLOW" xml:space="preserve">
+    <value>Yellow</value>
+  </data>
+  <data name="ORANGE" xml:space="preserve">
+    <value>Orange</value>
+  </data>
+  <data name="PURPLE" xml:space="preserve">
+    <value>Purple</value>
+  </data>
+  <data name="GRAY" xml:space="preserve">
+    <value>Gray</value>
+  </data>
 </root>

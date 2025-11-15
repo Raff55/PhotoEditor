@@ -88,6 +88,15 @@ namespace ImageEditor.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Black.
+        /// </summary>
+        public static string BLACK {
+            get {
+                return ResourceManager.GetString("BLACK", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Blue.
         /// </summary>
         public static string BLUE {
@@ -250,6 +259,15 @@ namespace ImageEditor.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Gray.
+        /// </summary>
+        public static string GRAY {
+            get {
+                return ResourceManager.GetString("GRAY", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Green.
         /// </summary>
         public static string GREEN {
@@ -322,11 +340,29 @@ namespace ImageEditor.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Orange.
+        /// </summary>
+        public static string ORANGE {
+            get {
+                return ResourceManager.GetString("ORANGE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Please select image.
         /// </summary>
         public static string PLEASE_SELECT_IMAGE {
             get {
                 return ResourceManager.GetString("PLEASE_SELECT_IMAGE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Purple.
+        /// </summary>
+        public static string PURPLE {
+            get {
+                return ResourceManager.GetString("PURPLE", resourceCulture);
             }
         }
         
@@ -498,6 +534,24 @@ namespace ImageEditor.Resources {
         public static string VIBRANCE {
             get {
                 return ResourceManager.GetString("VIBRANCE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to White.
+        /// </summary>
+        public static string WHITE {
+            get {
+                return ResourceManager.GetString("WHITE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Yellow.
+        /// </summary>
+        public static string YELLOW {
+            get {
+                return ResourceManager.GetString("YELLOW", resourceCulture);
             }
         }
     }

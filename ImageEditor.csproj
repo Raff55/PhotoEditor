@@ -9,8 +9,27 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="SixLabors.ImageSharp" Version="3.1.2" />
-    <PackageReference Include="System.Drawing.Common" Version="8.0.1" />
+    <None Remove="Icons\bold.png" />
+    <None Remove="Icons\collage-four.png" />
+    <None Remove="Icons\collage-two-horizontal.png" />
+    <None Remove="Icons\collage-two-vertical.png" />
+    <None Remove="Icons\icon.png" />
+    <None Remove="Icons\italic.png" />
+    <None Remove="Icons\underline.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Drawing.Common" Version="8.0.5" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Icons\bold.png" />
+    <Resource Include="Icons\collage-four.png" />
+    <Resource Include="Icons\collage-two-horizontal.png" />
+    <Resource Include="Icons\collage-two-vertical.png" />
+    <Resource Include="Icons\icon.png" />
+    <Resource Include="Icons\italic.png" />
+    <Resource Include="Icons\underline.png" />
   </ItemGroup>
 
   <ItemGroup>

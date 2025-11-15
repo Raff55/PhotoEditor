@@ -244,4 +244,22 @@
   <data name="CANCEL" xml:space="preserve">
     <value>Отмена</value>
   </data>
+  <data name="WHITE" xml:space="preserve">
+    <value>Белый</value>
+  </data>
+  <data name="BLACK" xml:space="preserve">
+    <value>Черный</value>
+  </data>
+  <data name="YELLOW" xml:space="preserve">
+    <value>Желтый</value>
+  </data>
+  <data name="ORANGE" xml:space="preserve">
+    <value>Апельсин</value>
+  </data>
+  <data name="PURPLE" xml:space="preserve">
+    <value>Фиолетовый</value>
+  </data>
+  <data name="GRAY" xml:space="preserve">
+    <value>Серый</value>
+  </data>
 </root>
